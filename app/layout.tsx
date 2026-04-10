@@ -4,7 +4,7 @@ import "./globals.css";
 import NavBar from "../public/components/NavBar";
 import ProfileBar from "@/public/components/ProfileBar";
 import CircleSideBar from "@/public/components/CircleSideBar";
-
+import CircleBar from "@/public/components/CircleBar";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -32,12 +32,12 @@ export default function RootLayout({
     >
       <head>
       </head>
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col ">
         <NavBar />
         <div className="flex flex-1">
-                    <CircleSideBar />
-
+          <CircleSideBar />
           <div className="flex-1">
+              <CircleBar />
             {children}
           </div>
         </div>

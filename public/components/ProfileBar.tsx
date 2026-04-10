@@ -10,7 +10,7 @@ function ProfileBar() {
   return (
     <div className='space-y-5 py-7 sticky top-18 z-90 w-full bg-(--color-background) dark:bg-(--background)  ) '>
 
-     <div className=" px-5 lg:px-30 py-1   bg-(--color-background)   )    w-full      flex items-center justify-between ">
+     <div className=" px-5 lg:px-5 py-1   bg-(--color-background)   )    w-full      flex items-center justify-between ">
 
     <div  className='flex gap-x-4 items-center'>
     <Image src={userData.avatar} alt='avatar' className='w-15 rounded-full border border-(--border) dark:border-(--borderdark)'/>
@@ -30,7 +30,7 @@ function ProfileBar() {
 
 
 
-    <div className="  px-5 lg:px-30  bg-(--color-background) )   w-full    flex items-center justify-between ">
+    <div className="  px-5 lg:px-5  bg-(--color-background) )   w-full    flex items-center justify-between ">
 
     <button className='bg-(--colorbg) dark:bg-(--colorbgdark) py-1 border px-4 rounded-full text-xl items-center gap-x-3  flex' > <h1 className='border rounded-full p-1 w-5 h-5 items-center flex justify-center'>+</h1>Connect</button>
 
