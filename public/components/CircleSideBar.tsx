@@ -9,7 +9,7 @@ function CircleSideBar() {
   return (
     <nav className='hidden lg:block w-auto p-5 bg-(--color-background) dark:bg-(--background) border-r-2  border-(--border)   flex flex-col items-center py-5 gap-y-5'>
 
-<div className='sticky top-25 space-y-5'>
+<div className='sticky top-30 space-y-5'>
 
     {/** searchbar */}
     
