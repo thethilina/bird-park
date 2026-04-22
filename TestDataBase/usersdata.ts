@@ -24,7 +24,7 @@ const usersData = [
     },
     {
         id: 2,
-        fullName: "User Two",
+        fullName: "Alchemist",
         username: "usertwo",
         password: "Pass#123456",
         birthDate: "2001-05-15",

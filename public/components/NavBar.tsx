@@ -7,6 +7,7 @@ import { FaRegPlusSquare } from "react-icons/fa";
 import { IoMailSharp } from "react-icons/io5";
 import { GiHamburgerMenu } from "react-icons/gi";
 import userData from "@/TestDataBase/userdata";
+import Link from "next/link";
 
 function NavBar() {
   return (
@@ -22,7 +23,7 @@ function NavBar() {
     <Image src={logolight} alt="birdpark logo" className="lg:w-10 w-7 dark:hidden " />
 
     <ul className=" items-center gap-x-5 text-2xl hidden lg:flex">
-    <li>Board</li>
+   <Link href={"/"}><li>Board</li></Link>
     <li>Circles</li>    
     </ul>
 

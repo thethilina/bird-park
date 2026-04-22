@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 function Gallery({ artbase }: any) {
   return (
@@ -16,15 +17,17 @@ function Gallery({ artbase }: any) {
           
 
 
+           <div   key={art.id} className="break-inside-avoid">
+                      <Link href={`/${art.id}`} key={art.id} className="break-inside-avoid"> 
 
-           <div key={art.id} className="break-inside-avoid">
-            <Image 
+            <Image  
               src={art.image} 
               alt={art.title} 
               width={500}
               height={500}
               className="hover:opacity-90 transition-opacity duration-300"
-            />
+            />          </Link>
+
           </div>
         ))}
       </div>
