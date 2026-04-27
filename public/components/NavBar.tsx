@@ -12,7 +12,7 @@ import Link from "next/link";
 function NavBar() {
   return (
     
-    <nav className="sticky  z-100 px-5  py-1  lg:px-10 xl:px-30 bg-(--color-background) dark:bg-(--background)  border-(--border)  lg:pt-5  w-full top-0 border-b-2   lg:py-3   flex items-center justify-between ">
+    <nav className="sticky  z-100 px-5  py-1  lg:px-10 xl:px-20 bg-(--color-background) dark:bg-(--background)  border-(--border)  lg:pt-5  w-full top-0 border-b-2   lg:py-3   flex items-center justify-between ">
 
 
     {/** right side */}

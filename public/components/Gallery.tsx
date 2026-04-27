@@ -5,7 +5,7 @@ import Link from 'next/link';
 function Gallery({ artbase }: any) {
   return (
     <div className="w-full">
-      <div className="columns-2  xl:px-30 xl:gap-8 xl:space-y-8 sm:columns-2 gap-2  space-y-2 md:columns-3 lg:columns-3 xl:columns-4 lg:gap-5 lg:px-10 lg:space-y-5 w-full">
+      <div className="columns-2  xl:px-20 xl:gap-8 xl:space-y-8 sm:columns-2 gap-2  space-y-2 md:columns-3 lg:columns-3 xl:columns-4 lg:gap-5 lg:px-10 lg:space-y-5 w-full">
         {artbase.map((art: any) => (
           art.category === "poem" ? <div key={art.id} className="break-inside-avoid p-5 rounded-md gap-y-5 text-center flex flex-col items-center justify-center " style={{ backgroundColor: art.backgroundColor, color: art.textColor ,fontFamily: art.font}}>
 

@@ -15,7 +15,7 @@ export default async function Page({ params }: Props) {
   const { ArtId } = await params;
 
   return (
-    <div className="lg:flex  min-h-screen  px-3   gap-x-10  xl:mx-30 lg:mx-10  justify-center   ">
+    <div className="lg:flex  h-[calc(100vh-80px)]   px-3  overflow-hidden   gap-x-10  xl:mx-20 lg:mx-10  justify-center   "  >    
       
     {/** left div */}
 
@@ -29,11 +29,11 @@ export default async function Page({ params }: Props) {
               {/** user avatar and name and collection */}
               <div className="flex items-center lg:text-xl gap-x-3"> 
                 <Image src={user?.avatar as any} alt={user?.fullName as string} className="w-10 h-10 lg:w-12 lg:h-12 rounded-full" width={48} height={48} />
-                <span>{user?.fullName}</span>
+                <span className="">{user?.fullName}</span>
               </div>
               
               {/** art title */}
-              <h1 className="lg:text-2xl">{item.title}</h1>
+              <h1 className="lg:text-2xl font-semibold">{item.title}</h1>
 
               {/** art image */}
 {item.image && ( <div>
@@ -69,7 +69,7 @@ export default async function Page({ params }: Props) {
   {/* right div */}
 
 <div 
-  className="lg:my-10 lg:w-1/3 lg:px-5 rounded-sm overflow-y-auto   bg-(--color-background) dark:bg-(--background)
+  className="lg:my-10  lg:w-2/5  xl:w-1/3 lg:px-5 rounded-sm overflow-y-auto   bg-(--color-background) dark:bg-(--background)
              [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]" 
   style={{ height: "calc(100vh - 100px)" }} 
 >
@@ -103,7 +103,7 @@ export default async function Page({ params }: Props) {
           </div>
 
           {/** Comments list */}
-          <div className="space-y-5 lg:space-y-10">
+          <div className="space-y-5  py-5 lg:space-y-10">
             {commentData.map((comment) => {
               if (comment.artid === parseInt(item.id as string)) {
                 const commentUser = usersData.find((u) => u.id === comment.userId);

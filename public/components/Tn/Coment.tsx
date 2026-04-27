@@ -5,7 +5,7 @@ import Image from 'next/image'
 
 function Coment({ comment , user }: any) {
   return (
-    <div className=' space-y-3 lg:space-y-5 '>
+    <div className='font-sans space-y-3 lg:space-y-5 '>
 
     <div className='flex w-full justify-between items-center lg:text-xl'>
 
