@@ -47,3 +47,26 @@ body {
 .bgclr{
   background-color: #DFDEEF;
 }
+
+.minimal-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--border) 45%, transparent) transparent;
+}
+
+.minimal-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.minimal-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.minimal-scrollbar::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--border) 38%, transparent);
+  border-radius: 9999px;
+  border: 1px solid transparent;
+}
+
+.minimal-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--border) 58%, transparent);
+}
