@@ -6,6 +6,8 @@ import { CiHeart } from "react-icons/ci";
 import { GoComment } from "react-icons/go";
 import { commentData } from "@/TestDataBase/commentData";
 import Coment from "@/public/components/Tn/Coment";
+import Link from "next/link";
+
 
 interface Props {
   params: Promise<{ ArtId: any }>;
@@ -15,7 +17,7 @@ export default async function Page({ params }: Props) {
   const { ArtId } = await params;
 
   return (
-    <div className="lg:flex  h-[calc(100vh-80px)]   px-3  overflow-hidden   gap-x-10  xl:mx-20 lg:mx-10  justify-center   "  >    
+    <div className="lg:flex  lg:h-[calc(100vh-80px)]   px-3  overflow-hidden   gap-x-10  xl:mx-20 lg:mx-10  justify-center   "  >    
       
     {/** left div */}
 
@@ -28,9 +30,11 @@ export default async function Page({ params }: Props) {
 
               {/** user avatar and name and collection */}
               <div className="flex items-center lg:text-xl gap-x-3"> 
-                <Image src={user?.avatar as any} alt={user?.fullName as string} className="w-10 h-10 lg:w-12 lg:h-12 rounded-full" width={48} height={48} />
+          <Link href={`/Profile/${user?.id}`} className="flex items-center gap-x-3">
+            <Image src={user?.avatar as any} alt={user?.fullName as string} className="w-10 h-10 lg:w-12 lg:h-12 rounded-full" width={48} height={48} />
+          
                 <span className="">{user?.fullName}</span>
-              </div>
+          </Link>    </div>
               
               {/** art title */}
               <h1 className="lg:text-2xl font-semibold">{item.title}</h1>

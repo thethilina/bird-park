@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import NavBar from "../public/components/NavBar";
+import "../globals.css";
+import NavBar from "@/public/components/NavBar";
 import ProfileBar from "@/public/components/ProfileBar";
 import CircleSideBar from "@/public/components/CircleSideBar";
 import CircleBar from "@/public/components/CircleBar";
@@ -37,8 +37,7 @@ export default function RootLayout({
         <div className="flex flex-1">
           
           <div className="flex-1">
-            <NavBar />
-            
+              <NavBar />
             {children}
           </div>
         </div>

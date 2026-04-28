@@ -18,7 +18,7 @@ function Gallery({ artbase }: any) {
 
 
            <div   key={art.id} className="break-inside-avoid">
-                      <Link href={`/${art.id}`} key={art.id} className="break-inside-avoid"> 
+                      <Link href={`/Art/${art.id}`} key={art.id} className="break-inside-avoid"> 
 
             <Image  
               src={art.image} 
