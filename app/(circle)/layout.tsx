@@ -35,7 +35,6 @@ export default function RootLayout({
       <head>
       </head>
       <body className="min-h-full flex flex-col  ">
-            <NavBar />
         <div className="flex flex-1">
           <CircleSideBar />
           <div className="flex-1">
