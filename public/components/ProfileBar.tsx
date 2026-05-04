@@ -3,7 +3,7 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import testavetar from "../images/avatar.jpg"
 import Image from 'next/image';
 import userData from '@/TestDataBase/userdata';
-
+import Link from 'next/link';
 
 
 function ProfileBar({ user }: any) {
@@ -37,8 +37,12 @@ function ProfileBar({ user }: any) {
 
     <div className='flex gap-x-3 py-2 px-2 border rounded-full text-xl items-center'>
 
-    <button className='rounded-full border  px-5 flex items-center justify-center'>Works</button>
-    <button className='rounded-full border px-5 flex items-center justify-center'>Collections</button>
+    <Link href={`/Profile/${user.id}`}>
+      <button className='rounded-full border hover:cursor-pointer  px-5 flex items-center  justify-center'>Works</button>
+    </Link>
+    <Link href={`/Profile/${user.id}/collections`}>
+      <button className='rounded-full border hover:cursor-pointer px-5 flex items-center justify-center'>Collections</button>
+    </Link>
     </div>
 
 
