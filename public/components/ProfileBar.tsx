@@ -39,7 +39,6 @@ function ProfileBar({ user }: any) {
 
     <button className='rounded-full border  px-5 flex items-center justify-center'>Works</button>
     <button className='rounded-full border px-5 flex items-center justify-center'>Collections</button>
-    <button className='rounded-full border  px-5 flex items-center justify-center'>Collaborations</button>
     </div>
 
 
