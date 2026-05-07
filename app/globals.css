@@ -70,3 +70,21 @@ body {
 .minimal-scrollbar::-webkit-scrollbar-thumb:hover {
   background: color-mix(in srgb, var(--border) 58%, transparent);
 }
+
+@keyframes scroll-left {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes scroll-right {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0%); }
+}
+
+.animate-scroll-left {
+  animation: scroll-left 10s linear infinite;
+}
+
+.animate-scroll-right {
+  animation: scroll-right 10s linear infinite;
+}
