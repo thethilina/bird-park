@@ -2,10 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import NavBar from "@/public/components/NavBar";
-import ProfileBar from "@/public/components/ProfileBar";
-import CircleSideBar from "@/public/components/CircleSideBar";
-import CircleBar from "@/public/components/CircleBar";
-
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,11 +31,11 @@ export default function RootLayout({
       <head>
       </head>
       <body className="min-h-full flex flex-col  ">
+    
         <div className="flex flex-1">
-          <CircleSideBar />
+          
           <div className="flex-1">
-      
-              <CircleBar />
+            <NavBar />
             {children}
           </div>
         </div>

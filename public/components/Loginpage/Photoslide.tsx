@@ -40,12 +40,12 @@ function Photoslide({ artdata }: any) {
       return (
         <div className='flex w-150 h-150 gap-2'>
           <div className='space-y-2 w-1/2'>
-            <motion.div {...item} className="h-6/10"><Image src={artdata[0].image} alt='art' width={500} height={500} className='w-full h-full object-cover ' /></motion.div>
-            <motion.div {...item} transition={{ delay: 0.1 }} className="h-4/10"><Image src={artdata[1].image} alt='art' width={500} height={500} className='w-full h-full object-cover ' /></motion.div>
+            <motion.div {...item} className="h-6/10"><Image src={artdata[0].cover} alt='art' width={500} height={500} className='w-full h-full object-cover ' /></motion.div>
+            <motion.div {...item} transition={{ delay: 0.1 }} className="h-4/10"><Image src={artdata[1].cover} alt='art' width={500} height={500} className='w-full h-full object-cover ' /></motion.div>
           </div>
           <div className='space-y-2 w-1/2'>
-            <motion.div {...item} transition={{ delay: 0.2 }} className="h-4/10"><Image src={artdata[2].image} alt='art' width={500} height={500} className='w-full h-full object-cover ' /></motion.div>
-            <motion.div {...item} transition={{ delay: 0.3 }} className="h-6/10"><Image src={artdata[3].image} alt='art' width={500} height={500} className='w-full h-full object-cover ' /></motion.div>
+            <motion.div {...item} transition={{ delay: 0.2 }} className="h-4/10"><Image src={artdata[2].cover} alt='art' width={500} height={500} className='w-full h-full object-cover ' /></motion.div>
+            <motion.div {...item} transition={{ delay: 0.3 }} className="h-6/10"><Image src={artdata[3].cover} alt='art' width={500} height={500} className='w-full h-full object-cover ' /></motion.div>
           </div>
         </div>
       )
@@ -55,12 +55,12 @@ function Photoslide({ artdata }: any) {
       return (
         <div className=' w-150 h-150 flex flex-col gap-2 '>
           <div className='flex space-x-2 h-1/2'>
-            <motion.div {...item} className="w-6/10"><Image src={artdata[4].image} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
-            <motion.div {...item} transition={{ delay: 0.1 }} className="w-4/10"><Image src={artdata[5].image} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
+            <motion.div {...item} className="w-6/10"><Image src={artdata[4].cover} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
+            <motion.div {...item} transition={{ delay: 0.1 }} className="w-4/10"><Image src={artdata[5].cover} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
           </div>
           <div className='flex space-x-2 h-1/2'>
-            <motion.div {...item} transition={{ delay: 0.2 }} className="w-4/10"><Image src={artdata[6].image} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
-            <motion.div {...item} transition={{ delay: 0.3 }} className="w-6/10"><Image src={artdata[7].image} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
+            <motion.div {...item} transition={{ delay: 0.2 }} className="w-4/10"><Image src={artdata[6].cover} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
+            <motion.div {...item} transition={{ delay: 0.3 }} className="w-6/10"><Image src={artdata[7].cover} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
           </div>
         </div>
       )
@@ -69,12 +69,12 @@ function Photoslide({ artdata }: any) {
     return (
       <div className=' w-150 h-150 flex flex-col gap-2 '>
         <div className='flex space-x-2 h-1/2'>
-          <motion.div {...item} className="w-3/10"><Image src={artdata[8].image} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
-          <motion.div {...item} transition={{ delay: 0.1 }} className="w-7/10"><Image src={artdata[9].image} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
+          <motion.div {...item} className="w-3/10"><Image src={artdata[8].cover} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
+          <motion.div {...item} transition={{ delay: 0.1 }} className="w-7/10"><Image src={artdata[9].cover} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
         </div>
         <div className='flex space-x-2 h-1/2'>
-          <motion.div {...item} transition={{ delay: 0.2 }} className="w-6/10"><Image src={artdata[10].image} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
-          <motion.div {...item} transition={{ delay: 0.3 }} className="w-4/10"><Image src={artdata[11].image} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
+          <motion.div {...item} transition={{ delay: 0.2 }} className="w-6/10"><Image src={artdata[6].cover} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
+          <motion.div {...item} transition={{ delay: 0.3 }} className="w-4/10"><Image src={artdata[0].cover} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
         </div>
       </div>
     )
