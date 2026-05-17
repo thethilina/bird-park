@@ -8,7 +8,7 @@ import Link from 'next/link';
 
 function ProfileBar({ user }: any) {
   return (
-    <div className='xl:px-20   lg:px-10 space-y-5 py-7 sticky top-18 z-90 w-full bg-(--color-background) dark:bg-(--background)  ) '>
+    <div className=' space-y-5 py-7 sticky top-18 z-90 w-full bg-(--color-background) dark:bg-(--background)  ) '>
 
      <div className="   py-1   bg-(--color-background)   )    w-full      flex items-center justify-between ">
 

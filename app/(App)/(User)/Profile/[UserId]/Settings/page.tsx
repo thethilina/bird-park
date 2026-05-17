@@ -20,7 +20,7 @@ async function page({ params }: Props) {
     const user = usersData.find((user) => user.id === userIdNum);
 
   return (
-    <div className='space-y-15 xl:px-20 lg:px-10 py-10 font-sans'>
+    <div className='space-y-15  py-10 font-sans'>
    
    {/** top section */}
    <div className='flex justify-between items-center border-b-2 border-(--border) pb-5'>

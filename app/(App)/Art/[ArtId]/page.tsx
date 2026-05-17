@@ -17,7 +17,7 @@ export default async function Page({ params }: Props) {
   const { ArtId } = await params;
 
   return (
-    <div className="lg:flex  lg:h-[calc(100vh-80px)]   px-3  overflow-hidden   gap-x-10  xl:mx-20 lg:mx-10  justify-center   "  >    
+    <div className="lg:flex  lg:h-[calc(100vh-80px)]   px-3  overflow-hidden   gap-x-10 justify-center   "  >    
       
     {/** left div */}
 
