@@ -4,13 +4,13 @@ import React from 'react'
 import Logo from "@/public/images/birdparklogo.png"
 import Image from 'next/image'
 import { feedDatabase } from '@/TestDataBase/artData'
-import Photoslide from "../../../public/components/Loginpage/Photoslide"
+import Photoslide from '@/public/components/Loginpage/Photoslide'
 import InputFiled from '@/public/components/Tn/InputFiled'
 import { collectionsDatabase } from '@/TestDataBase/collectionData'
 
 function Page() {
   return (
-    <div className='flex w-screen  h-screen py-20  '>
+    <div className='flex  py-20  '>
 
       {/* Left Panel - Image Gallery */}
       <div className='flex-1 flex flex-col items-center justify-center px-10  border-r-2   border-(--border)   '>

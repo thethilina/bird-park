@@ -39,7 +39,9 @@ function NavBar() {
     {/** left side */}
     <div className="flex items-center gap-x-5 lg:gap-x-7 color-(--primary) dark:color-(--primarydark) ">
 
-    <FaRegPlusSquare className=" size-6 lg:size-7" />
+    <Link href="/Create/Submitwork">
+      <FaRegPlusSquare className=" size-6 lg:size-7" />
+    </Link>
     <IoMailSharp className=" size-7 lg:size-8" />
     <Image src={userData.avatar}  alt="user avatar" className="w-7 lg:w-9 rounded-full border border-white" />
     </div>

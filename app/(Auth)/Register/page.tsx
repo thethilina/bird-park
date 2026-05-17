@@ -4,12 +4,11 @@ import React from 'react'
 import Logo from "@/public/images/birdparklogo.png"
 import Image from 'next/image'
 import { feedDatabase } from '@/TestDataBase/artData'
-import Photoslide from "../../../public/components/Loginpage/Photoslide"
 import InputFiled from '@/public/components/Tn/InputFiled'
 
 function Page() {
   return (
-    <div className='flex  flex-col w-screen  h-screen py-20  '>
+    <div className='flex  flex-col  py-20  '>
 
    
           

@@ -23,7 +23,7 @@ function Page() {
     };
 
     return (
-      <div className='flex flex-col items-center justify-center w-screen  h-screen py-20  '>
+      <div className='flex flex-col items-center justify-center  py-20  '>
 
       <div className="flex flex-col space-y-10     ">
       {/* top image select*/}
