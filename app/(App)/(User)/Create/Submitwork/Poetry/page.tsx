@@ -4,17 +4,14 @@ import React, { useState } from 'react';
 import { IoCloudUpload } from "react-icons/io5";
 
 function Page() {
-  // State for user inputs
   const [title, setTitle] = useState('');
   const [poem, setPoem] = useState('');
 
-  // Styling states
   const [font, setFont] = useState('Georgia, serif');
   const [fontSize, setFontSize] = useState('20px'); // Default text-xl equivalent
   const [textColor, setTextColor] = useState('#000000');
   const [bgColor, setBgColor] = useState('#ffffff');
 
-  // 25 distinct system fonts
   const fontOptions = [
     { name: 'Georgia', value: 'Georgia, serif' },
     { name: 'Palatino', value: '"Palatino Linotype", Palatino, Palladio, "URW Palladio L", serif' },
@@ -56,7 +53,6 @@ function Page() {
   return (
     <div className="">
       
-      {/* Title Input Field directly above toolbar */}
       <div className="w-full mb-3">
         <input 
           type="text"
@@ -67,11 +63,9 @@ function Page() {
         />
       </div>
 
-      {/**tool bar */}
       <div 
         className="mb-5 w-full rounded-xl border-2 border-dotted border-(--border) bg-(--colorbg) px-4 py-2 text-2xl dark:bg-(--colorbgdark) flex flex-wrap items-center gap-4 text-base" 
       >
-        {/* Font Dropdown */}
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium">Font:</label>
           <select 
@@ -87,7 +81,6 @@ function Page() {
           </select>
         </div>
 
-        {/* Font Size Dropdown */}
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium">Size:</label>
           <select 
@@ -103,7 +96,6 @@ function Page() {
           </select>
         </div>
 
-        {/* Text Color Picker */}
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium">Text:</label>
           <input 
@@ -126,7 +118,6 @@ function Page() {
         </div>
       </div>
 
-      {/**poem area */}
       <div 
         className="w-full gap-y-3 items-center justify-center flex flex-col h-130 rounded-xl border-2 border-dotted border-(--border) p-4"
         style={{ backgroundColor: bgColor }}
