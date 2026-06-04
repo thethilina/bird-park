@@ -35,8 +35,10 @@ export default function RootLayout({
         <div className="flex flex-1">
           
           <div className="flex-1">
-            <NavBar />
+            <NavBar  />
+            <div className="xl:mx-20 lg:mx-10">
             {children}
+            </div>
           </div>
         </div>
       </body>

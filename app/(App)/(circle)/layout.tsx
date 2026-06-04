@@ -17,7 +17,6 @@ export default function CircleLayout({
       <div className="flex flex-1">
         <CircleSideBar />
         <div className="flex-1">
-          <CircleBar />
           {children}
         </div>
       </div>

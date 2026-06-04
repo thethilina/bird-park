@@ -7,7 +7,7 @@ import usersData from '@/TestDataBase/usersdata';
 
 function CircleBar() {
   return (
-    <nav className='hidden  z-99 lg:block w-auto  bg-(--color-background) dark:bg-(--background) border-r-2  border-(--border)   flex flex-col items-center    gap-y-5'>
+    <nav className='hidden pl-70  z-99 lg:block w-auto  bg-(--color-background) dark:bg-(--background) border-r-2  border-(--border)   flex flex-col items-center    gap-y-5'>
   
   <div className='   space-y-5'>
   
