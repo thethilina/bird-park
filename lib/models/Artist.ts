@@ -1,50 +1,13 @@
 import { Schema, model, Types } from "mongoose";
+import { ArtistCategory } from "./types";
 
-interface IEmotionHistory {
-  emotions: string[];
-  date: Date;
-}
-
-interface ICategoryHistory {
-  category: string;
-  confidence: number;
-  date: Date;
-}
-
-export interface IArtist {
-  username: string;
-  fullName: string;
-  email: string;
-  password: string;
-
-  profileImage?: string;
-  bio?: string;
-
-  birthday?: Date;
-
-  currentCategory?: string;
-  currentTop3Emotions?: string[];
-
-  categoryHistory: ICategoryHistory[];
-  emotionHistory: IEmotionHistory[];
-
-  followers: Types.ObjectId[];
-  connections: Types.ObjectId[];
-
-  circles: Types.ObjectId[];
-  collections: Types.ObjectId[];
-
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-
-const ArtistSchema = new Schema<IArtist>(
+const ArtistSchema = new Schema(
   {
     username: {
       type: String,
       required: true,
       unique: true,
+      trim: true,
     },
 
     fullName: {
@@ -56,6 +19,7 @@ const ArtistSchema = new Schema<IArtist>(
       type: String,
       required: true,
       unique: true,
+      lowercase: true,
     },
 
     password: {
@@ -72,9 +36,17 @@ const ArtistSchema = new Schema<IArtist>(
 
     birthday: Date,
 
-    currentCategory: String,
+    currentCategory: {
+      type: String,
+      enum: Object.values(ArtistCategory),
+    },
 
-    currentTop3Emotions: [String],
+    currentTop3Emotions: [
+      {
+        emotion: String,
+        score: Number,
+      },
+    ],
 
     categoryHistory: [
       {
@@ -89,7 +61,13 @@ const ArtistSchema = new Schema<IArtist>(
 
     emotionHistory: [
       {
-        emotions: [String],
+        emotions: [
+          {
+            emotion: String,
+            score: Number,
+          },
+        ],
+
         date: {
           type: Date,
           default: Date.now,
@@ -130,4 +108,4 @@ const ArtistSchema = new Schema<IArtist>(
   }
 );
 
-export default model<IArtist>("Artist", ArtistSchema);  
+export default model("Artist", ArtistSchema);
