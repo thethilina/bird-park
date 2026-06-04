@@ -1,4 +1,4 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, model, Types, models } from "mongoose";
 import { ArtistCategory } from "./types";
 
 const ArtistSchema = new Schema(
@@ -108,4 +108,6 @@ const ArtistSchema = new Schema(
   }
 );
 
-export default model("Artist", ArtistSchema);
+const Artist = models.Artist || model("Artist", ArtistSchema);
+
+export default Artist;

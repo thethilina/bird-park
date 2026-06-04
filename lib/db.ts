@@ -2,33 +2,32 @@ import mongoose from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-const connect = async ()=>{
+let isConnected = false;
 
-const connection = mongoose.connection.readyState;
+const connect = async () => {
+  if (!MONGODB_URI) {
+    throw new Error("Missing MONGODB_URI environment variable");
+  }
 
-if(connection === 1 ) {
-    console.log("Already Connected");
+  if (isConnected || mongoose.connection.readyState === 1) {
+    console.log("Already connected");
     return;
-}
+  }
 
-if(connection === 2) {
-    console.log("Connecting...");
-}
+  try {
+    console.log("Connecting to MongoDB...");
 
-try{
+    await mongoose.connect(MONGODB_URI, {
+      dbName: "Bird-Park",
+      serverSelectionTimeoutMS: 5000,
+    });
 
-mongoose.connect(MONGODB_URI! , {
-
-    dbName:'Bird-Park',
-    bufferCommands:true 
-});
-
-}catch(e : any){
-
-console.log("Error: " ,e);
-throw new Error(e);
-}
-
-}
+    isConnected = true;
+    console.log("Connected to MongoDB");
+  } catch (error) {
+    console.error("Mongo connection error:", error);
+    throw error;
+  }
+};
 
 export default connect;
