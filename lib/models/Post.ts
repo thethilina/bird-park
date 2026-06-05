@@ -19,9 +19,26 @@ const PostSchema = new Schema(
       required: true,
     },
 
-    body: String,
+    body: {
+      type: String,
+    },
 
-    image: String,
+    // Cloudinary asset
+    media: {
+      url: String,
+      publicId: String,
+      type: {
+        type: String, // image | video
+      },
+    },
+
+    // Poem styling (ONLY used when type = poem)
+    poemStyle: {
+      fontFamily: String,
+      fontSize: String,
+      fontColor: String,
+      backgroundColor: String,
+    },
 
     hearts: [
       {
@@ -50,10 +67,10 @@ const PostSchema = new Schema(
     ],
 
     visibility: {
-   type: String,
-   enum:["public","circle"],
-   default:"public"
-}
+      type: String,
+      enum: ["public", "circle"],
+      default: "public",
+    },
   },
   {
     timestamps: true,
@@ -61,4 +78,3 @@ const PostSchema = new Schema(
 );
 
 export default model("Post", PostSchema);
-
