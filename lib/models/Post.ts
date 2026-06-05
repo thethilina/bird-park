@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model , models } from "mongoose";
 
 const PostSchema = new Schema(
   {
@@ -77,4 +77,8 @@ const PostSchema = new Schema(
   }
 );
 
-export default model("Post", PostSchema);
+const Post = models.Post || model("Post", PostSchema);
+
+
+export default Post;
+
