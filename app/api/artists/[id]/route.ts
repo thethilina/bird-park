@@ -20,7 +20,7 @@ export async function GET(
 
     const artist = await Artist.findById(id)
       .select(
-        "username fullName bio profileImage currentCategory currentTop3Emotions createdAt"
+        "username fullName bio profileImage currentCategory currentTop3Emotions createdAt observers"
       )
       .populate("connections", "username fullName profileImage");
 

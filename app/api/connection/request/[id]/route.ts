@@ -12,14 +12,22 @@ export async function DELETE(
   {
     params,
   }: {
-    params: { id: string };
+    params: Promise<{ id: string }>;
   }
 ) {
   try {
     await connectDB();
 
     const userId = await getCurrentUserId();
-    const requestId = params.id;
+
+    const { id: requestId } = await params;
+
+    console.log(
+      "Cancelling request",
+      requestId,
+      "by user",
+      userId
+    );
 
     const request =
       await ConnectionRequest.findById(
@@ -35,7 +43,10 @@ export async function DELETE(
 
     if (request.status !== "pending") {
       return NextResponse.json(
-        { message: "Cannot cancel processed request" },
+        {
+          message:
+            "Cannot cancel processed request",
+        },
         { status: 400 }
       );
     }
@@ -62,7 +73,9 @@ export async function DELETE(
       success: true,
       message: "Request cancelled",
     });
-  } catch {
+  } catch (error) {
+    console.error(error);
+
     return NextResponse.json(
       { message: "Unauthorized" },
       { status: 401 }

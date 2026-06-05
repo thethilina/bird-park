@@ -18,7 +18,9 @@ export async function DELETE(
     await connectDB();
 
     const userId = await getCurrentUserId();
-    const targetId = params.id;
+
+        const { id: targetId } = await params;
+
 
     const user = await Artist.findById(userId);
 
