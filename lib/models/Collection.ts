@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model , models } from "mongoose";
 
 const CollectionSchema = new Schema(
   {
@@ -34,4 +34,7 @@ const CollectionSchema = new Schema(
   }
 );
 
-export default model("Collection", CollectionSchema);
+const Collection = models.Collection || model("Collection", CollectionSchema);
+
+
+export default Collection;
