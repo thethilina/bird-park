@@ -75,12 +75,20 @@ const ArtistSchema = new Schema(
       },
     ],
 
-    followers: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Artist",
-      },
-    ],
+    
+     observers: [
+  {
+    type: Schema.Types.ObjectId,
+    ref: "Artist",
+  },
+],
+
+
+
+
+     
+    
+  
 
     connections: [
       {
