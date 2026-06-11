@@ -66,6 +66,12 @@ const PostSchema = new Schema(
       },
     ],
 
+    circle: {
+  type: Schema.Types.ObjectId,
+  ref: "Circle",
+  default: null,
+},
+
     visibility: {
       type: String,
       enum: ["public", "circle"],

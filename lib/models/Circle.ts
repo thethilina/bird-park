@@ -1,11 +1,8 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 const CircleSchema = new Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
+    name: { type: String, required: true },
 
     description: String,
 
@@ -14,26 +11,92 @@ const CircleSchema = new Schema(
     creator: {
       type: Schema.Types.ObjectId,
       ref: "Artist",
+      required: true,
+    },
+
+    // 👑 ownership system (important upgrade)
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "Artist",
+      required: true,
     },
 
     admins: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Artist",
-      },
+      { type: Schema.Types.ObjectId, ref: "Artist" },
     ],
 
     moderators: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Artist",
-      },
+      { type: Schema.Types.ObjectId, ref: "Artist" },
     ],
 
     members: [
+      { type: Schema.Types.ObjectId, ref: "Artist" },
+    ],
+
+    // 🔥 JOIN CONTROL SYSTEM (IMPORTANT)
+    joinType: {
+      type: String,
+      enum: ["open", "approval"],
+      default: "open",
+    },
+
+    joinRequests: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "Artist",
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "Artist",
+        },
+        status: {
+          type: String,
+          enum: ["pending", "approved", "rejected"],
+          default: "pending",
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
+
+    // 🧠 RULES SYSTEM (your idea)
+    rules: [
+      {
+        title: String,
+        description: String,
+      },
+    ],
+
+    // 🎯 CATEGORY SYSTEM
+    category: String,
+
+    categoryHistory: [
+      {
+        category: String,
+        from: Date,
+        to: Date,
+      },
+    ],
+
+    // 🎭 EMOTION SYSTEM (your strongest idea)
+    topEmotions: [
+      {
+        emotion: String,
+        score: Number,
+      },
+    ],
+
+    emotionHistory: [
+      {
+        emotions: [
+          {
+            emotion: String,
+            score: Number,
+          },
+        ],
+        date: {
+          type: Date,
+          default: Date.now,
+        },
       },
     ],
 
@@ -44,10 +107,22 @@ const CircleSchema = new Schema(
       },
     ],
 
-    activities: [
+    reports: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "Activity",
+        post: {
+          type: Schema.Types.ObjectId,
+          ref: "Post",
+        },
+        reporter: {
+          type: Schema.Types.ObjectId,
+          ref: "Artist",
+        },
+        reason: String,
+        status: {
+          type: String,
+          enum: ["pending", "resolved"],
+          default: "pending",
+        },
       },
     ],
   },
@@ -56,4 +131,7 @@ const CircleSchema = new Schema(
   }
 );
 
-export default model("Circle", CircleSchema);
+const Circle =
+  models.Circle || model("Circle", CircleSchema);
+
+export default Circle;

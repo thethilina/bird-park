@@ -1,45 +1,45 @@
-import { Schema, model } from "mongoose";
-
-const ReplySchema = new Schema({
-  author: {
-    type: Schema.Types.ObjectId,
-    ref: "Artist",
-  },
-
-  body: String,
-
-  mentionedUsers: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Artist",
-    },
-  ],
-
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+import { Schema, model, models } from "mongoose";
 
 const CommentSchema = new Schema(
   {
     post: {
       type: Schema.Types.ObjectId,
       ref: "Post",
+      required: true,
     },
 
     author: {
       type: Schema.Types.ObjectId,
       ref: "Artist",
+      required: true,
     },
 
-    body: String,
+    body: {
+      type: String,
+      required: true,
+      trim: true,
+    },
 
-    replies: [ReplySchema],
+    parentComment: {
+      type: Schema.Types.ObjectId,
+      ref: "Comment",
+      default: null,
+    },
+
+    mentionedUsers: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Artist",
+      },
+    ],
   },
   {
     timestamps: true,
   }
 );
 
-export default model("Comment", CommentSchema);
+const Comment =
+  models.Comment ||
+  model("Comment", CommentSchema);
+
+export default Comment;
