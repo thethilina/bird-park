@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "../../../../../lib/db";
 import Circle from "../../../../../lib/models/Circle";
+import createNotification from "../../../../../lib/createNotification";
 import { getCurrentUserId } from "../../../../../lib/getCurrentUser";
 
 
@@ -48,6 +49,16 @@ export async function POST(req: Request, { params }: any) {
   );
 
   await circle.save();
+
+  if (targetUserId !== userId) {
+    await createNotification({
+      recipient: targetUserId,
+      sender: userId,
+      type: "circle_join_approved",
+      message: "Your request to join the circle was approved.",
+      entityId: circle._id,
+    });
+  }
 
   return NextResponse.json({
     success: true,

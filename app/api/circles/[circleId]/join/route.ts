@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import connectDB from "../../../../../lib/db";
+import Artist from "../../../../../lib/models/Artist";
 import Circle from "../../../../../lib/models/Circle";
+import createNotification from "../../../../../lib/createNotification";
 import { getCurrentUserId } from "../../../../../lib/getCurrentUser";
 
 export async function POST(
@@ -57,6 +59,32 @@ export async function POST(
   });
 
   await circle.save();
+
+  const sender = await Artist.findById(
+    userId,
+    "username fullName"
+  );
+  const senderName =
+    sender?.fullName || sender?.username || "Someone";
+
+  const recipients = Array.from(
+    new Set([
+      circle.owner.toString(),
+      ...circle.moderators.map((id: any) => id.toString()),
+    ]).values()
+  ).filter((id) => id !== userId);
+
+  await Promise.all(
+    recipients.map((recipientId) =>
+      createNotification({
+        recipient: recipientId,
+        sender: userId,
+        type: "circle_join_request",
+        message: `${senderName} requested to join the circle.`,
+        entityId: circle._id,
+      })
+    )
+  );
 
   return NextResponse.json({
     success: true,

@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
+import Artist from "@/lib/models/Artist";
 import SharedPromptActivity from "@/lib/models/SharedPromptActivity";
-import Circle from "@/lib/models/Circle";
 import Post from "@/lib/models/Post";
+import createNotification from "@/lib/createNotification";
 import { getCurrentUserId } from "@/lib/getCurrentUser";
 
 export async function POST(
@@ -75,6 +76,21 @@ export async function POST(
     });
 
     await activity.save();
+
+    if (activity.creator.toString() !== userId) {
+      const sender = await Artist.findById(
+        userId,
+        "username fullName"
+      );
+
+      await createNotification({
+        recipient: activity.creator,
+        sender: userId,
+        type: "activity_submission",
+        message: `${sender?.fullName || sender?.username || "Someone"} submitted artwork to your activity.`,
+        entityId: activity._id,
+      });
+    }
 
     return NextResponse.json({
       success: true,

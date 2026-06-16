@@ -1,10 +1,11 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 const NotificationSchema = new Schema(
   {
     recipient: {
       type: Schema.Types.ObjectId,
       ref: "Artist",
+      required: true,
     },
 
     sender: {
@@ -14,12 +15,28 @@ const NotificationSchema = new Schema(
 
     type: {
       type: String,
+      enum: [
+        "connection_request",
+        "connection_accepted",
+
+        "comment",
+        "reply",
+
+        "heart",
+
+        "circle_join_request",
+        "circle_join_approved",
+
+        "activity_submission",
+
+        "system"
+      ],
       required: true,
     },
 
-    referenceId: {
-      type: Schema.Types.ObjectId,
-    },
+    message: String,
+
+    entityId: Schema.Types.ObjectId,
 
     isRead: {
       type: Boolean,
@@ -31,7 +48,8 @@ const NotificationSchema = new Schema(
   }
 );
 
-export default model(
-  "Notification",
-  NotificationSchema
-);
+const Notification =
+  models.Notification ||
+  model("Notification", NotificationSchema);
+
+export default Notification;

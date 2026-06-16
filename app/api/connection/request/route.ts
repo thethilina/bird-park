@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import connectDB from "../../../../lib/db";
 import Artist from "../../../../lib/models/Artist";
 import ConnectionRequest from "../../../../lib/models/ConnectionRequest";
+import createNotification from "../../../../lib/createNotification";
 import { getCurrentUserId } from "../../../../lib/getCurrentUser";
 
 export const runtime = "nodejs";
@@ -68,6 +69,19 @@ export async function POST(req: Request) {
 
     receiver.observers.addToSet(senderId);
     await receiver.save();
+
+    const sender = await Artist.findById(
+      senderId,
+      "username fullName"
+    );
+
+    await createNotification({
+      recipient: receiverId,
+      sender: senderId,
+      type: "connection_request",
+      message: `${sender?.fullName || sender?.username || "Someone"} sent you a connection request.`,
+      entityId: request._id,
+    });
 
     return NextResponse.json({
       success: true,
