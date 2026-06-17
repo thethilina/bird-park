@@ -1,3 +1,4 @@
+"use client"
 import logo from "../images/birdparklogo.png"
 import logolight from "../images/birdparklogodark.png"
 import avatar from "../images/avatar.jpg"
@@ -8,8 +9,12 @@ import { IoMailSharp } from "react-icons/io5";
 import { GiHamburgerMenu } from "react-icons/gi";
 import userData from "@/TestDataBase/userdata";
 import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
+
 
 function NavBar() {
+  const { user } = useAuth();
+
   return (
     
     <nav className="sticky  z-100 xl:px-20  lg:px-10  py-1  bg-(--color-background) dark:bg-(--background)  border-(--border)  lg:pt-5  w-full top-0 border-b-2   lg:py-3   flex items-center justify-between ">
@@ -43,7 +48,7 @@ function NavBar() {
       <FaRegPlusSquare className=" size-6 lg:size-7" />
     </Link>
     <IoMailSharp className=" size-7 lg:size-8" />
-    <Image src={userData.avatar}  alt="user avatar" className="w-7 lg:w-9 rounded-full border border-white" />
+    <Image src={user?.profileImage || userData.avatar} width={36} height={36} alt="user avatar" className="w-7 lg:w-9 rounded-full border border-white" />
     </div>
 
 

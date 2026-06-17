@@ -38,14 +38,14 @@ function Photoslide({ artdata }: any) {
   const renderLayout = () => {
     if (layout === 0) {
       return (
-        <div className='flex w-150 h-150 gap-2'>
-          <div className='space-y-2 w-1/2'>
-            <motion.div {...item} className="h-6/10"><Image src={artdata[0].cover} alt='art' width={500} height={500} className='w-full h-full object-cover ' /></motion.div>
-            <motion.div {...item} transition={{ delay: 0.1 }} className="h-4/10"><Image src={artdata[1].cover} alt='art' width={500} height={500} className='w-full h-full object-cover ' /></motion.div>
+        <div className='mx-auto w-full max-w-[34rem] sm:max-w-[40rem] md:max-w-[44rem] xl:max-w-[37.5rem] aspect-square flex gap-2 sm:gap-3'>
+          <div className='space-y-2 w-1/2 h-full'>
+            <motion.div {...item} className="relative h-1/2 overflow-hidden"><Image src={artdata[0].cover} alt='art' fill sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 35vw' className='object-cover' /></motion.div>
+            <motion.div {...item} transition={{ delay: 0.1 }} className="relative h-1/2 overflow-hidden"><Image src={artdata[1].cover} alt='art' fill sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 35vw' className='object-cover' /></motion.div>
           </div>
-          <div className='space-y-2 w-1/2'>
-            <motion.div {...item} transition={{ delay: 0.2 }} className="h-4/10"><Image src={artdata[2].cover} alt='art' width={500} height={500} className='w-full h-full object-cover ' /></motion.div>
-            <motion.div {...item} transition={{ delay: 0.3 }} className="h-6/10"><Image src={artdata[3].cover} alt='art' width={500} height={500} className='w-full h-full object-cover ' /></motion.div>
+          <div className='space-y-2 w-1/2 h-full'>
+            <motion.div {...item} transition={{ delay: 0.2 }} className="relative h-1/2 overflow-hidden"><Image src={artdata[2].cover} alt='art' fill sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 35vw' className='object-cover' /></motion.div>
+            <motion.div {...item} transition={{ delay: 0.3 }} className="relative h-1/2 overflow-hidden"><Image src={artdata[3].cover} alt='art' fill sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 35vw' className='object-cover' /></motion.div>
           </div>
         </div>
       )
@@ -53,28 +53,28 @@ function Photoslide({ artdata }: any) {
 
     if (layout === 1) {
       return (
-        <div className=' w-150 h-150 flex flex-col gap-2 '>
+        <div className='mx-auto w-full max-w-[34rem] sm:max-w-[40rem] md:max-w-[44rem] xl:max-w-[37.5rem] aspect-square flex flex-col gap-2'>
           <div className='flex space-x-2 h-1/2'>
-            <motion.div {...item} className="w-6/10"><Image src={artdata[4].cover} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
-            <motion.div {...item} transition={{ delay: 0.1 }} className="w-4/10"><Image src={artdata[5].cover} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
+            <motion.div {...item} className="relative w-[60%] overflow-hidden"><Image src={artdata[4].cover} alt='art' fill sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 35vw' className='object-cover' /></motion.div>
+            <motion.div {...item} transition={{ delay: 0.1 }} className="relative w-[40%] overflow-hidden"><Image src={artdata[5].cover} alt='art' fill sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 35vw' className='object-cover' /></motion.div>
           </div>
           <div className='flex space-x-2 h-1/2'>
-            <motion.div {...item} transition={{ delay: 0.2 }} className="w-4/10"><Image src={artdata[6].cover} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
-            <motion.div {...item} transition={{ delay: 0.3 }} className="w-6/10"><Image src={artdata[7].cover} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
+            <motion.div {...item} transition={{ delay: 0.2 }} className="relative w-[40%] overflow-hidden"><Image src={artdata[6].cover} alt='art' fill sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 35vw' className='object-cover' /></motion.div>
+            <motion.div {...item} transition={{ delay: 0.3 }} className="relative w-[60%] overflow-hidden"><Image src={artdata[7].cover} alt='art' fill sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 35vw' className='object-cover' /></motion.div>
           </div>
         </div>
       )
     }
 
     return (
-      <div className=' w-150 h-150 flex flex-col gap-2 '>
+      <div className='mx-auto w-full max-w-[34rem] sm:max-w-[40rem] md:max-w-[44rem] xl:max-w-[37.5rem] aspect-square flex flex-col gap-2'>
         <div className='flex space-x-2 h-1/2'>
-          <motion.div {...item} className="w-3/10"><Image src={artdata[8].cover} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
-          <motion.div {...item} transition={{ delay: 0.1 }} className="w-7/10"><Image src={artdata[9].cover} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
+          <motion.div {...item} className="relative w-[30%] overflow-hidden"><Image src={artdata[8].cover} alt='art' fill sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 35vw' className='object-cover' /></motion.div>
+          <motion.div {...item} transition={{ delay: 0.1 }} className="relative w-[70%] overflow-hidden"><Image src={artdata[9].cover} alt='art' fill sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 35vw' className='object-cover' /></motion.div>
         </div>
         <div className='flex space-x-2 h-1/2'>
-          <motion.div {...item} transition={{ delay: 0.2 }} className="w-6/10"><Image src={artdata[6].cover} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
-          <motion.div {...item} transition={{ delay: 0.3 }} className="w-4/10"><Image src={artdata[0].cover} alt='art' width={500} height={500} className='h-full w-full object-cover ' /></motion.div>
+          <motion.div {...item} transition={{ delay: 0.2 }} className="relative w-[60%] overflow-hidden"><Image src={artdata[6].cover} alt='art' fill sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 35vw' className='object-cover' /></motion.div>
+          <motion.div {...item} transition={{ delay: 0.3 }} className="relative w-[40%] overflow-hidden"><Image src={artdata[0].cover} alt='art' fill sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 35vw' className='object-cover' /></motion.div>
         </div>
       </div>
     )
@@ -90,17 +90,17 @@ function Photoslide({ artdata }: any) {
         </div>
       </AnimatePresence>
 
-      {/* EMOTION LAYERS - Restricted to w-150 */}
-      <div className=" text-ml overflow-hidden w-145">
+      {/* EMOTION LAYERS */}
+      <div className="w-full max-w-[700px] mx-auto overflow-hidden text-sm sm:text-base">
         {[0, 1, 2].map((row) => (
-          <div key={row} className="whitespace-nowrap flex gap-6">
+          <div key={row} className="whitespace-nowrap flex gap-4 sm:gap-6 py-1">
             <motion.div
               className="flex gap-6"
               animate={{
                 x: row % 2 === 0 ? ["0%", "-50%"] : ["-50%", "0%"]
               }}
               transition={{
-                duration: 250, // Very slow movement
+                duration: 250,
                 repeat: Infinity,
                 ease: "linear"
               }}

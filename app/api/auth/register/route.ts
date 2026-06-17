@@ -12,10 +12,10 @@ export async function POST(req: Request) {
   try {
     await connectDB();
 
-    const { username, fullName, email, password } =
+    const { username, fullName, email, password, birthday, profileImage } =
       await req.json();
 
-    if (!username || !fullName || !email || !password) {
+    if (!username || !fullName || !email || !password || !birthday || !profileImage) {
       return NextResponse.json(
         { message: "All fields are required" },
         { status: 400 }
@@ -40,6 +40,8 @@ export async function POST(req: Request) {
       fullName,
       email,
       password: hashedPassword,
+      birthday,
+      profileImage,
     });
 
     const safeArtist = {
@@ -47,6 +49,8 @@ export async function POST(req: Request) {
       username: artist.username,
       fullName: artist.fullName,
       email: artist.email,
+      birthday: artist.birthday,
+      profileImage: artist.profileImage,
     };
 
     const token = jwt.sign(
