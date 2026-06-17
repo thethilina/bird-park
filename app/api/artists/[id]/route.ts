@@ -20,9 +20,9 @@ export async function GET(
 
     const artist = await Artist.findById(id)
       .select(
-        "username fullName bio profileImage currentCategory currentTop3Emotions createdAt observers"
+        "username fullName bio profileImage currentCategory currentTop3Emotion email createdAt observers"
       )
-      .populate("connections", "username fullName profileImage");
+      .populate("connections  observers", " _id username fullName profileImage ");
 
     if (!artist) {
       return NextResponse.json(

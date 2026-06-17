@@ -9,15 +9,13 @@ import { collectionsDatabase } from '@/TestDataBase/collectionData'
 import Buttonwhite from '@/public/components/Tn/Buttonwhite'
 import Image from 'next/image'
 import InputFiled from '@/public/components/Tn/InputFiled'
-interface Props {
-  params: Promise<{ UserId: any }>;
-}
+import { useAuth } from "@/contexts/AuthContext";
 
-async function page({ params }: Props) {
 
-     const { UserId } = await params;
-    const userIdNum = Number(UserId);
-    const user = usersData.find((user) => user.id === userIdNum);
+function page() {
+
+  const { user } = useAuth();
+  
 
   return (
     <div className='space-y-15  py-10 font-sans'>
@@ -48,11 +46,11 @@ async function page({ params }: Props) {
     <h2 className='text-xl'>Avatar</h2>
     <p>Your avatar will appear throughout Bird Park next to your posts, comments, and anywhere your presence is seen.</p>
     <div className='flex space-x-10 '>
-    {user?.avatar && (
-      <Image src={user.avatar} alt='avatar'  className='rounded-lg w-50 h-50' />
+    {user?.profileImage && (
+      <Image src={user.profileImage} alt='avatar' width={200} height={200} className='rounded-lg w-50 h-50' />
     )}
     <div className='space-x-5 flex flex-col justify-around'>
-    <p>Use an image that’s at least 98 × 98 pixels and under 4MB. PNG or GIF formats are supported (no animations). Make sure your avatar follows Bird Park’s community guidelines.</p>   
+    <p>Use an image that’s at least 98 × 98 pixels and under 4MB. PNG or GIF formats are supported (no animations).Make sure your avatar follows Bird Park’s community guidelines.</p>   
     <div className='space-x-5'>
         <button className='px-4 py-1 bg-[#385893] text-white rounded-md'>Change</button>
         <button className='px-4 py-1 bg-[#f0f0f0] text-black rounded-md'>Remove</button>
@@ -92,7 +90,7 @@ async function page({ params }: Props) {
   <div className='space-y-3 w-1/2'>
     <h1 className='text-xl'>Birthday</h1>
     <p>Add your birthdate to help us understand your age and keep the Bird Park community safe and appropriate for everyone.</p>
-    <InputFiled placeholder={user?.birthDate} value={user?.birthDate || ''} onChange={() => {}} />
+    <InputFiled type="date" placeholder={user?.birthday} value={user?.birthday || ''} onChange={() => {}} />
   </div>
 
 
