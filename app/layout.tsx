@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/public/components/NavBar";
 import { AuthProvider } from "@/contexts/AuthContext";
+import NextTopLoader from 'nextjs-toploader';
 
 
 const geistSans = Geist({
@@ -36,6 +37,9 @@ export default function RootLayout({
         <div className="flex flex-1">
           <div className="flex-1">
                     <AuthProvider>
+        <NextTopLoader  color = "#F852B5"   showSpinner={false}   shadow="0 0 10px #2299DD,0 0 5px #2299DD"
+
+/>
 
             {children}
             </AuthProvider>

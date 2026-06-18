@@ -9,18 +9,46 @@ import InputFiled from '@/public/components/Tn/InputFiled'
 import { collectionsDatabase } from '@/TestDataBase/collectionData'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useTopLoader } from 'nextjs-toploader';
+  import { ToastContainer, toast } from 'react-toastify';
+import { useTheme } from "next-themes";
+
+
+
+
+
+
+
+
 
 function Page() {
   const [activeLayout, setActiveLayout] = useState(0)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const router = useRouter()
+  const loader = useTopLoader();
+  const { theme, resolvedTheme } = useTheme();
+
+
+
+    const wrongcredecials = () => toast("Authentication failed. Please verify your credentials and try again.", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      type: "error",
+      });
+
+
 
   const handleLogin = async () => {
     try {
         
 
-
+      loader.start()
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
@@ -35,12 +63,16 @@ function Page() {
         // Handle successful login (e.g., redirect to dashboard)
         console.log('Login successful');
         router.push('/');
+        loader.done()
       } else {
         // Handle login error (e.g., show error message)
+        wrongcredecials();
         console.error('Login failed:', data.message);
+        loader.done()
       }
     } catch (error) {
       console.error('An error occurred during login:', error);
+      loader.done()
     }
   }
 
@@ -53,9 +85,9 @@ function Page() {
     <div className='flex flex-col md:flex-row min-h-screen py-10 md:py-20'>
 
       {/* Left Panel - Image Gallery */}
-    
 
 
+        <ToastContainer />
 
 
       <div className='flex-1 hidden md:flex flex-col items-center justify-center px-10 sm:px-10 pt-10 md:pt-0 md:border-b-0 md:border-r-2 border-[var(--border)]'>

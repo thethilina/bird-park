@@ -18,6 +18,7 @@ export async function PATCH(req: Request) {
       bio,
       birthday,
       profileImage,
+      username,
     } = await req.json();
 
     if (
@@ -28,6 +29,18 @@ export async function PATCH(req: Request) {
         {
           message:
             "Full name must be at least 2 characters",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    if (username && username.trim().length < 3) {
+      return NextResponse.json(
+        {
+          message:
+            "Username must be at least 3 characters",
         },
         {
           status: 400,
@@ -65,6 +78,10 @@ export async function PATCH(req: Request) {
 
           ...(profileImage && {
             profileImage,
+          }), 
+
+          ...(username && {
+            username,
           }),
         },
         {

@@ -123,7 +123,7 @@ function NavBar() {
     {/** dropdown */}
     <div ref={dropdownRef} className={`absolute top-full mr-2 mt-2 right-0 font-sans  w-60  bg-(--color-background) dark:bg-(--background)     border border-(--border) dark:border-(--borderdark) rounded-lg shadow-lg py-2 ${isDropdownOpen ? 'block' : 'hidden'}`}>
 
-    <Link href={`/Profile/${user?._id}`} >  <div  className=" flex gap-x-4  items-center   font-medium text-lg px-4 py-4 mx-2 border-b border-(--border) dark:border-(--borderdark)">
+    <Link href={`/Profile/${user?._id}`}  onClick={()=>{setIsDropdownOpen(false)}}   >  <div  className=" flex gap-x-4  items-center   font-medium text-lg px-4 py-4 mx-2 border-b border-(--border) dark:border-(--borderdark)">
         <Image src={user?.profileImage || userData.avatar} width={20} height={20} alt="user avatar" className="w-8 h-8 rounded-full border border-white " />
         <p className="  ">{user?.fullName || "Guest User"}</p>
       </div>          </Link> 
