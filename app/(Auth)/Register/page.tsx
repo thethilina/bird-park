@@ -6,7 +6,7 @@ import InputFiled from '@/public/components/Tn/InputFiled'
 import { FaFileUpload } from "react-icons/fa";
 import Logo from "@/public/images/birdparklogo.png"
 import { useRouter } from 'next/navigation'
-
+import { useTopLoader } from "nextjs-toploader"
 
 function Page() {
     const [avatar, setAvatar] = useState<any>(av)
@@ -20,6 +20,7 @@ function Page() {
     const [error, setError] = useState('')
     const fileInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter()
+    const loader = useTopLoader()
 
     const handleIconClick = () => {
         fileInputRef.current?.click();
@@ -87,6 +88,7 @@ function Page() {
         setLoading(true);
 
         try {
+            loader.start()
             const response = await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: {
@@ -106,13 +108,19 @@ function Page() {
 
             if (!response.ok) {
                 setError(data.message || 'Registration failed');
+                loader.done()
                 return;
             }
+                loader.done()
 
             router.push('/Login');
         } catch (err: any) {
+                            loader.done()
+
             setError(err.message || 'An error occurred');
         } finally {
+                            loader.done()
+
             setLoading(false);
         }
     };

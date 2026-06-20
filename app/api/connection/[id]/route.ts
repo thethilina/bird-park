@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-
 import connectDB from "../../../../lib/db";
 import Artist from "../../../../lib/models/Artist";
+import ConnectionRequest from "../../../../lib/models/ConnectionRequest";
 import { getCurrentUserId } from "../../../../lib/getCurrentUser";
 
 export const runtime = "nodejs";
@@ -11,7 +11,7 @@ export async function DELETE(
   {
     params,
   }: {
-    params: { id: string };
+    params: Promise<{ id: string }>;
   }
 ) {
   try {
@@ -19,8 +19,22 @@ export async function DELETE(
 
     const userId = await getCurrentUserId();
 
-        const { id: targetId } = await params;
+    // ✅ FIX: unwrap params
+    const { id: targetId } = await params;
 
+    if (!userId) {
+      return NextResponse.json(
+        { message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    if (userId === targetId) {
+      return NextResponse.json(
+        { message: "Cannot remove yourself" },
+        { status: 400 }
+      );
+    }
 
     const user = await Artist.findById(userId);
 
@@ -31,8 +45,9 @@ export async function DELETE(
       );
     }
 
-    const isConnected =
-      user.connections.includes(targetId);
+    const isConnected = user.connections.some(
+      (id: any) => id.toString() === targetId
+    );
 
     if (!isConnected) {
       return NextResponse.json(
@@ -41,6 +56,7 @@ export async function DELETE(
       );
     }
 
+    // remove connection both sides
     await Artist.findByIdAndUpdate(userId, {
       $pull: { connections: targetId },
     });
@@ -49,14 +65,24 @@ export async function DELETE(
       $pull: { connections: userId },
     });
 
+    // remove request (VERY IMPORTANT)
+    await ConnectionRequest.deleteOne({
+      $or: [
+        { sender: userId, receiver: targetId },
+        { sender: targetId, receiver: userId },
+      ],
+    });
+
     return NextResponse.json({
       success: true,
-      message: "Connection removed",
+      message: "Connection removed successfully",
     });
-  } catch {
+  } catch (error) {
+    console.error("DELETE connection error:", error);
+
     return NextResponse.json(
-      { message: "Unauthorized" },
-      { status: 401 }
+      { message: "Server error" },
+      { status: 500 }
     );
   }
 }

@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 const ArtistInsightSchema = new Schema({
   artist: {
@@ -30,7 +30,7 @@ const ArtistInsightSchema = new Schema({
   },
 });
 
-export default model(
-  "ArtistInsight",
-  ArtistInsightSchema
-);
+const ArtistInsight =
+  models.ArtistInsight || model("ArtistInsight", ArtistInsightSchema);
+
+export default ArtistInsight;

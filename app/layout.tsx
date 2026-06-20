@@ -4,6 +4,7 @@ import "./globals.css";
 import NavBar from "@/public/components/NavBar";
 import { AuthProvider } from "@/contexts/AuthContext";
 import NextTopLoader from 'nextjs-toploader';
+import { ToastContainer } from "react-toastify";
 
 
 const geistSans = Geist({
@@ -39,7 +40,9 @@ export default function RootLayout({
                     <AuthProvider>
         <NextTopLoader  color = "#F852B5"   showSpinner={false}   shadow="0 0 10px #2299DD,0 0 5px #2299DD"
 
-/>
+/>   <ToastContainer
+          style={{ zIndex: 999999 }}
+        />
 
             {children}
             </AuthProvider>

@@ -85,7 +85,7 @@ export default async function Page({ params }: Props) {
         <div key={item.id} className="flex flex-col">
           
           {/** Header */}
-          <div className="lg:sticky top-0  bg-(--color-background) dark:bg-(--background) w-auto z-99 ">
+          <div className="lg:sticky top-0  bg-(--color-background) dark:bg-(--background) w-auto z-49 ">
           <div className="   flex lg:gap-x-5 gap-x-2 items-center border-(--border) lg:pb-4 pb-2 border-b-2">
             <CiHeart className="size-5 lg:size-7" />
             <span className="text-xl lg:text-3xl">{item.heartCount}</span>

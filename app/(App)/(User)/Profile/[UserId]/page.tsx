@@ -10,6 +10,14 @@ function Page() {
   const { UserId } = useParams();
   const [user, setUser] = useState<any>(null);
 
+
+
+
+
+
+
+
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -30,7 +38,7 @@ function Page() {
     if (UserId) {
       fetchUser();
     }
-  }, [UserId]);
+  }, []);
 
   return (
     <div className="space-y-5">

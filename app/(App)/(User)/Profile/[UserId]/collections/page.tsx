@@ -40,7 +40,7 @@ const { UserId } = useParams();
     if (UserId) {
       fetchUser();
     }
-  }, [UserId]);
+  }, []);
 
 
 

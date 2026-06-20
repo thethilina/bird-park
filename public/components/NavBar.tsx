@@ -16,6 +16,10 @@ import { IoLogOut } from "react-icons/io5";
 import { MdDarkMode } from "react-icons/md";
 import { MdLightMode } from "react-icons/md";
 import { useRouter } from 'next/navigation'
+import { FaUserFriends } from "react-icons/fa";
+import { FaConnectdevelop } from "react-icons/fa";
+
+
 
 function NavBar() {
   const { user } = useAuth();
@@ -86,7 +90,7 @@ function NavBar() {
 
   return (
     
-    <nav className="sticky  z-100 xl:px-20  lg:px-10  py-1  bg-(--color-background) dark:bg-(--background)  border-(--border)  lg:pt-5  w-full top-0 border-b-2   lg:py-3   flex items-center justify-between ">
+    <nav className="sticky  z-50 xl:px-20  lg:px-10  py-1  bg-(--color-background) dark:bg-(--background)  border-(--border)  lg:pt-5  w-full top-0 border-b-2   lg:py-3   flex items-center justify-between ">
 
 
     {/** right side */}
@@ -113,15 +117,20 @@ function NavBar() {
     {/** left side */}
     <div className="flex items-center gap-x-5 lg:gap-x-7 color-(--primary) dark:color-(--primarydark) ">
 
-    <Link href="/Create/Submitwork">
-      <FaRegPlusSquare className=" size-6 lg:size-7" />
+   <Link href="/suggections">
+      <FaUserFriends  className="dark:text-[#BEC9F4] size-6 lg:size-7" />
     </Link>
-    <IoMailSharp className=" size-7 lg:size-8" />
+
+
+    <Link href="/Create/Submitwork">
+      <FaRegPlusSquare className=" dark:text-[#BEC9F4]  size-6 lg:size-7" />
+    </Link>
+    <IoMailSharp  className="dark:text-[#BEC9F4]  size-7 lg:size-8" />
     <Image ref={avatarRef} onClick={() => setIsDropdownOpen(!isDropdownOpen)} src={user?.profileImage || userData.avatar} width={36} height={36} alt="user avatar" className="w-7 lg:w-9 rounded-full border border-white cursor-pointer" />
     </div>
 
     {/** dropdown */}
-    <div ref={dropdownRef} className={`absolute top-full mr-2 mt-2 right-0 font-sans  w-60  bg-(--color-background) dark:bg-(--background)     border border-(--border) dark:border-(--borderdark) rounded-lg shadow-lg py-2 ${isDropdownOpen ? 'block' : 'hidden'}`}>
+    <div ref={dropdownRef} className={`absolute z-200 top-full mr-2 mt-2 right-0 font-sans  w-60  bg-(--color-background) dark:bg-(--background)     border border-(--border) dark:border-(--borderdark) rounded-lg shadow-lg py-2 ${isDropdownOpen ? 'block' : 'hidden'}`}>
 
     <Link href={`/Profile/${user?._id}`}  onClick={()=>{setIsDropdownOpen(false)}}   >  <div  className=" flex gap-x-4  items-center   font-medium text-lg px-4 py-4 mx-2 border-b border-(--border) dark:border-(--borderdark)">
         <Image src={user?.profileImage || userData.avatar} width={20} height={20} alt="user avatar" className="w-8 h-8 rounded-full border border-white " />
