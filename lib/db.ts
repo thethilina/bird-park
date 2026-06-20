@@ -1,10 +1,6 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  throw new Error("Missing MONGODB_URI environment variable");
-}
+// MONGODB_URI is retrieved inside the connect function to avoid failing during build time.
 
 interface MongooseCache {
   conn: typeof mongoose | null;
@@ -22,6 +18,12 @@ if (!cached) {
 }
 
 const connect = async () => {
+  const MONGODB_URI = process.env.MONGODB_URI;
+
+  if (!MONGODB_URI) {
+    throw new Error("Missing MONGODB_URI environment variable");
+  }
+
   if (cached.conn) {
     console.log("Already connected (cached)");
     return cached.conn;
