@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
 import connectDB from "@/lib/db";
 import Notification from "@/lib/models/Notification";
@@ -7,8 +7,8 @@ import { getCurrentUserId } from "@/lib/getCurrentUser";
 export const runtime = "nodejs";
 
 export async function PATCH(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
