@@ -1,7 +1,6 @@
 "use client"
 import { useState , useEffect } from "react"
-import SuggectionCard from "../suggections/suggectionCard"
-
+import ObservingCard from "./ObservingCard"
 
 export default function  page(){
 
@@ -13,7 +12,7 @@ const fetchrequests = async()=>{
 
 try{
 
-    const res = await fetch(`/api/artists` , {
+    const res = await fetch(`/api/connection/observing` , {
         method : 'GET',
         headers: { 'Content-Type': 'application/json' },
 
@@ -24,8 +23,8 @@ try{
     }
 
       const data = await res.json();
-        setUsers(data.users)
-        console.log(data.users)
+        setUsers(data.observing)
+        console.log(data.observing)
 
 }catch(e){
 
@@ -59,7 +58,7 @@ return(
 
 return(
 
-<SuggectionCard suggection = {user} key = {user._id}   onRemove={(id: string) => {
+<ObservingCard observing = {user} key={user.requestId} onRemove={(id: string) => {
     setUsers((prev: any[]) =>
       prev.filter((r: any) => r._id !== id)
     );

@@ -1,11 +1,10 @@
 "use client"
 import { useState , useEffect } from "react"
-import SuggectionCard from "../suggections/suggectionCard"
-
+import RequestCard from "../requests/requestCard"
 
 export default function  page(){
 
-const [users ,setUsers] = useState<any[]>([])
+const [requsts ,pendingRequests] = useState<any[]>([])
 
 
 const fetchrequests = async()=>{
@@ -13,7 +12,7 @@ const fetchrequests = async()=>{
 
 try{
 
-    const res = await fetch(`/api/artists` , {
+    const res = await fetch(`/api/connection/pending` , {
         method : 'GET',
         headers: { 'Content-Type': 'application/json' },
 
@@ -24,8 +23,8 @@ try{
     }
 
       const data = await res.json();
-        setUsers(data.users)
-        console.log(data.users)
+        pendingRequests(data.requests)
+        console.log(data.requests)
 
 }catch(e){
 
@@ -54,13 +53,13 @@ return(
 <>
 <div className="pl-75 pt-10 ">
 
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5">
-    {users.map((user:any)=>{
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+    {requsts.map((req:any)=>{
 
 return(
 
-<SuggectionCard suggection = {user} key = {user._id}   onRemove={(id: string) => {
-    setUsers((prev: any[]) =>
+<RequestCard requst = {req} key = {req._id}   onRemove={(id: string) => {
+    pendingRequests((prev: any[]) =>
       prev.filter((r: any) => r._id !== id)
     );
   }} />
@@ -96,4 +95,4 @@ return(
 
 
 
-}   
+}

@@ -3,7 +3,8 @@ import { IoMdSearch } from "react-icons/io";
 import { FaCompass } from "react-icons/fa6";
 import { FaRegCircleDot } from "react-icons/fa6";
 import { FiPlusCircle } from "react-icons/fi";
-
+import Link from 'next/link';
+import { BsFillEyeFill } from 'react-icons/bs';
 
 function ConnectionBar() {
   return (
@@ -17,12 +18,14 @@ function ConnectionBar() {
 
 
         <div className=" flex flex-col text-2xl   gap-y-5">
-        <button className='flex items-center align-middle gap-x-4 ) '><FaCompass className='size-5' /> Suggestions</button>
-        <button className='flex items-center align-middle  gap-x-4 '><FaRegCircleDot className='size-5' /> Connections</button>
-        <button className='flex items-center align-middle  gap-x-4 '><FiPlusCircle className='size-5' /> Observers</button>
+        <Link href="/suggections"> <button  className='flex items-center hover:cursor-pointer align-middle gap-x-4 ) '><FaCompass className='size-5' /> Suggestions</button></Link>
+         <Link href="/suggections/connections"> <button className='flex items-center hover:cursor-pointer  align-middle  gap-x-4 '><FaRegCircleDot className='size-5' /> Connections</button></Link>
+        <Link href="/suggections/requests"> <button className='flex items-center  hover:cursor-pointer  align-middle  gap-x-4 '><FiPlusCircle className='size-5' /> Observers</button></Link>  
+        <Link href="/suggections/observing"> <button className='flex items-center  hover:cursor-pointer  align-middle  gap-x-4 '><   BsFillEyeFill  className='size-5' /> Observing</button></Link>  
+
         </div>
 
-
+            
        
      
 

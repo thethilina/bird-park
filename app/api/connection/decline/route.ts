@@ -51,8 +51,7 @@ export async function POST(req: Request) {
       $pull: { observers: request.sender },
     });
 
-    request.status = "declined";
-    await request.save();
+    await request.deleteOne();
 
     return NextResponse.json({
       success: true,

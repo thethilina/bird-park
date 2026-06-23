@@ -56,13 +56,13 @@ export async function DELETE(
       );
     }
 
-    // remove connection both sides
+    // remove connection both sides (and clean up observers)
     await Artist.findByIdAndUpdate(userId, {
-      $pull: { connections: targetId },
+      $pull: { connections: targetId, observers: targetId },
     });
 
     await Artist.findByIdAndUpdate(targetId, {
-      $pull: { connections: userId },
+      $pull: { connections: userId, observers: userId },
     });
 
     // remove request (VERY IMPORTANT)
