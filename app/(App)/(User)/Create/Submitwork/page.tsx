@@ -4,6 +4,7 @@ import { IoCloudUpload, IoClose } from "react-icons/io5";
 import { useState, useRef, ChangeEvent } from 'react'
 import { useTopLoader } from "nextjs-toploader"
 import Image from "next/image";
+import { ToastContainer, toast } from 'react-toastify';
 
 
 
@@ -14,15 +15,79 @@ function Page() {
     const [isFullScreen, setIsFullScreen] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null);
     const loader = useTopLoader()
+    const [file, setFile] = useState<File | null>(null);
+    const [artemotion , setArtemotion] = useState()
+    const [top3emotions , setTop3emotions] = useState<any[]>([])
+    const [title, setTitle] = useState("");
 
 
-   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setArt(imageUrl);
-        }
-    };
+
+
+
+
+
+
+    const success = (msg: string) =>
+      toast(msg, {
+        position: "top-right",
+        autoClose: 2000,
+        type: "success",
+      });
+    
+    const errorToast = (msg: string) =>
+      toast(msg, {
+        position: "top-right",
+        autoClose: 2000,
+        type: "error",
+      });
+    
+    
+    const getemotion = async () => {
+    if (!file) return;
+
+    try {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await fetch("http://127.0.0.1:8000/emotion/image", {
+            method: "POST",
+            body: formData, 
+        });
+
+        const data = await response.json();
+        alert(data.result)
+        setArtemotion(data.result.emotion)
+
+        const entries = Object.entries(data.result || {}).filter(
+          ([emotion]) => emotion !== 'emotion'
+        );
+
+        const top3 = entries
+          .sort((a: any, b: any) => (b[1] as number) - (a[1] as number))
+          .slice(0, 3)
+          .map(([emotion, score]) => ({
+            emotion,
+            score: Number(score),
+          }));
+
+        setTop3emotions(top3);
+    } catch (e) {
+        console.error(e);
+    }
+};
+
+
+
+const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+
+    if (!selectedFile) return;
+
+    setFile(selectedFile);
+
+    const imageUrl = URL.createObjectURL(selectedFile);
+    setArt(imageUrl);
+};
 
   const handleUploadAvatar = async (file : any ) => {
 
@@ -64,13 +129,114 @@ function Page() {
         setIsFullScreen(true);
     };
 
+const uploadArt = async () => {
+  try {
+    if (!file) {
+      errorToast("Please select an artwork");
+      return;
+    }
 
+    if (!title.trim()) {
+      errorToast("Please enter a title");
+      return;
+    }
+
+    loader.start();
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const emotionResponse = await fetch(
+      "http://127.0.0.1:8000/emotion/image",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    if (!emotionResponse.ok) {
+      throw new Error("Emotion analysis failed");
+    }
+
+    const emotionData = await emotionResponse.json();
+
+    const distObj =
+      emotionData.result.distribution ??
+      emotionData.result.disstribution ??
+      {};
+
+    const top3 = Object.entries(distObj)
+      .sort(
+        (a: any, b: any) =>
+          (b[1] as number) - (a[1] as number)
+      )
+      .slice(0, 3)
+      .map(([emotion, score]) => ({
+        emotion,
+        score: Number(score),
+      }));
+
+    const imageUrl = await handleUploadAvatar(file);
+
+    if (!imageUrl) {
+      throw new Error("Image upload failed");
+    }
+
+    
+    const postResponse = await fetch(
+      "/api/post/art",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          media: {
+            url: imageUrl,
+          },
+          top3Emotions: top3,
+          visibility: "public",
+        }),
+      }
+    );
+
+    const postData =
+      await postResponse.json();
+
+    if (!postResponse.ok) {
+      throw new Error(
+        postData.message ||
+          "Failed to create post"
+      );
+    }
+
+    success("Artwork uploaded successfully");
+
+    setArt(null);
+    setFile(null);
+    setTitle("");
+    setTop3emotions([]);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  } catch (error) {
+    console.error(error);
+    errorToast("Failed to upload artwork");
+  } finally {
+    loader.done();
+  }
+};
 
   return (
     <div className="">
       
       <input 
         placeholder="Title" 
+        value={title}
+        onChange={(e)=>{setTitle(e.target.value)}}
         className="mb-5 w-full rounded-xl border-2 border-dotted border-(--border) bg-(--colorbg) px-4 py-2 text-2xl dark:bg-(--colorbgdark)" 
       />
          <input
@@ -105,8 +271,7 @@ function Page() {
       </>}
 
 <div className="flex items-center justify-end w-full p-2 mt-4 text-right">
-  <button className="mr-3 px-4 py-2">Draft</button>
-  <button className="px-4 py-2 font-bold">Upload</button>
+  <button onClick={uploadArt } className="px-4 text-[#141414] py-2 bg-[#e6f0f0] text-lg rounded-4xl hover:cursor-pointer hover:bg-[#979ea0] font-bold">Upload</button>
 </div>
 
 {isFullScreen && art && (

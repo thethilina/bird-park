@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import connectDB from "../../../../lib/db";
-import Collection from "../../../../lib/models/Collection";
+import Collection from "../../../../lib/models/artCollection";
 import { getCurrentUserId } from "../../../../lib/getCurrentUser";
 import "../../../../lib/models/Artist";
 import  "../../../../lib/models/Post";

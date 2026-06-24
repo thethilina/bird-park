@@ -302,7 +302,7 @@ useEffect(() => {
   }, [isDropdownOpen]);
 
   return (
-    <div className=' space-y-5 py-7 sticky top-18 z-49 w-full bg-(--color-background) dark:bg-(--background)  ) '>
+    <div className=' space-y-5 border-(--border)  border-b-2 py-7 sticky top-18 z-49 w-full bg-(--color-background) dark:bg-(--background)  ) '>
      <div className="   py-1   bg-(--color-background)   )    w-full      flex items-center justify-between ">
 
     <div  className='flex gap-x-4 items-center'>
