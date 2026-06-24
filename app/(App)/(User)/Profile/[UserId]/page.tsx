@@ -63,11 +63,10 @@ function Page() {
         const response = await fetch(`/api/post/user/${UserId}`);
         if (!response.ok) throw new Error("Failed to fetch posts");
         const data = await response.json();
-        if (data.success) setPosts(data.posts);
+        if (data.success) setposts(data.posts);
       } catch (error) {
         console.error("Error fetching posts:", error);
       } finally {
-        setLoading(false);
       }
     };
 
