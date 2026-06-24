@@ -34,7 +34,7 @@ const CollectionSchema = new Schema(
   }
 );
 
-const Collection = models.Collection || model("Collection", CollectionSchema);
+const artCollection = models.artCollection || model("artCollection", CollectionSchema);
 
 
-export default Collection;
+export default artCollection;

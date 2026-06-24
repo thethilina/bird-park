@@ -54,9 +54,9 @@ const PostSchema = new Schema(
       },
     ],
 
-    collection: {
+    artCollection: {
       type: Schema.Types.ObjectId,
-      ref: "Collection",
+      ref: "artCollection",
     },
 
     top3Emotions: [

@@ -4,6 +4,8 @@ import connectDB from "../../../../lib/db";
 import Post from "../../../../lib/models/Post";
 import { getCurrentUserId } from "../../../../lib/getCurrentUser";
 
+
+
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
@@ -19,6 +21,7 @@ export async function POST(req: Request) {
       top3Emotions,
       collection,
       visibility,
+      circle, 
     } = body;
 
     if (!title || !media?.url) {
@@ -28,21 +31,25 @@ export async function POST(req: Request) {
       );
     }
 
+    const isCirclePost = !!circle;
+
     const post = await Post.create({
       author: userId,
       type: "art",
       title,
       media,
       top3Emotions,
-      collection,
-      visibility,
+      collection: collection || null,
+      circle: circle || null,
+      visibility: isCirclePost ? "circle" : "public",
     });
 
     return NextResponse.json({
       success: true,
       post,
     });
-  } catch {
+  } catch (err) {
+    console.error(err);
     return NextResponse.json(
       { message: "Error creating art" },
       { status: 500 }
