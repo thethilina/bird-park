@@ -4,8 +4,6 @@ import connectDB from "../../../../lib/db";
 import Post from "../../../../lib/models/Post";
 import { getCurrentUserId } from "../../../../lib/getCurrentUser";
 
-
-
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
@@ -18,15 +16,13 @@ export async function POST(req: Request) {
     const {
       title,
       media,
-      top3Emotions,
       collection,
-      visibility,
-      circle, 
+      circle,
     } = body;
 
     if (!title || !media?.url) {
       return NextResponse.json(
-        { message: "title and image required" },
+        { message: "Title and image are required" },
         { status: 400 }
       );
     }
@@ -38,21 +34,37 @@ export async function POST(req: Request) {
       type: "art",
       title,
       media,
-      top3Emotions,
+
+      // Will be updated after AI finishes
+      top3Emotions: [],
+
       collection: collection || null,
+
       circle: circle || null,
+
       visibility: isCirclePost ? "circle" : "public",
+
+      // Only if you've added this field to the schema
+      analysis: {
+        status: "pending",
+      },
     });
 
     return NextResponse.json({
       success: true,
       post,
     });
+
   } catch (err) {
-    console.error(err);
+    console.error("[CREATE_ART_ERROR]", err);
+
     return NextResponse.json(
-      { message: "Error creating art" },
-      { status: 500 }
+      {
+        message: "Error creating artwork",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }

@@ -114,55 +114,132 @@ function Page() {
     { name: "3XL", value: "40px" },
   ];
 
-  const handleUpload = async () => {
-    if (!title.trim()) {
-      errorToast("Please enter a title.");
-      return;
+  const analyzeEmotion = async (
+  postId: string,
+  poem: string
+) => {
+  try {
+    const response = await fetch("/api/emotion/poem", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        poem,
+      }),
+    });
+
+    if (!response.ok) return;
+
+    const data = await response.json();
+
+    const top3Emotions =
+      data.emotional_profile.themes.map(
+        (emotion: any) => ({
+          emotion: emotion.name,
+          score: emotion.weight,
+        })
+      );
+
+    await fetch(`/api/post/${postId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        top3Emotions,
+        emotionAnalysis: {
+          status: "completed",
+          completedAt: new Date(),
+        },
+      }),
+    });
+
+    console.log("Poem emotion analysis completed.");
+  } catch (err) {
+    console.error(err);
+
+    await fetch(`/api/post/${postId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        emotionAnalysis: {
+          status: "failed",
+        },
+      }),
+    });
+  }
+};
+
+const handleUpload = async () => {
+  if (!title.trim()) {
+    errorToast("Please enter a title.");
+    return;
+  }
+
+  if (!poem.trim()) {
+    errorToast("Please write your poem.");
+    return;
+  }
+
+  try {
+    loader.start();
+    setUploading(true);
+
+    const res = await fetch("/api/post/poem", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: title.trim(),
+        body: poem,
+        poemStyle: {
+          fontFamily: font,
+          fontSize,
+          fontColor: textColor,
+          backgroundColor: bgColor,
+        },
+        collection: selectedCollection || undefined,
+        visibility,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message);
     }
-    if (!poem.trim()) {
-      errorToast("Please write your poem.");
-      return;
-    }
 
-    try {
-      loader.start();
-      setUploading(true);
+    analyzeEmotion(
+      data.post._id,
+      poem
+    );
 
-      const res = await fetch("/api/post/poem", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: title.trim(),
-          body: poem,
-          poemStyle: {
-            fontFamily: font,
-            fontSize,
-            fontColor: textColor,
-            backgroundColor: bgColor,
-          },
-          collection: selectedCollection || undefined,
-          visibility,
-        }),
-      });
+    successToast(
+      "Poem uploaded successfully!"
+    );
 
-      const data = await res.json();
+    loader.done();
 
-      if (!res.ok) {
-        errorToast(data.message || "Failed to upload poem.");
-        loader.done();
-        setUploading(false);
-        return;
-      }
+    setTimeout(() => {
+      router.push(`/Profile/${user?._id}`);
+    }, 1000);
+  } catch (err: any) {
+    console.error(err);
 
-      successToast("Poem uploaded successfully!");
-      loader.done();
-      setTimeout(() => router.push(`/Profile/${user?._id}`), 1500);
-    } catch {
-      errorToast("Something went wrong.");
-      loader.done();
-      setUploading(false);
-    }
-  };
+    loader.done();
+
+    errorToast(
+      err.message ||
+        "Failed to upload poem."
+    );
+  } finally {
+    setUploading(false);
+  }
+};
 
   return (
     <div className="">

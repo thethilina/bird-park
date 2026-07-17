@@ -15,12 +15,44 @@ function Page() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const loader = useTopLoader()
     const [file, setFile] = useState<File | null>(null);
-    const [artemotion , setArtemotion] = useState()
-    const [top3emotions , setTop3emotions] = useState<any[]>([])
     const [title, setTitle] = useState("");
 
 
+const analyzeEmotion = async (postId: string, file: File) => {
+  try {
+    const formData = new FormData();
+    formData.append("image", file);
 
+    const response = await fetch("/api/emotion/art", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) return;
+
+    const data = await response.json();
+
+    const top3Emotions =
+      data.emotional_profile.themes.map((emotion: any) => ({
+        emotion: emotion.name,
+        score: emotion.weight,
+      }));
+
+    await fetch(`/api/post/${postId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        top3Emotions,
+      }),
+    });
+
+    console.log("Emotion analysis complete.");
+  } catch (err) {
+    console.error(err);
+  }
+};
 
 
 
@@ -41,39 +73,6 @@ function Page() {
       });
     
     
-    const getemotion = async () => {
-    if (!file) return;
-
-    try {
-        const formData = new FormData();
-        formData.append("file", file);
-
-        const response = await fetch("http://127.0.0.1:8000/emotion/image", {
-            method: "POST",
-            body: formData, 
-        });
-
-        const data = await response.json();
-        alert(data.result)
-        setArtemotion(data.result.emotion)
-
-        const entries = Object.entries(data.result || {}).filter(
-          ([emotion]) => emotion !== 'emotion'
-        );
-
-        const top3 = entries
-          .sort((a: any, b: any) => (b[1] as number) - (a[1] as number))
-          .slice(0, 3)
-          .map(([emotion, score]) => ({
-            emotion,
-            score: Number(score),
-          }));
-
-        setTop3emotions(top3);
-    } catch (e) {
-        console.error(e);
-    }
-};
 
 
 
@@ -142,87 +141,48 @@ const uploadArt = async () => {
 
     loader.start();
 
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const emotionResponse = await fetch(
-      "http://127.0.0.1:8000/emotion/image",
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
-
-    if (!emotionResponse.ok) {
-      throw new Error("Emotion analysis failed");
-    }
-
-    const emotionData = await emotionResponse.json();
-
-    const distObj =
-      emotionData.result.distribution ??
-      emotionData.result.disstribution ??
-      {};
-
-    const top3 = Object.entries(distObj)
-      .sort(
-        (a: any, b: any) =>
-          (b[1] as number) - (a[1] as number)
-      )
-      .slice(0, 3)
-      .map(([emotion, score]) => ({
-        emotion,
-        score: Number(score),
-      }));
-
+    // Upload image first
     const imageUrl = await handleUploadAvatar(file);
 
     if (!imageUrl) {
       throw new Error("Image upload failed");
     }
 
-    
-    const postResponse = await fetch(
-      "/api/post/art",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type":
-            "application/json",
+    // Create the post immediately
+    const postResponse = await fetch("/api/post/art", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+        media: {
+          url: imageUrl,
         },
-        body: JSON.stringify({
-          title,
-          media: {
-            url: imageUrl,
-          },
-          top3Emotions: top3,
-          visibility: "public",
-        }),
-      }
-    );
+        visibility: "public",
+      }),
+    });
 
-    const postData =
-      await postResponse.json();
+    const postData = await postResponse.json();
 
     if (!postResponse.ok) {
-      throw new Error(
-        postData.message ||
-          "Failed to create post"
-      );
+      throw new Error(postData.message);
     }
 
-    success("Artwork uploaded successfully");
+    // Start AI analysis in the background
+    analyzeEmotion(postData.post._id, file);
+
+    success("Artwork uploaded successfully!");
 
     setArt(null);
     setFile(null);
     setTitle("");
-    setTop3emotions([]);
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     errorToast("Failed to upload artwork");
   } finally {
     loader.done();

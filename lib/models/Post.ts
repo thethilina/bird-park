@@ -1,4 +1,4 @@
-import { Schema, model , models } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 const PostSchema = new Schema(
   {
@@ -57,34 +57,68 @@ const PostSchema = new Schema(
     artCollection: {
       type: Schema.Types.ObjectId,
       ref: "artCollection",
+      default: null,
     },
 
+
+    // AI detected emotional profile
     top3Emotions: [
       {
-        emotion: String,
-        score: Number,
+        emotion: {
+          type: String,
+        },
+
+        score: {
+          type: Number,
+        },
       },
     ],
 
+
+    // AI processing status
+    emotionAnalysis: {
+      status: {
+        type: String,
+        enum: [
+          "pending",
+          "processing",
+          "completed",
+          "failed",
+        ],
+        default: "pending",
+      },
+
+      completedAt: {
+        type: Date,
+        default: null,
+      },
+    },
+
+
     circle: {
-  type: Schema.Types.ObjectId,
-  ref: "Circle",
-  default: null,
-},
+      type: Schema.Types.ObjectId,
+      ref: "Circle",
+      default: null,
+    },
+
 
     visibility: {
       type: String,
-      enum: ["public", "circle"],
+      enum: [
+        "public",
+        "circle",
+      ],
       default: "public",
     },
   },
+
   {
     timestamps: true,
   }
 );
 
+
 const Post = models.Post || model("Post", PostSchema);
 
 
 export default Post;
-

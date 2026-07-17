@@ -28,16 +28,21 @@ export async function POST(req: Request) {
       );
     }
 
-    const post = await Post.create({
-      author: userId,
-      type: "poem",
-      title,
-      body,
-      poemStyle,
-      top3Emotions,
-      collection,
-      visibility,
-    });
+const post = await Post.create({
+  author: userId,
+  type: "poem",
+  title,
+  body,
+  poemStyle,
+  collection: collection || null,
+  visibility,
+
+  emotionAnalysis: {
+    status: "pending",
+  },
+
+  top3Emotions: [],
+});
 
     return NextResponse.json({
       success: true,

@@ -302,11 +302,11 @@ useEffect(() => {
   }, [isDropdownOpen]);
 
   return (
-    <div className=' space-y-5 border-(--border)  border-b-2 py-7 sticky top-18 z-49 w-full bg-(--color-background) dark:bg-(--background)  ) '>
+    <div className=' space-y-5 border-(--border)  border-b-2 py-7  z-49 w-full bg-(--color-background) dark:bg-(--background)  ) '>
      <div className="   py-1   bg-(--color-background)   )    w-full      flex items-center justify-between ">
 
     <div  className='flex gap-x-4 items-center'>
-    <Image src={User?.profileImage} alt='profileImage' width={48} height={48} className='w-12 h-12 rounded-full border border-(--border) dark:border-(--borderdark)'/>
+    <Image src={User?.profileImage} alt='profileImage' width={100} height={100} className='w-20 h-20 object-cover rounded-full border border-(--border) dark:border-(--borderdark)'/>
     <div>
       <h1 className='text-2xl '>{User?.username}</h1>
       <p className='text-xl text-(--text-muted) dark:text-(--text-muted-dark)'>{`@${User?.email}`}</p>

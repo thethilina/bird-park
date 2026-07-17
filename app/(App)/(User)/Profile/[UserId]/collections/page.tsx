@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTopLoader } from "nextjs-toploader";
 import { toast } from "react-toastify";
 import { IoClose, IoAdd } from "react-icons/io5";
+import { MdOutlineCreateNewFolder } from "react-icons/md";
 
 function Page() {
   const { UserId } = useParams();
@@ -106,53 +107,33 @@ function Page() {
     <div className="space-y-5">
       <ProfileBar User={profileUser} />
 
-      {/* Header row */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Collections</h2>
-        {isOwnProfile && (
-          <button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-[#192942] hover:bg-[#2c456e] text-white rounded-xl text-sm font-medium transition-colors"
-          >
-            <IoAdd size={18} />
-            New Collection
-          </button>
-        )}
+    
+      
+     {isOwnProfile && (
+          <div             onClick={() => setShowModal(true)}
+ className="items-center flex border-(--border) bg-[#0e0e14]  hover:cursor-pointer  text-2xl  gap-y-3 p-4 flex-col justify-center w-60 h-70 border rounded-xl">
+        <MdOutlineCreateNewFolder size={30} />
+        <h1>Create new collection</h1>
       </div>
+ )}
 
-      {/* Collections Grid */}
-      {loading ? (
-        <div className="w-full flex items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-(--border)" />
-        </div>
-      ) : collections.length === 0 ? (
-        <div className="w-full flex flex-col items-center justify-center py-20 text-(--text-muted) dark:text-(--text-muted-dark)">
-          <p className="text-xl">No collections yet.</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {collections.map((collection) => (
-            <CollectionCard key={collection._id} collection={collection} />
-          ))}
-        </div>
-      )}
 
       {/* Create Collection Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
           <div
             ref={modalRef}
-            className="bg-[#0d1725] border border-(--border) dark:border-(--borderdark) rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-5 relative"
+            className="bg-[#0e0e14]  border border-(--border) dark:border-(--borderdark) rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-5 relative"
           >
             {/* Close button */}
             <button
               onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 text-(--text-muted) hover:text-white transition-colors"
+              className="absolute top-4 hover:cursor-pointer right-4 text-(--text-muted) hover:text-white transition-colors"
             >
               <IoClose size={22} />
             </button>
 
-            <h2 className="text-2xl font-semibold">Create Collection</h2>
+            <h2 className="text-2xl ">Create Collection</h2>
 
             <div className="space-y-4">
               <div>
