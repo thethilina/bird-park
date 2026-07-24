@@ -77,6 +77,20 @@ export async function POST(req: Request) {
       }
     );
 
+    response.cookies.set(
+      "logged_in",
+      "true",
+      {
+        httpOnly: false,
+        secure:
+          process.env.NODE_ENV ===
+          "production",
+        sameSite: "strict",
+        maxAge:
+          60 * 60 * 24 * 30,
+      }
+    );
+
     return response;
   } catch (error) {
     console.log(error);

@@ -14,5 +14,13 @@ export async function POST() {
     }
   );
 
+  response.cookies.set(
+    "logged_in",
+    "",
+    {
+      expires: new Date(0),
+    }
+  );
+
   return response;
 }

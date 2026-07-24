@@ -68,6 +68,15 @@ export async function DELETE(
       }
     );
 
+    response.cookies.set(
+      "logged_in",
+      "",
+      {
+        expires: new Date(0),
+        path: "/",
+      }
+    );
+
     return response;
   } catch (error) {
     console.error(error);
