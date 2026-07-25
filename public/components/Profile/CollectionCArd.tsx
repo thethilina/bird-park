@@ -42,6 +42,20 @@ function CollectionCard({ collection }: any) {
               {collection.description}
             </p>
           )}
+          
+          {/* Emotions */}
+          {collection.top3Emotions && collection.top3Emotions.length > 0 && (
+            <div className="flex gap-1 mt-2 flex-wrap">
+              {collection.top3Emotions.map((em: any, i: number) => (
+                <span
+                  key={i}
+                  className="px-1.5 py-0.5 text-[10px] rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-medium capitalize"
+                >
+                  {em.emotion} ({Math.round(em.score * 100)}%)
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </Link>

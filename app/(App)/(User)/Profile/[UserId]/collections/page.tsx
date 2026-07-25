@@ -6,8 +6,9 @@ import { useParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTopLoader } from "nextjs-toploader";
 import { toast } from "react-toastify";
-import { IoClose, IoAdd } from "react-icons/io5";
+import { IoClose, IoAdd, IoImageOutline } from "react-icons/io5";
 import { MdOutlineCreateNewFolder } from "react-icons/md";
+import Image from "next/image";
 
 function Page() {
   const { UserId } = useParams();
@@ -22,7 +23,10 @@ function Page() {
   const [showModal, setShowModal] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newDesc, setNewDesc] = useState("");
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
   const successToast = (msg: string) =>
@@ -67,6 +71,13 @@ function Page() {
     return () => document.removeEventListener("mousedown", handler);
   }, [showModal]);
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setCoverImageFile(file);
+    setCoverImagePreview(URL.createObjectURL(file));
+  };
+
   const handleCreateCollection = async () => {
     if (!newTitle.trim()) {
       errorToast("Please enter a title for your collection.");
@@ -75,10 +86,34 @@ function Page() {
     try {
       loader.start();
       setCreating(true);
+
+      let coverImageUrl = "";
+      if (coverImageFile) {
+        const formData = new FormData();
+        formData.append("file", coverImageFile);
+        const uploadRes = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+        const uploadData = await uploadRes.json();
+        if (uploadData.success) {
+          coverImageUrl = uploadData.url;
+        } else {
+          errorToast("Failed to upload cover image.");
+          loader.done();
+          setCreating(false);
+          return;
+        }
+      }
+
       const res = await fetch("/api/collections", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: newTitle.trim(), description: newDesc.trim() }),
+        body: JSON.stringify({ 
+          title: newTitle.trim(), 
+          description: newDesc.trim(),
+          coverImage: coverImageUrl || undefined
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -92,6 +127,8 @@ function Page() {
       setShowModal(false);
       setNewTitle("");
       setNewDesc("");
+      setCoverImageFile(null);
+      setCoverImagePreview(null);
       loader.done();
       setCreating(false);
     } catch {
@@ -108,14 +145,19 @@ function Page() {
       <ProfileBar User={profileUser} />
 
     
-      
-     {isOwnProfile && (
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        {isOwnProfile && (
           <div             onClick={() => setShowModal(true)}
- className="items-center flex border-(--border) bg-[#0e0e14]  hover:cursor-pointer  text-2xl  gap-y-3 p-4 flex-col justify-center w-60 h-70 border rounded-xl">
-        <MdOutlineCreateNewFolder size={30} />
-        <h1>Create new collection</h1>
+  className="items-center flex border-(--border) bg-[#0e0e14] hover:cursor-pointer text-center gap-y-3 p-4 flex-col justify-center w-full aspect-square border rounded-xl hover:bg-[#1a1a24] transition-colors">
+            <MdOutlineCreateNewFolder size={40} />
+            <h1 className="text-lg font-medium">Create new collection</h1>
+          </div>
+        )}
+        
+        {collections.map((collection) => (
+          <CollectionCard key={collection._id} collection={collection} />
+        ))}
       </div>
- )}
 
 
       {/* Create Collection Modal */}
@@ -133,9 +175,36 @@ function Page() {
               <IoClose size={22} />
             </button>
 
-            <h2 className="text-2xl ">Create Collection</h2>
+            <h2 className="text-2xl font-bold">Create Collection</h2>
 
             <div className="space-y-4">
+              {/* Cover Image Picker */}
+              <div>
+                <label className="block text-sm font-medium mb-2 text-(--text-muted) dark:text-(--text-muted-dark)">
+                  Cover Image
+                </label>
+                <div 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full h-40 rounded-xl border-2 border-dashed border-(--border) bg-(--colorbg) dark:bg-[#131e2e] flex flex-col items-center justify-center cursor-pointer hover:bg-(--hover) dark:hover:bg-[#1c2b42] transition-colors overflow-hidden relative"
+                >
+                  {coverImagePreview ? (
+                    <img src={coverImagePreview} alt="Cover Preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="flex flex-col items-center text-(--text-muted)">
+                      <IoImageOutline size={32} className="mb-2" />
+                      <span className="text-sm">Click to upload cover image</span>
+                    </div>
+                  )}
+                </div>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  className="hidden" 
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                />
+              </div>
+              
               <div>
                 <label className="block text-sm font-medium mb-1 text-(--text-muted) dark:text-(--text-muted-dark)">
                   Title <span className="text-red-400">*</span>

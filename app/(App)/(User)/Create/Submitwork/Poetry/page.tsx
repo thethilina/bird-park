@@ -6,6 +6,7 @@ import { useTopLoader } from "nextjs-toploader";
 import { toast } from "react-toastify";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
+import CreateCollectionModal from "@/public/components/CreateCollectionModal";
 
 function Page() {
   const [title, setTitle] = useState("");
@@ -17,6 +18,7 @@ function Page() {
   const [visibility, setVisibility] = useState("public");
   const [selectedCollection, setSelectedCollection] = useState("");
   const [collections, setCollections] = useState<any[]>([]);
+  const [showCreateCollectionModal, setShowCreateCollectionModal] = useState(false);
   const [uploading, setUploading] = useState(false);
 
   const loader = useTopLoader();
@@ -308,25 +310,31 @@ const handleUpload = async () => {
         </div>
 
         {/* Collection picker */}
-        {collections.length > 0 && (
-          <>
-            <div className="flex items-center gap-2">
-              <label className="text-sm font-medium">Collection:</label>
-              <select
-                value={selectedCollection}
-                onChange={(e) => setSelectedCollection(e.target.value)}
-                className="p-1 text-sm border rounded bg-transparent border-(--border) dark:text-white text-black"
-              >
-                <option value="">None</option>
-                {collections.map((c) => (
-                  <option key={c._id} value={c._id} className="text-black">
-                    {c.title}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </>
-        )}
+        <div className="flex items-center gap-2">
+          <label className="text-sm font-medium">Collection:</label>
+          <div className="flex items-center gap-2 border border-(--border) rounded bg-transparent p-1">
+            <select
+              value={selectedCollection}
+              onChange={(e) => setSelectedCollection(e.target.value)}
+              className="text-sm bg-transparent outline-none dark:text-white text-black min-w-[100px]"
+            >
+              <option value="">None</option>
+              {collections.map((c) => (
+                <option key={c._id} value={c._id} className="text-black">
+                  {c.title}
+                </option>
+              ))}
+            </select>
+            <div className="w-[1px] h-4 bg-(--border)"></div>
+            <button
+              onClick={() => setShowCreateCollectionModal(true)}
+              className="text-sm font-medium text-blue-500 hover:text-blue-600 transition-colors px-1 whitespace-nowrap flex items-center gap-1"
+              title="Create new collection"
+            >
+              <span className="text-base leading-none">+</span> New
+            </button>
+          </div>
+        </div>
 
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium">Visibility:</label>
@@ -376,6 +384,17 @@ const handleUpload = async () => {
           {uploading ? "Uploading..." : "Upload"}
         </button>
       </div>
+
+      {showCreateCollectionModal && (
+        <CreateCollectionModal
+          onClose={() => setShowCreateCollectionModal(false)}
+          onSuccess={(newCollection) => {
+            setCollections([newCollection, ...collections]);
+            setSelectedCollection(newCollection._id);
+            setShowCreateCollectionModal(false);
+          }}
+        />
+      )}
     </div>
   );
 }

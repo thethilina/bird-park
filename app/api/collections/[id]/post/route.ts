@@ -5,6 +5,41 @@ import Post from "../../../../../lib/models/Post";
 import { getCurrentUserId } from "../../../../../lib/getCurrentUser";
 import mongoose from "mongoose";
 
+/**
+ * Recalculate a collection's top3Emotions by aggregating from all its posts.
+ */
+async function recalculateCollectionEmotions(collectionId: string) {
+  const collection = await Collection.findById(collectionId).populate("posts");
+  if (!collection) return;
+
+  const emotionMap: Record<string, { total: number; count: number }> = {};
+
+  for (const post of collection.posts) {
+    if (post.top3Emotions && post.top3Emotions.length > 0) {
+      for (const em of post.top3Emotions) {
+        if (!em.emotion) continue;
+        if (!emotionMap[em.emotion]) {
+          emotionMap[em.emotion] = { total: 0, count: 0 };
+        }
+        emotionMap[em.emotion].total += em.score || 0;
+        emotionMap[em.emotion].count += 1;
+      }
+    }
+  }
+
+  const averaged = Object.entries(emotionMap)
+    .map(([emotion, { total, count }]) => ({
+      emotion,
+      score: Math.round((total / count) * 100) / 100,
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3);
+
+  await Collection.findByIdAndUpdate(collectionId, {
+    $set: { top3Emotions: averaged },
+  });
+}
+
 export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -55,6 +90,14 @@ export async function POST(
     await Collection.findByIdAndUpdate(id, {
       $addToSet: { posts: postId },
     });
+
+    // Also link the post back to this collection
+    await Post.findByIdAndUpdate(postId, {
+      $set: { artCollection: id },
+    });
+
+    // Recalculate emotions
+    await recalculateCollectionEmotions(id);
 
     return NextResponse.json({
       success: true,
@@ -110,6 +153,14 @@ export async function DELETE(
     await Collection.findByIdAndUpdate(id, {
       $pull: { posts: postId },
     });
+
+    // Unlink the post from this collection
+    await Post.findByIdAndUpdate(postId, {
+      $set: { artCollection: null },
+    });
+
+    // Recalculate emotions
+    await recalculateCollectionEmotions(id);
 
     return NextResponse.json({
       success: true,

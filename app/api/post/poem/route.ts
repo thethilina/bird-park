@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import connectDB from "../../../../lib/db";
 import Post from "../../../../lib/models/Post";
 import { getCurrentUserId } from "../../../../lib/getCurrentUser";
+import mongoose from "mongoose";
 
 export const runtime = "nodejs";
 
@@ -34,7 +35,7 @@ const post = await Post.create({
   title,
   body,
   poemStyle,
-  collection: collection || null,
+  artCollection: collection || null,
   visibility,
 
   emotionAnalysis: {
@@ -43,6 +44,13 @@ const post = await Post.create({
 
   top3Emotions: [],
 });
+
+    if (collection) {
+      const CollectionModel = mongoose.models.artCollection || (await import("../../../../lib/models/artCollection")).default;
+      await CollectionModel.findByIdAndUpdate(collection, {
+        $addToSet: { posts: post._id },
+      });
+    }
 
     return NextResponse.json({
       success: true,

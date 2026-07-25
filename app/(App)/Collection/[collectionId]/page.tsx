@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTopLoader } from "nextjs-toploader";
 import { toast } from "react-toastify";
-import { IoClose, IoAdd, IoTrashOutline } from "react-icons/io5";
+import { IoClose, IoAdd, IoTrashOutline, IoPencil, IoImageOutline } from "react-icons/io5";
 import { IoImagesOutline } from "react-icons/io5";
 
 function CollectionDetailPage() {
@@ -23,6 +23,16 @@ function CollectionDetailPage() {
   const [userPosts, setUserPosts] = useState<any[]>([]);
   const [adding, setAdding] = useState<string | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+
+  // Edit modal
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDesc, setEditDesc] = useState("");
+  const [editCoverFile, setEditCoverFile] = useState<File | null>(null);
+  const [editCoverPreview, setEditCoverPreview] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
+  const editFileInputRef = useRef<HTMLInputElement>(null);
+  const editModalRef = useRef<HTMLDivElement>(null);
 
   const successToast = (msg: string) =>
     toast(msg, { position: "top-right", autoClose: 3000, type: "success" });
@@ -128,6 +138,75 @@ function CollectionDetailPage() {
     }
   };
 
+  const handleDeleteCollection = async () => {
+    if (!confirm("Are you sure you want to delete this collection?")) return;
+    try {
+      loader.start();
+      const res = await fetch(`/api/collections/${collectionId}`, { method: "DELETE" });
+      if (res.ok) {
+        successToast("Collection deleted");
+        router.push(`/Profile/${user?._id}/collections`);
+      } else {
+        errorToast("Failed to delete");
+      }
+    } catch {
+      errorToast("Something went wrong");
+    } finally {
+      loader.done();
+    }
+  };
+
+  const handleEditCollection = async () => {
+    if (!editTitle.trim()) {
+      errorToast("Title required");
+      return;
+    }
+    try {
+      setEditing(true);
+      loader.start();
+      let coverImageUrl = collection.coverImage;
+      if (editCoverFile) {
+        const formData = new FormData();
+        formData.append("file", editCoverFile);
+        const uploadRes = await fetch("/api/upload", { method: "POST", body: formData });
+        const uploadData = await uploadRes.json();
+        if (uploadData.success) {
+          coverImageUrl = uploadData.url;
+        }
+      }
+      const res = await fetch(`/api/collections/${collectionId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: editTitle.trim(),
+          description: editDesc.trim(),
+          coverImage: coverImageUrl || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        successToast("Collection updated");
+        setCollection(data.collection);
+        setShowEditModal(false);
+      } else {
+        errorToast("Update failed");
+      }
+    } catch {
+      errorToast("Something went wrong");
+    } finally {
+      setEditing(false);
+      loader.done();
+    }
+  };
+
+  const openEditModal = () => {
+    setEditTitle(collection.title);
+    setEditDesc(collection.description || "");
+    setEditCoverPreview(collection.coverImage || null);
+    setEditCoverFile(null);
+    setShowEditModal(true);
+  };
+
   const isOwner =
     user?._id &&
     collection?.author &&
@@ -159,28 +238,63 @@ function CollectionDetailPage() {
 
       {/* Collection Header */}
       <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
-        <div className="flex gap-4 items-start">
+        <div className="flex gap-4 items-start w-full">
           {/* Cover thumbnail */}
-          <div className="w-20 h-20 rounded-xl overflow-hidden bg-[#0d1725] border border-(--border) flex-shrink-0">
-            {posts.find((p) => p?.media?.url) ? (
+          <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-xl overflow-hidden bg-[#0d1725] border border-(--border) flex-shrink-0 shadow-md">
+            {collection.coverImage || posts.find((p: any) => p?.media?.url)?.media?.url ? (
               <img
-                src={posts.find((p) => p?.media?.url)?.media?.url}
+                src={collection.coverImage || posts.find((p: any) => p?.media?.url)?.media?.url}
                 alt={collection.title}
                 className="w-full h-full object-cover"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-(--text-muted)">
-                <IoImagesOutline size={28} className="opacity-30" />
+                <IoImagesOutline size={36} className="opacity-30" />
               </div>
             )}
           </div>
 
-          <div>
-            <h1 className="text-3xl font-bold">{collection.title}</h1>
+          <div className="flex-1">
+            <div className="flex items-center justify-between gap-4">
+              <h1 className="text-3xl font-bold">{collection.title}</h1>
+              {/* Action buttons (owner only) */}
+              {isOwner && (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={openEditModal}
+                    className="p-2 hover:bg-(--colorbg) dark:hover:bg-(--colorbgdark) rounded-full transition-colors text-blue-500"
+                    title="Edit Collection"
+                  >
+                    <IoPencil size={20} />
+                  </button>
+                  <button
+                    onClick={handleDeleteCollection}
+                    className="p-2 hover:bg-red-500/20 text-red-500 rounded-full transition-colors"
+                    title="Delete Collection"
+                  >
+                    <IoTrashOutline size={20} />
+                  </button>
+                </div>
+              )}
+            </div>
             {collection.description && (
-              <p className="text-(--text-muted) dark:text-(--text-muted-dark) mt-1 max-w-xl">
+              <p className="text-(--text-muted) dark:text-(--text-muted-dark) mt-2 max-w-2xl text-lg">
                 {collection.description}
               </p>
+            )}
+            
+            {/* Emotions */}
+            {collection.top3Emotions && collection.top3Emotions.length > 0 && (
+              <div className="flex gap-2 mt-3 flex-wrap">
+                {collection.top3Emotions.map((em: any, i: number) => (
+                  <span
+                    key={i}
+                    className="px-2.5 py-1 text-xs rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-medium capitalize"
+                  >
+                    {em.emotion} ({Math.round(em.score * 100)}%)
+                  </span>
+                ))}
+              </div>
             )}
             <div className="flex items-center gap-3 mt-2 text-sm text-(--text-muted)">
               {author && (
@@ -210,7 +324,7 @@ function CollectionDetailPage() {
         {isOwner && (
           <button
             onClick={openAddModal}
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#192942] hover:bg-[#2c456e] text-white rounded-xl text-sm font-medium transition-colors flex-shrink-0"
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#192942] hover:bg-[#2c456e] text-white rounded-xl text-sm font-medium transition-colors flex-shrink-0 mt-4 md:mt-0"
           >
             <IoAdd size={18} />
             Add Work
@@ -376,6 +490,99 @@ function CollectionDetailPage() {
                 ))}
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Edit Collection Modal */}
+      {showEditModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <div
+            ref={editModalRef}
+            className="bg-[#0e0e14] border border-(--border) dark:border-(--borderdark) rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-5 relative"
+          >
+            <button
+              onClick={() => setShowEditModal(false)}
+              className="absolute top-4 right-4 text-(--text-muted) hover:text-white transition-colors"
+            >
+              <IoClose size={22} />
+            </button>
+
+            <h2 className="text-2xl font-bold">Edit Collection</h2>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2 text-(--text-muted) dark:text-(--text-muted-dark)">
+                  Cover Image
+                </label>
+                <div 
+                  onClick={() => editFileInputRef.current?.click()}
+                  className="w-full h-40 rounded-xl border-2 border-dashed border-(--border) bg-(--colorbg) dark:bg-[#131e2e] flex flex-col items-center justify-center cursor-pointer hover:bg-(--hover) dark:hover:bg-[#1c2b42] transition-colors overflow-hidden relative"
+                >
+                  {editCoverPreview ? (
+                    <img src={editCoverPreview} alt="Cover Preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="flex flex-col items-center text-(--text-muted)">
+                      <IoImageOutline size={32} className="mb-2" />
+                      <span className="text-sm">Click to upload cover image</span>
+                    </div>
+                  )}
+                </div>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  className="hidden" 
+                  ref={editFileInputRef}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setEditCoverFile(file);
+                      setEditCoverPreview(URL.createObjectURL(file));
+                    }
+                  }}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-1 text-(--text-muted) dark:text-(--text-muted-dark)">
+                  Title <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-(--border) bg-(--colorbg) dark:bg-[#131e2e] outline-none focus:ring-2 focus:ring-blue-500/40 transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1 text-(--text-muted) dark:text-(--text-muted-dark)">
+                  Description
+                </label>
+                <textarea
+                  value={editDesc}
+                  onChange={(e) => setEditDesc(e.target.value)}
+                  rows={3}
+                  className="w-full px-4 py-2.5 rounded-xl border border-(--border) bg-(--colorbg) dark:bg-[#131e2e] outline-none focus:ring-2 focus:ring-blue-500/40 transition-all resize-none"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3 justify-end pt-2">
+              <button
+                onClick={() => setShowEditModal(false)}
+                className="px-5 py-2 rounded-xl border border-(--border) hover:bg-(--colorbg) dark:hover:bg-(--colorbgdark) transition-colors text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleEditCollection}
+                disabled={editing}
+                className="px-6 py-2 rounded-xl bg-[#3B5D95] hover:bg-[#2e4a7a] text-white font-medium text-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {editing ? "Saving..." : "Save"}
+              </button>
+            </div>
           </div>
         </div>
       )}

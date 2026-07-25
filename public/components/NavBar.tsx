@@ -18,6 +18,7 @@ import { MdLightMode } from "react-icons/md";
 import { useRouter } from 'next/navigation'
 import { FaUserFriends } from "react-icons/fa";
 import { FaConnectdevelop } from "react-icons/fa";
+import NotificationDropdown from "@/public/components/NotificationDropdown";
 
 
 
@@ -125,7 +126,9 @@ function NavBar() {
     <Link href="/Create/Submitwork">
       <FaRegPlusSquare className=" dark:text-[#BEC9F4]  size-6 lg:size-7" />
     </Link>
-    <IoMailSharp  className="dark:text-[#BEC9F4]  size-7 lg:size-8" />
+    
+    <NotificationDropdown />
+
     <Image ref={avatarRef} onClick={() => setIsDropdownOpen(!isDropdownOpen)} src={user?.profileImage || userData.avatar} width={36} height={36} alt="user avatar" className="w-7 lg:w-9 rounded-full border border-white cursor-pointer" />
     </div>
 

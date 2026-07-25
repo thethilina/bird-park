@@ -860,68 +860,56 @@ export default function Page() {
       >
 
 
-        {/* USER */}
+        <div className="flex items-start justify-between w-full">
+          <div>
+            {/* USER */}
+            <div className="flex items-center lg:text-xl gap-x-3">
+              <Link
+                href={`/Profile/${post?.author?._id}`}
+                className="flex items-center gap-x-3"
+              >
+                <Image
+                  src={post?.author?.profileImage || "/default-profile.png"}
+                  alt={post?.author?.fullName || "artist"}
+                  className="w-10 h-10 lg:w-12 lg:h-12 rounded-full object-cover"
+                  width={48}
+                  height={48}
+                />
+                <span>{post?.author?.fullName}</span>
+              </Link>
+            </div>
 
-        <div className="flex items-center lg:text-xl gap-x-3">
+            {/* TITLE */}
+            <div className="mt-2">
+              <h1 className="lg:text-2xl font-semibold">{post?.title}</h1>
+            </div>
+          </div>
 
-
-          <Link
-            href={`/Profile/${post?.author?._id}`}
-            className="flex items-center gap-x-3"
-          >
-
-
-            <Image
-
-              src={
-                post?.author?.profileImage ||
-                "/default-profile.png"
-              }
-
-              alt={
-                post?.author?.fullName ||
-                "artist"
-              }
-
-              className="
-              w-10
-              h-10
-              lg:w-12
-              lg:h-12
-              rounded-full
-              object-cover
-              "
-
-              width={48}
-
-              height={48}
-
-            />
-
-
-            <span>
-              {post?.author?.fullName}
-            </span>
-
-
-          </Link>
-
-
-        </div>
-
-
-
-
-        {/* TITLE */}
-
-        <div>
-
-          <h1 className="lg:text-2xl font-semibold">
-
-            {post?.title}
-
-          </h1>
-
+          {/* COLLECTION (Top Right) */}
+          {post?.artCollection && (
+            <Link
+              href={`/Collection/${post.artCollection._id}`}
+              className="flex items-center gap-x-3 bg-(--colorbg) dark:bg-(--colorbgdark) p-2 rounded-xl border border-(--border) hover:opacity-80 transition-opacity"
+            >
+              <div className="flex flex-col text-right">
+                <span className="text-xs text-(--text-muted)">Collection</span>
+                <span className="text-sm font-semibold truncate max-w-[120px] lg:max-w-[200px]">
+                  {post.artCollection.title}
+                </span>
+              </div>
+              {post.artCollection.coverImage ? (
+                <img
+                  src={post.artCollection.coverImage}
+                  alt={post.artCollection.title}
+                  className="w-10 h-10 lg:w-12 lg:h-12 rounded-md object-cover border border-(--border)"
+                />
+              ) : (
+                <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-md bg-[#0d1725] flex items-center justify-center text-xs text-(--text-muted) border border-(--border)">
+                  No IMG
+                </div>
+              )}
+            </Link>
+          )}
         </div>
 
 

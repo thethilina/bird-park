@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import connectDB from "../../../../lib/db";
 import Post from "../../../../lib/models/Post";
 import { getCurrentUserId } from "../../../../lib/getCurrentUser";
+import mongoose from "mongoose";
 
 export const runtime = "nodejs";
 
@@ -38,7 +39,7 @@ export async function POST(req: Request) {
       // Will be updated after AI finishes
       top3Emotions: [],
 
-      collection: collection || null,
+      artCollection: collection || null,
 
       circle: circle || null,
 
@@ -49,6 +50,13 @@ export async function POST(req: Request) {
         status: "pending",
       },
     });
+
+    if (collection) {
+      const CollectionModel = mongoose.models.artCollection || (await import("../../../../lib/models/artCollection")).default;
+      await CollectionModel.findByIdAndUpdate(collection, {
+        $addToSet: { posts: post._id },
+      });
+    }
 
     return NextResponse.json({
       success: true,
