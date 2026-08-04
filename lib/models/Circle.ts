@@ -6,7 +6,9 @@ const CircleSchema = new Schema(
 
     description: String,
 
-    image: String,
+    image: String, // cover / banner photo
+
+    icon: String, // small circle avatar icon
 
     creator: {
       type: Schema.Types.ObjectId,

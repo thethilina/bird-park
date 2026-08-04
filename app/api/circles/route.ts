@@ -10,7 +10,7 @@ export async function POST(req: Request) {
 
     const userId = await getCurrentUserId();
 
-    const { name, description, image, joinType, rules, category } =
+    const { name, description, image, icon, joinType, rules, category } =
       await req.json();
 
     if (!name) {
@@ -24,6 +24,7 @@ export async function POST(req: Request) {
       name,
       description,
       image,
+      icon,
       creator: userId,
       owner: userId,
       joinType: joinType || "open",

@@ -8,7 +8,7 @@ import { shuffledFeedDatabase } from '@/TestDataBase/artData'
 
 function page() {
   return (
-    <div className='pl-75 pt-5'>      <Gallery artbase = {shuffledFeedDatabase} />
+    <div className='pl-75 pt-5'>      
 </div>
   )
 }
