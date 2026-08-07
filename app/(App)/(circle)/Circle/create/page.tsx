@@ -15,6 +15,10 @@ import {
 } from "react-icons/io5";
 import { FiUploadCloud } from "react-icons/fi";
 import Link from "next/link";
+import { MdOutlinePublic } from "react-icons/md";
+import { MdPublicOff } from "react-icons/md";
+
+
 
 interface Rule {
   title: string;
@@ -22,14 +26,13 @@ interface Rule {
 }
 
 const CATEGORIES = [
-  { value: "Visual Art", emoji: "🎨" },
-  { value: "Poetry", emoji: "📜" },
-  { value: "Music", emoji: "🎵" },
-  { value: "Photography", emoji: "📷" },
-  { value: "Digital Art", emoji: "💻" },
-  { value: "Writing", emoji: "✍️" },
-  { value: "3D & Animation", emoji: "🎬" },
-  { value: "General", emoji: "🌐" },
+  { value: "Visual Art", emoji: "" },
+  { value: "Poetry", emoji: "" },
+  { value: "Music", emoji: "" },
+  { value: "Digital Art", emoji: "" },
+  { value: "Writing", emoji: "" },
+  { value: "3D Art", emoji: "" },
+  { value: "General", emoji: "" },
 ];
 
 const STEP_LABELS = ["Identity", "Details", "Rules", "Review"];
@@ -158,7 +161,7 @@ export default function CreateCirclePage() {
         return;
       }
 
-      toast.success("Circle created! 🎉");
+      toast.success("Circle created! ");
       router.push(`/Circle/${data.circle._id}`);
     } catch {
       toast.error("Something went wrong.");
@@ -168,29 +171,19 @@ export default function CreateCirclePage() {
     }
   };
 
-  // ─── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen pl-0 lg:pl-72 flex flex-col items-center justify-start pt-10 pb-20 px-4 bg-[#06060B] text-white">
+    <div className=" mx-30 my-10 flex flex-col items-center justify-start  px-4 bg-[#06060B] text-white">
       {/* Header */}
-      <div className="w-full max-w-2xl mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <Link
-            href="/Circle"
-            className="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-1"
-          >
-            <IoChevronBack size={14} /> Circles
-          </Link>
-          <span className="text-gray-600">/</span>
-          <span className="text-sm text-gray-500">Create</span>
-        </div>
+      <div className="w-full  mb-8">
+   
         <h1 className="text-3xl font-bold">Create a Circle</h1>
-        <p className="text-gray-500 mt-1 text-sm">
+        <p className="text-gray-500 mt-1 text-xl">
           Build a community around your art, share work, and grow together.
         </p>
       </div>
 
       {/* Step Indicator */}
-      <div className="w-full max-w-2xl mb-8">
+      <div className="w-full  mb-8">
         <div className="flex items-center justify-between relative">
           <div className="absolute left-0 right-0 top-1/2 h-px bg-white/10 -translate-y-1/2 z-0" />
           <div
@@ -223,21 +216,21 @@ export default function CreateCirclePage() {
       </div>
 
       {/* Card */}
-      <div className="w-full max-w-2xl bg-[#141414] border border-white/10 rounded-2xl overflow-hidden">
+      <div className="w-full  bg-[#141414] border-2 rounded-xl border-white/10 overflow-hidden">
         {/* Step 0 — Identity */}
         {step === 0 && (
           <div className="p-8 space-y-8">
             <div>
               <h2 className="text-xl font-bold mb-1 text-white">Circle Identity</h2>
-              <p className="text-sm text-gray-400">Set a name, icon and cover photo for your circle.</p>
+              <p className="text-lg text-gray-400">Set a name, icon and cover photo for your circle.</p>
             </div>
 
             {/* Cover Photo */}
             <div>
-              <label className="block text-sm font-semibold mb-3 text-gray-300">Cover Photo</label>
+              <label className="block text-xl font-semibold mb-3 text-gray-300">Cover Photo</label>
               <div
                 onClick={() => coverInputRef.current?.click()}
-                className="relative w-full h-48 rounded-xl border border-dashed border-white/20 bg-[#1E1E1E] flex flex-col items-center justify-center cursor-pointer hover:border-white/40 hover:bg-[#2A2A2A] transition-all overflow-hidden group"
+                className="relative w-full h-48 rounded-xl border-2 border-dashed border-white/20 bg-[#1E1E1E] flex flex-col items-center justify-center cursor-pointer hover:border-white/40 hover:bg-[#1f1f1f] transition-all overflow-hidden group"
               >
                 {coverPreview ? (
                   <>
@@ -261,10 +254,10 @@ export default function CreateCirclePage() {
             <div className="flex flex-col sm:flex-row items-start gap-6">
               {/* Icon picker */}
               <div className="flex flex-col items-start gap-2 flex-shrink-0">
-                <label className="block text-sm font-semibold text-gray-300">Icon</label>
+                <label className="block text-xl font-semibold text-gray-300">Icon</label>
                 <div
                   onClick={() => iconInputRef.current?.click()}
-                  className="w-24 h-24 rounded-xl border border-dashed border-white/20 bg-[#1E1E1E] flex flex-col items-center justify-center cursor-pointer hover:border-white/40 hover:bg-[#2A2A2A] transition-all overflow-hidden group relative"
+                  className="w-24 h-24 rounded-xl border-2 border-dashed border-white/20 bg-[#1E1E1E] flex flex-col items-center justify-center cursor-pointer hover:border-white/40 hover:bg-[#2A2A2A] transition-all overflow-hidden group relative"
                 >
                   {iconPreview ? (
                     <>
@@ -285,7 +278,7 @@ export default function CreateCirclePage() {
 
               {/* Name */}
               <div className="flex-1 w-full">
-                <label className="block text-sm font-semibold mb-2 text-gray-300">
+                <label className="block text-xl font-semibold mb-2 text-gray-300">
                   Circle Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -309,12 +302,12 @@ export default function CreateCirclePage() {
           <div className="p-8 space-y-6">
             <div>
               <h2 className="text-xl font-bold mb-1 text-white">Circle Details</h2>
-              <p className="text-sm text-gray-400">Choose a category, privacy setting, and describe your circle.</p>
+              <p className="text-lg text-gray-400">Choose a category, privacy setting, and describe your circle.</p>
             </div>
 
             {/* Category */}
             <div>
-              <label className="block text-sm font-semibold mb-3 text-gray-300">Category</label>
+              <label className="block text-lg font-semibold mb-3 text-gray-300">Category</label>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {CATEGORIES.map((cat) => (
                   <button
@@ -336,11 +329,11 @@ export default function CreateCirclePage() {
 
             {/* Join Type */}
             <div>
-              <label className="block text-sm font-semibold mb-3 text-gray-300">Privacy & Access</label>
+              <label className="block text-lg font-semibold mb-3 text-gray-300">Privacy & Access</label>
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { val: "open" as const, label: "Open", desc: "Anyone can join instantly", icon: "🌐" },
-                  { val: "approval" as const, label: "Approval Required", desc: "Members need admin approval", icon: "🔐" },
+                  { val: "open" as const, label: "Open", desc: "Anyone can join instantly", icon: <MdOutlinePublic /> },
+                  { val: "approval" as const, label: "Approval Required", desc: "Members need admin approval", icon: <MdPublicOff /> },
                 ].map((opt) => (
                   <button
                     key={opt.val}
@@ -356,7 +349,7 @@ export default function CreateCirclePage() {
                     <div className={`text-sm font-semibold ${joinType === opt.val ? "text-white" : "text-gray-300"}`}>
                       {opt.label}
                     </div>
-                    <div className="text-xs text-gray-500 mt-1">{opt.desc}</div>
+                    <div className="text-lg text-gray-500 mt-1">{opt.desc}</div>
                   </button>
                 ))}
               </div>
@@ -364,14 +357,14 @@ export default function CreateCirclePage() {
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-semibold mb-2 text-gray-300">Description</label>
+              <label className="block text-lg font-semibold mb-2 text-gray-300">Description</label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe the purpose, themes, or vibe of this circle..."
                 rows={4}
                 maxLength={500}
-                className="w-full px-4 py-3 rounded-xl border border-white/10 bg-[#1E1E1E] outline-none focus:border-white/30 transition-all resize-none text-white text-sm placeholder-gray-600"
+                className="w-full px-4 py-3 rounded-xl border border-white/10 bg-[#1E1E1E] outline-none focus:border-white/30 transition-all resize-none text-white text-lg placeholder-gray-600"
               />
               <div className="flex justify-end mt-1">
                 <span className="text-xs text-gray-600">{description.length}/500</span>
@@ -385,7 +378,7 @@ export default function CreateCirclePage() {
           <div className="p-8 space-y-6">
             <div>
               <h2 className="text-xl font-bold mb-1 text-white">Community Rules</h2>
-              <p className="text-sm text-gray-400">Optional — set rules to guide behavior in your circle.</p>
+              <p className="text-lg text-gray-400">Optional — set rules to guide behavior in your circle.</p>
             </div>
 
             {rules.length > 0 && (
@@ -393,12 +386,12 @@ export default function CreateCirclePage() {
                 {rules.map((rule, idx) => (
                   <div key={idx} className="flex items-start justify-between bg-[#1E1E1E] p-4 rounded-xl border border-white/10">
                     <div className="flex items-start gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-white/10 text-white flex items-center justify-center text-xs font-bold mt-0.5">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-white/10 text-white flex items-center justify-center text-lg font-bold mt-0.5">
                         {idx + 1}
                       </span>
                       <div>
-                        <h4 className="font-semibold text-sm text-gray-200">{rule.title}</h4>
-                        {rule.description && <p className="text-xs text-gray-400 mt-1">{rule.description}</p>}
+                        <h4 className="font-semibold text-lg text-gray-200">{rule.title}</h4>
+                        {rule.description && <p className="text-lg text-gray-400 mt-1">{rule.description}</p>}
                       </div>
                     </div>
                     <button onClick={() => handleRemoveRule(idx)} className="text-gray-500 hover:text-red-400 transition-colors cursor-pointer p-1">
@@ -410,20 +403,20 @@ export default function CreateCirclePage() {
             )}
 
             <div className="bg-[#1E1E1E] p-5 rounded-xl border border-white/10 space-y-3">
-              <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Add a Rule</p>
+              <p className="text-md font-bold text-gray-500 uppercase tracking-wider">Add a Rule</p>
               <input
                 type="text"
                 value={ruleTitle}
                 onChange={(e) => setRuleTitle(e.target.value)}
                 placeholder="Rule title (e.g. Be respectful)"
-                className="w-full px-3 py-2 rounded-lg border border-white/5 bg-[#141414] text-sm outline-none focus:border-white/30 text-white placeholder-gray-600"
+                className="w-full px-3 py-2 rounded-lg border border-white/5 bg-[#141414] text-lg outline-none focus:border-white/30 text-white placeholder-gray-600"
               />
               <input
                 type="text"
                 value={ruleDesc}
                 onChange={(e) => setRuleDesc(e.target.value)}
                 placeholder="Optional description"
-                className="w-full px-3 py-2 rounded-lg border border-white/5 bg-[#141414] text-sm outline-none focus:border-white/30 text-white placeholder-gray-600"
+                className="w-full px-3 py-2 rounded-lg border border-white/5 bg-[#141414] text-lg outline-none focus:border-white/30 text-white placeholder-gray-600"
               />
               <button
                 onClick={handleAddRule}
@@ -440,7 +433,7 @@ export default function CreateCirclePage() {
           <div className="p-8 space-y-6">
             <div>
               <h2 className="text-xl font-bold mb-1 text-white">Review & Create</h2>
-              <p className="text-sm text-gray-400">Everything look good? Hit create to launch your circle.</p>
+              <p className="text-lg text-gray-400">Everything look good? Hit create to launch your circle.</p>
             </div>
 
             <div className="rounded-xl overflow-hidden border border-white/10 bg-[#1E1E1E]">
@@ -463,7 +456,7 @@ export default function CreateCirclePage() {
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="text-lg font-bold text-white">{name || "Unnamed Circle"}</h3>
-                    {description && <p className="text-xs text-gray-400 mt-1 line-clamp-2">{description}</p>}
+                    {description && <p className="text-lg text-gray-400 mt-1 line-clamp-2">{description}</p>}
                   </div>
                   <div className="flex flex-col items-end gap-1.5">
                     <span className="text-[10px] px-2 py-1 rounded-md bg-white/10 text-white uppercase font-bold tracking-wider">
@@ -491,7 +484,7 @@ export default function CreateCirclePage() {
           {step < 3 ? (
             <button
               onClick={next}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-white text-black font-semibold text-sm hover:opacity-80 transition-opacity cursor-pointer"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-white text-black font-semibold text-lg hover:opacity-80 transition-opacity cursor-pointer"
             >
               Continue <IoChevronForward size={14} />
             </button>

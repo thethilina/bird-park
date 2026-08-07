@@ -91,7 +91,7 @@ function NavBar() {
 
   return (
     
-    <nav className="sticky  z-50 xl:px-20  lg:px-10  py-1  bg-(--color-background) dark:bg-(--background)  border-(--border)  lg:pt-5  w-full top-0 border-b-2   lg:py-3   flex items-center justify-between ">
+    <nav className="sticky xl:px-15 lg:px-10 md:px-5 sm:px-2   z-50 py-1  bg-(--color-background) dark:bg-(--background)  border-(--border)  lg:pt-5  w-full top-0 border-b-2   lg:py-3   flex items-center justify-between ">
 
 
     {/** right side */}

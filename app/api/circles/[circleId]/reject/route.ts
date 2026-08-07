@@ -17,9 +17,14 @@ export async function POST(
 
     const userId = await getCurrentUserId();
 
-    const { circleId } = await params;
+    if (!userId) {
+      return NextResponse.json(
+        { message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
 
-    const { targetUserId } = await req.json();
+    const { circleId } = await params;
 
     const circle = await Circle.findById(circleId);
 
@@ -30,38 +35,54 @@ export async function POST(
       );
     }
 
-    const canManage =
-      circle.owner.toString() === userId ||
-      circle.admins.some(
-        (id: any) => id.toString() === userId
-      ) ||
-      circle.moderators.some(
-        (id: any) => id.toString() === userId
-      );
 
-    if (!canManage) {
+    // Find current user's join request
+    const request = circle.joinRequests.find(
+      (r: any) =>
+        r.user.toString() === userId
+    );
+
+
+    if (!request) {
       return NextResponse.json(
-        { message: "Forbidden" },
-        { status: 403 }
+        {
+          message: "No pending request found"
+        },
+        {
+          status: 404
+        }
       );
     }
 
+
+    // Remove request
     circle.joinRequests =
       circle.joinRequests.filter(
         (r: any) =>
-          r.user.toString() !== targetUserId
+          r.user.toString() !== userId
       );
+
 
     await circle.save();
 
+
     return NextResponse.json({
       success: true,
-      message: "Request rejected",
+      message: "Request cancelled",
     });
-  } catch {
+
+
+  } catch (error) {
+
+    console.error("CANCEL REQUEST ERROR:", error);
+
     return NextResponse.json(
-      { message: "Server Error" },
-      { status: 500 }
+      {
+        message: "Server Error"
+      },
+      {
+        status: 500
+      }
     );
   }
 }

@@ -12,7 +12,7 @@ import Link from 'next/link'
 import { useTopLoader } from 'nextjs-toploader';
   import { ToastContainer, toast } from 'react-toastify';
 import { useTheme } from "next-themes";
-
+import { useAuth } from "@/contexts/AuthContext";
 
 
 
@@ -28,7 +28,7 @@ function Page() {
   const router = useRouter()
   const loader = useTopLoader();
   const { theme, resolvedTheme } = useTheme();
-
+const { setUser } = useAuth();
 
 
     const wrongcredecials = () => toast("Authentication failed. Please verify your credentials and try again.", {
@@ -60,8 +60,15 @@ function Page() {
       const data = await response.json();
 
       if (response.ok) {
-        // Handle successful login (e.g., redirect to dashboard)
         console.log('Login successful');
+         const res = await fetch("/api/auth/me");
+
+  if (res.ok) {
+  const data = await res.json();
+
+  setUser(data.user);
+}
+
         router.push('/');
         loader.done()
       } else {

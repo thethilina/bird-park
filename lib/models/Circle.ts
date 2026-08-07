@@ -16,7 +16,6 @@ const CircleSchema = new Schema(
       required: true,
     },
 
-    // 👑 ownership system (important upgrade)
     owner: {
       type: Schema.Types.ObjectId,
       ref: "Artist",
@@ -35,7 +34,6 @@ const CircleSchema = new Schema(
       { type: Schema.Types.ObjectId, ref: "Artist" },
     ],
 
-    // 🔥 JOIN CONTROL SYSTEM (IMPORTANT)
     joinType: {
       type: String,
       enum: ["open", "approval"],
@@ -60,7 +58,6 @@ const CircleSchema = new Schema(
       },
     ],
 
-    // 🧠 RULES SYSTEM (your idea)
     rules: [
       {
         title: String,
@@ -68,7 +65,6 @@ const CircleSchema = new Schema(
       },
     ],
 
-    // 🎯 CATEGORY SYSTEM
     category: String,
 
     categoryHistory: [
@@ -79,7 +75,6 @@ const CircleSchema = new Schema(
       },
     ],
 
-    // 🎭 EMOTION SYSTEM (your strongest idea)
     topEmotions: [
       {
         emotion: String,
