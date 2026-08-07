@@ -5,7 +5,7 @@ import NavBar from "@/public/components/NavBar";
 import { AuthProvider } from "@/contexts/AuthContext";
 import NextTopLoader from 'nextjs-toploader';
 import { ToastContainer } from "react-toastify";
-
+import ServiceWorkerRegister from "./sw-register";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,6 +43,7 @@ export default function RootLayout({
 />   <ToastContainer
           style={{ zIndex: 999999 }}
         />
+  <ServiceWorkerRegister />
 
             {children}
             </AuthProvider>
