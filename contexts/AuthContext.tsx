@@ -14,66 +14,107 @@ export function AuthProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [user, setUser] = useState<any>(null);
+
+
+
+
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Sync to local storage wrapper
-  const handleSetUser = (newUser: any) => {
+
+  const handleSetUser = (newUser:any) => {
     setUser(newUser);
-    if (typeof window !== "undefined") {
-      if (newUser) {
-        localStorage.setItem("user_data", JSON.stringify(newUser));
-      } else {
-        localStorage.removeItem("user_data");
-      }
+
+    if(newUser){
+      localStorage.setItem(
+        "user_data",
+        JSON.stringify(newUser)
+      );
+    }else{
+      localStorage.removeItem("user_data");
     }
   };
 
-  useEffect(() => {
-    // 1. Sync from localStorage on mount (hydration safe)
-    const hasLoggedInCookie = document.cookie
-      .split(";")
-      .some((item) => item.trim().startsWith("logged_in="));
 
-    if (!hasLoggedInCookie) {
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("user_data");
+  useEffect(() => {
+  console.log("AUTH PROVIDER MOUNTED");
+
+  const verifySession = async () => {
+    console.log("CHECKING SESSION");
+
+    try {
+      const res = await fetch("/api/auth/me", {
+        credentials: "include",
+      });
+
+      console.log("ME RESPONSE:", res.status);
+
+      if (res.ok) {
+        const data = await res.json();
+        console.log("USER FOUND:", data.user);
+        handleSetUser(data.user);
+      } else {
+        console.log("NO USER");
+        handleSetUser(null);
       }
-      setUser(null);
-      setLoading(false);
-    } else {
-      const cached = localStorage.getItem("user_data");
-      if (cached) {
-        try {
-          setUser(JSON.parse(cached));
-        } catch {
-          localStorage.removeItem("user_data");
-        }
-      }
+
+    } catch(err) {
+      console.log("AUTH ERROR:", err);
+    } finally {
       setLoading(false);
     }
+  };
 
-    // 2. Perform background revalidation
+  verifySession();
+
+}, []);
+
+
+  useEffect(() => {
+
     const verifySession = async () => {
-      try {
-        const res = await fetch("/api/auth/me");
 
-        if (res.ok) {
+      try {
+
+        const res = await fetch("/api/auth/me", {
+          credentials:"include",
+        });
+
+
+        if(res.ok){
+
           const data = await res.json();
+
           handleSetUser(data.user);
-        } else {
-          // Token expired or invalid
+
+        }else{
+
           handleSetUser(null);
+
         }
-      } catch {
-        // Keep offline data on network issue
+
+
+      } catch(error){
+
+        console.log(error);
+
+        handleSetUser(null);
+
+      } finally {
+
+        setLoading(false);
+
       }
+
     };
 
-    if (hasLoggedInCookie) {
-      verifySession();
-    }
+
+    verifySession();
+
+
   }, []);
+
+
 
   return (
     <AuthContext.Provider
@@ -88,5 +129,6 @@ export function AuthProvider({
   );
 }
 
+
 export const useAuth = () =>
-  useContext(AuthContext);
+useContext(AuthContext);

@@ -56,8 +56,15 @@ const { setUser } = useAuth();
         },
         body: JSON.stringify({ email, password }),
       });
+console.log("LOGIN RESPONSE STATUS:", response.status);
+console.log("LOGIN RESPONSE URL:", response.url);
+console.log("LOGIN CONTENT TYPE:", response.headers.get("content-type"));
 
-      const data = await response.json();
+const text = await response.text();
+
+console.log("LOGIN RESPONSE BODY:", text);
+
+const data = JSON.parse(text);
 
       if (response.ok) {
         console.log('Login successful');

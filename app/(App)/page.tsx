@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import Gallery from "@/public/components/Gallery";
+import { useAuth } from "@/contexts/AuthContext";
+
 
 interface Post {
   _id: string;
@@ -18,7 +20,12 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
+const {user, loading: authLoading} = useAuth();
 
+console.log("HOME AUTH:", {
+  user,
+  authLoading
+});
   const loaderRef = useRef<HTMLDivElement | null>(null);
 
   const fetchPosts = useCallback(async () => {

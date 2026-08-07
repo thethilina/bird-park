@@ -71,9 +71,11 @@ export async function POST(req: Request) {
         secure:
           process.env.NODE_ENV ===
           "production",
-        sameSite: "strict",
+        sameSite: "lax",
         maxAge:
           60 * 60 * 24 * 30,
+              path: "/",
+
       }
     );
 
@@ -85,9 +87,10 @@ export async function POST(req: Request) {
         secure:
           process.env.NODE_ENV ===
           "production",
-        sameSite: "strict",
+        sameSite: "lax",
         maxAge:
           60 * 60 * 24 * 30,
+        path: "/",
       }
     );
 

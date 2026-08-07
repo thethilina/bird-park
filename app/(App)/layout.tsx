@@ -1,19 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import NavBar from "@/public/components/NavBar";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Bird Park",
@@ -22,30 +9,19 @@ export const metadata: Metadata = {
   themeColor: "#000000",
 };
 
-export default function RootLayout({
+export default function AppLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <head>
-      </head>
-      <body className="min-h-full flex flex-col  ">
-    
-        <div className="flex flex-1">
-          
-          <div className="flex-1">
-            <NavBar  />
-            <div className="xl:px-15 lg:px-10 md:px-5 sm:px-2 ">
-            {children}
-            </div>
-          </div>
+    <div className="flex flex-1">
+      <div className="flex-1">
+        <NavBar />
+        <div className="xl:px-15 lg:px-10 md:px-5 sm:px-2 ">
+          {children}
         </div>
-      </body>
-    </html>
+      </div>
+    </div>
   );
 }

@@ -109,7 +109,7 @@ export default function NotificationDropdown() {
   };
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative " ref={dropdownRef}>
       <div className="relative cursor-pointer" onClick={handleToggle}>
         <IoMailSharp className="dark:text-[#BEC9F4] text-gray-700 size-7 lg:size-8 transition-transform hover:scale-105" />
         {unreadCount > 0 && (
@@ -120,7 +120,7 @@ export default function NotificationDropdown() {
       </div>
 
       {isOpen && (
-        <div className="absolute right-0 mt-3 w-80 max-h-[400px] overflow-y-auto bg-(--color-background) dark:bg-[#0e0e14] border border-(--border) dark:border-(--borderdark) rounded-xl shadow-2xl z-[250] flex flex-col font-sans [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <div className="absolute right-0 mt-6 w-80 max-h-[400px] overflow-y-auto bg-(--color-background) dark:bg-[#0e0e14] border border-(--border) dark:border-(--borderdark) rounded-xl shadow-2xl z-[250] flex flex-col font-sans [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <div className="p-4 font-bold text-lg border-b border-(--border) dark:border-(--borderdark) sticky top-0 bg-(--color-background) dark:bg-[#0e0e14] z-10 flex justify-between items-center">
             <span>Notifications</span>
           </div>

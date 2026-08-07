@@ -7,6 +7,8 @@ import NextTopLoader from 'nextjs-toploader';
 import { ToastContainer } from "react-toastify";
 import ServiceWorkerRegister from "./sw-register";
 
+console.log("ROOT LAYOUT LOADED");
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -19,10 +21,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Bird Park",
-  description:
-    "For artists, by artists. A social media platform for sharing and discovering art.",
+  description: "A sanctuary for artists.",
+  manifest: "/manifest.webmanifest",
+  themeColor: "#000000",
 };
-
 export default function RootLayout({
   children,
 }: Readonly<{
