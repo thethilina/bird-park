@@ -91,7 +91,7 @@ function MobileTopNavbar() {
 
   return (
     
-    <nav className="sticky sm:hidden xl:px-15 lg:px-10 md:px-5 px-5   z-50 py-3  bg-(--color-background) dark:bg-(--background)  border-(--border)    w-full top-0 border-b-2    flex items-center justify-between ">
+    <nav className="sticky gap-x-1 sm:hidden xl:px-15 lg:px-10 md:px-5 px-2   z-50 py-3  bg-(--color-background) dark:bg-(--background)  border-(--border)    w-full top-0 border-b-2    flex items-center justify-between ">
 
 
     {/** right side */}
@@ -111,11 +111,11 @@ function MobileTopNavbar() {
 
     <div className="relative ">
       <IoMdSearch className="absolute right-3 top-1 size-7  " />
-      <input placeholder="Explore..." type="text" className="font-sans bg-(--colorbg) dark:bg-(--colorbgdark) border border-(--border) dark:border-(--borderdark)   rounded-full py-1.5 px-4" />
+      <input placeholder="Explore..." type="text" className="font-sans bg-(--colorbg) dark:bg-(--colorbgdark) border border-(--border) dark:border-(--borderdark)    rounded-full py-1.5 px-4" />
     </div>
 
     {/** left side */}
-    <div className="flex items-center gap-x-5 lg:gap-x-7 color-(--primary) dark:color-(--primarydark) ">
+    <div className="flex items-center gap-x-2 lg:gap-x-7 color-(--primary) dark:color-(--primarydark) ">
 
  
 
@@ -123,7 +123,7 @@ function MobileTopNavbar() {
     
     <NotificationDropdown />
 
-    <Image ref={avatarRef} onClick={() => setIsDropdownOpen(!isDropdownOpen)} src={user?.profileImage || userData.avatar} width={36} height={36} alt="user avatar" className="  w-7 lg:w-9 rounded-full border border-white cursor-pointer" />
+    <Image ref={avatarRef} onClick={() => setIsDropdownOpen(!isDropdownOpen)} src={user?.profileImage || userData.avatar} width={36} height={36} alt="user avatar" className="  w-8 h-8 object-cover lg:w-9 rounded-full border border-white cursor-pointer" />
     </div>
 
     {/** dropdown */}
