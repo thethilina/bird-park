@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "../globals.css";
 import NavBar from "@/public/components/NavBar";
+import MoobileNav from "@/public/components/MobileNav";
 
 export const metadata: Metadata = {
   title: "Bird Park",
@@ -21,6 +22,8 @@ export default function AppLayout({
         <div className="xl:px-15 lg:px-10 md:px-5 sm:px-2 ">
           {children}
         </div>
+                <MoobileNav />
+
       </div>
     </div>
   );

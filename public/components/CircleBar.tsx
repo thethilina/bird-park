@@ -42,6 +42,7 @@ interface CircleBarProps {
   permissions: Permissions;
 
   hasPendingRequest: boolean;
+  postCreateOpen : (isOpen: boolean) => void;
 
 }
 
@@ -60,7 +61,7 @@ interface Permissions {
   isMember: boolean;
 }
 
-function CircleBar({ circle, role, permissions ,hasPendingRequest
+function CircleBar({ circle, role, permissions ,hasPendingRequest ,postCreateOpen
  }: CircleBarProps) {
 
    const [menuOpen,setMenuOpen] = useState(false);
@@ -397,7 +398,7 @@ const dropdownItemClass = "flex items-center w-full text-left px-4 py-2 cursor-p
 
             <button
 
-              onClick={goToCreatePost}
+              onClick={postCreateOpen.bind(null,true)}
 
               className="bg-(--colorbg) dark:bg-(--colorbgdark) py-1 border px-4 rounded-full text-xl items-center gap-x-3 flex cursor-pointer transition-colors hover:bg-(--hover) dark:hover:bg-(--hoverdark)"
 
@@ -500,9 +501,7 @@ const dropdownItemClass = "flex items-center w-full text-left px-4 py-2 cursor-p
                 {
                   role === "member" && (
                     <>
-                      <button onClick={goToUploadArtwork} className={dropdownItemClass}>
-                        <FaCloudUploadAlt className="mr-2" size={18} />Upload Artwork
-                      </button>
+                    
                       <button onClick={goToMyPosts} className={dropdownItemClass}>
                         <FaRegListAlt className="mr-2" size={16} />My Posts
                       </button>
