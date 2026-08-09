@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "react-toastify";
 import {
@@ -16,10 +16,16 @@ import {
   IoFlagOutline,
   IoGridOutline,
   IoTimeOutline,
+  IoCogOutline,
 } from "react-icons/io5";
 import Link from "next/link";
 
-type Tab = "overview" | "members" | "requests" | "reports" | "posts";
+type Tab = "overview" | "members" | "requests" | "reports" | "posts" | "settings";
+
+interface CircleRule {
+  title: string;
+  description: string;
+}
 
 interface CircleData {
   _id: string;
@@ -35,6 +41,8 @@ interface CircleData {
   posts?: any[];
   category?: string;
   joinType?: string;
+  description?: string;
+  rules?: CircleRule[];
 }
 
 interface Post {
@@ -49,14 +57,22 @@ interface Post {
 
 export default function AdminDashboard() {
   const { circleid } = useParams<{ circleid: string }>();
+  const searchParams = useSearchParams();
   const { user } = useAuth();
   const router = useRouter();
 
   const [circle, setCircle] = useState<CircleData | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<Tab>("overview");
+  const [activeTab, setActiveTab] = useState<Tab>((searchParams?.get("tab") as Tab) || "overview");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+
+  // Settings state
+  const [editName, setEditName] = useState("");
+  const [editDesc, setEditDesc] = useState("");
+  const [editJoinType, setEditJoinType] = useState("open");
+  const [editRules, setEditRules] = useState<CircleRule[]>([]);
+  const [transferTargetId, setTransferTargetId] = useState("");
 
   const fetchCircle = useCallback(async () => {
     try {
@@ -90,12 +106,20 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (!circle || !user) return;
-    const isAdmin =
-      (circle.owner?._id || circle.owner)?.toString() === user._id ||
-      circle.admins.some((a: any) => (a._id || a).toString() === user._id);
-    if (!isAdmin) {
-      toast.error("Admin access required");
+    const isOwner = (circle.owner?._id || circle.owner)?.toString() === user._id;
+    const isAdmin = circle.admins.some((a: any) => (a._id || a).toString() === user._id);
+    const isMod = circle.moderators.some((m: any) => (m._id || m).toString() === user._id);
+    
+    if (!isOwner && !isAdmin && !isMod) {
+      toast.error("Dashboard access required");
       router.push(`/Circle/${circleid}`);
+    } else {
+      // Initialize settings state once circle loads
+      setEditName(circle.name || "");
+      setEditDesc(circle.description || "");
+      setEditJoinType(circle.joinType || "open");
+      // @ts-ignore
+      setEditRules(circle.rules || []);
     }
   }, [circle, user, circleid, router]);
 
@@ -172,6 +196,80 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleSaveSettings = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setActionLoading("settings");
+    try {
+      const res = await fetch(`/api/circles/${circleid}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: editName,
+          description: editDesc,
+          joinType: editJoinType,
+          rules: editRules,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Settings saved");
+        fetchCircle();
+      } else {
+        toast.error(data.message || "Failed to save");
+      }
+    } catch {
+      toast.error("Request failed");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleTransferOwnership = async () => {
+    if (!transferTargetId) return toast.error("Select a member");
+    if (!confirm("Are you sure you want to transfer ownership? You will lose Owner privileges.")) return;
+    
+    setActionLoading("transfer");
+    try {
+      const res = await fetch(`/api/circles/${circleid}/transfer`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ targetUserId: transferTargetId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Ownership transferred");
+        window.location.reload();
+      } else {
+        toast.error(data.message || "Failed to transfer");
+      }
+    } catch {
+      toast.error("Request failed");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleDeleteCircle = async () => {
+    if (!confirm("Delete this circle forever? This cannot be undone!")) return;
+    if (!confirm("Are you REALLY sure?")) return;
+    
+    setActionLoading("delete-circle");
+    try {
+      const res = await fetch(`/api/circles/${circleid}`, { method: "DELETE" });
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Circle deleted");
+        router.push("/explore");
+      } else {
+        toast.error(data.message || "Failed to delete");
+      }
+    } catch {
+      toast.error("Request failed");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="pl-0 lg:pl-72 pt-16 flex items-center justify-center min-h-screen bg-[#06060B]">
@@ -187,13 +285,17 @@ export default function AdminDashboard() {
   const pendingRequests = circle.joinRequests?.filter((r: any) => r.status === "pending") || [];
   const pendingReports = circle.reports?.filter((r: any) => r.status === "pending") || [];
 
-  const TABS: { key: Tab; label: string; icon: React.ReactNode; badge?: number }[] = [
-    { key: "overview", label: "Overview", icon: <IoGridOutline size={16} /> },
-    { key: "members", label: "Members", icon: <IoPeopleOutline size={16} />, badge: circle.members.length },
-    { key: "requests", label: "Requests", icon: <IoTimeOutline size={16} />, badge: pendingRequests.length },
-    { key: "reports", label: "Reports", icon: <IoFlagOutline size={16} />, badge: pendingReports.length },
-    { key: "posts", label: "Posts", icon: <IoGridOutline size={16} />, badge: posts.length },
-  ];
+  const isAdminStatus = circle.admins.some((a: any) => (a._id || a).toString() === user?._id);
+  const isModStatus = circle.moderators.some((m: any) => (m._id || m).toString() === user?._id);
+
+  const TABS: { key: Tab; label: string; icon: React.ReactNode; badge?: number; hidden?: boolean }[] = [
+    { key: "overview" as Tab, label: "Overview", icon: <IoGridOutline size={16} /> },
+    { key: "members" as Tab, label: "Members", icon: <IoPeopleOutline size={16} />, badge: circle.members.length, hidden: !(isOwner || isAdminStatus) },
+    { key: "requests" as Tab, label: "Requests", icon: <IoTimeOutline size={16} />, badge: pendingRequests.length },
+    { key: "reports" as Tab, label: "Reports", icon: <IoFlagOutline size={16} />, badge: pendingReports.length },
+    { key: "posts" as Tab, label: "Posts", icon: <IoGridOutline size={16} />, badge: posts.length },
+    { key: "settings" as Tab, label: "Settings", icon: <IoCogOutline size={16} />, hidden: !(isOwner || isAdminStatus) },
+  ].filter(t => !t.hidden);
 
   return (
     <div className="pl-0 lg:pl-72 min-h-screen bg-[#06060B] text-white">
@@ -554,6 +656,161 @@ export default function AdminDashboard() {
                   </button>
                 </div>
               ))
+            )}
+          </div>
+        )}
+
+        {/* ── Settings Tab ── */}
+        {activeTab === "settings" && (
+          <div className="space-y-8">
+            {/* General Settings */}
+            <div className="p-6 rounded-xl border border-white/5 bg-[#141414]">
+              <h2 className="text-xl font-bold mb-4">General Settings</h2>
+              <form onSubmit={handleSaveSettings} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold mb-1 text-gray-300">Circle Name</label>
+                  <input
+                    type="text"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    className="w-full bg-black/30 border border-white/10 rounded-lg p-2.5 text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1 text-gray-300">Description</label>
+                  <textarea
+                    value={editDesc}
+                    onChange={(e) => setEditDesc(e.target.value)}
+                    className="w-full bg-black/30 border border-white/10 rounded-lg p-2.5 text-white h-24"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1 text-gray-300">Join Type</label>
+                  <select
+                    value={editJoinType}
+                    onChange={(e) => setEditJoinType(e.target.value)}
+                    className="w-full bg-black/30 border border-white/10 rounded-lg p-2.5 text-white"
+                  >
+                    <option value="open">Open (Anyone can join)</option>
+                    <option value="approval">Approval (Requires request)</option>
+                  </select>
+                </div>
+
+                <div className="pt-4">
+                  <h3 className="text-lg font-semibold mb-2">Circle Rules</h3>
+                  <div className="space-y-3">
+                    {editRules.map((rule, idx) => (
+                      <div key={idx} className="flex gap-2">
+                        <div className="flex-1 space-y-2">
+                          <input
+                            type="text"
+                            placeholder="Rule Title"
+                            value={rule.title}
+                            onChange={(e) => {
+                              const newRules = [...editRules];
+                              newRules[idx].title = e.target.value;
+                              setEditRules(newRules);
+                            }}
+                            className="w-full bg-black/30 border border-white/10 rounded-lg p-2 text-white"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Rule Description"
+                            value={rule.description}
+                            onChange={(e) => {
+                              const newRules = [...editRules];
+                              newRules[idx].description = e.target.value;
+                              setEditRules(newRules);
+                            }}
+                            className="w-full bg-black/30 border border-white/10 rounded-lg p-2 text-sm text-gray-300"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setEditRules(editRules.filter((_, i) => i !== idx))}
+                          className="px-3 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20"
+                        >
+                          <IoClose size={20} />
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => setEditRules([...editRules, { title: "", description: "" }])}
+                      className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-sm font-semibold text-white"
+                    >
+                      + Add Rule
+                    </button>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-white/10 flex justify-end">
+                  <button
+                    type="submit"
+                    disabled={actionLoading === "settings"}
+                    className="px-6 py-2.5 rounded-lg bg-[#3B5D95] text-white font-bold hover:bg-[#2d4a78] disabled:opacity-50"
+                  >
+                    {actionLoading === "settings" ? "Saving..." : "Save Settings"}
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            {/* Danger Zone (Owner Only) */}
+            {isOwner && (
+              <div className="p-6 rounded-xl border border-red-500/20 bg-red-500/5">
+                <h2 className="text-xl font-bold mb-4 text-red-500">Danger Zone</h2>
+                
+                <div className="space-y-6">
+                  {/* Transfer Ownership */}
+                  <div className="pb-6 border-b border-red-500/20">
+                    <h3 className="font-semibold text-white mb-1">Transfer Ownership</h3>
+                    <p className="text-sm text-red-400 mb-3">
+                      Transfer full control of this circle to another member. You will be demoted to an Admin.
+                    </p>
+                    <div className="flex gap-2">
+                      <select
+                        value={transferTargetId}
+                        onChange={(e) => setTransferTargetId(e.target.value)}
+                        className="flex-1 bg-black/30 border border-red-500/20 rounded-lg p-2.5 text-white"
+                      >
+                        <option value="">Select a member...</option>
+                        {circle.members.map((m: any) => {
+                          const mId = (m._id || m).toString();
+                          if (mId === user?._id) return null;
+                          return (
+                            <option key={mId} value={mId}>
+                              {m.fullName || m.username}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <button
+                        onClick={handleTransferOwnership}
+                        disabled={actionLoading === "transfer" || !transferTargetId}
+                        className="px-4 py-2.5 rounded-lg bg-red-500 hover:bg-red-600 text-white font-bold disabled:opacity-50"
+                      >
+                        Transfer
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Delete Circle */}
+                  <div>
+                    <h3 className="font-semibold text-white mb-1">Delete Circle</h3>
+                    <p className="text-sm text-red-400 mb-3">
+                      Permanently delete this circle and all of its data. This cannot be undone.
+                    </p>
+                    <button
+                      onClick={handleDeleteCircle}
+                      disabled={actionLoading === "delete-circle"}
+                      className="px-6 py-2.5 rounded-lg border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white font-bold transition-colors disabled:opacity-50"
+                    >
+                      Delete Circle
+                    </button>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         )}

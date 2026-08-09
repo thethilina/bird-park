@@ -43,6 +43,7 @@ interface CircleBarProps {
 
   hasPendingRequest: boolean;
   postCreateOpen : (isOpen: boolean) => void;
+  onCreateActivity?: () => void;
 
 }
 
@@ -61,7 +62,7 @@ interface Permissions {
   isMember: boolean;
 }
 
-function CircleBar({ circle, role, permissions ,hasPendingRequest ,postCreateOpen
+function CircleBar({ circle, role, permissions ,hasPendingRequest ,postCreateOpen, onCreateActivity
  }: CircleBarProps) {
 
    const [menuOpen,setMenuOpen] = useState(false);
@@ -532,12 +533,6 @@ const dropdownItemClass = "flex items-center w-full text-left px-4 py-2 cursor-p
                 {
                   role === "moderator" && (
                     <>
-                      <button onClick={goToCreatePost} className={dropdownItemClass}>
-                        <IoMdAddCircle className="mr-2" size={18} />Create Post
-                      </button>
-                      <button className={dropdownItemClass}>
-                        <IoMdAddCircle className="mr-2" size={18} />Create Activity
-                      </button>
                       <button onClick={openRulesModal} className={dropdownItemClass}>
                         <HiOutlineDocumentText className="mr-2" size={20} />View Rules
                       </button>
@@ -549,13 +544,7 @@ const dropdownItemClass = "flex items-center w-full text-left px-4 py-2 cursor-p
                 {
                   role === "admin" && (
                     <>
-                      <button onClick={goToCreatePost} className={dropdownItemClass}>
-                        <IoMdAddCircle className="mr-2" size={18} />Create Post
-                      </button>
-                      <button className={dropdownItemClass}>
-                        <IoMdAddCircle className="mr-2" size={18} />Create Activity
-                      </button>
-                      <button className={dropdownItemClass}>
+                      <button onClick={() => { setMenuOpen(false); router.push(`/Circle/${circle._id}/dashboard?tab=settings`); }} className={dropdownItemClass}>
                         <FaCog className="mr-2" size={16} />Circle Settings
                       </button>
                     </>
@@ -566,13 +555,7 @@ const dropdownItemClass = "flex items-center w-full text-left px-4 py-2 cursor-p
                 {
                   role === "owner" && (
                     <>
-                      <button onClick={goToCreatePost} className={dropdownItemClass}>
-                        <IoMdAddCircle className="mr-2" size={18} />Create Post
-                      </button>
-                      <button className={dropdownItemClass}>
-                        <IoMdAddCircle className="mr-2" size={18} />Create Activity
-                      </button>
-                      <button className={dropdownItemClass}>
+                      <button onClick={() => { setMenuOpen(false); router.push(`/Circle/${circle._id}/dashboard?tab=settings`); }} className={dropdownItemClass}>
                         <FaCog className="mr-2" size={16} />Circle Settings
                       </button>
                     </>

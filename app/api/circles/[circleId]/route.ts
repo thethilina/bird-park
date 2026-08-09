@@ -68,6 +68,58 @@ export async function GET(
   }
 }
 
+export async function PATCH(
+  req: Request,
+  { params }: { params: Promise<{ circleId: string }> }
+) {
+  try {
+    await connectDB();
+    const userId = await getCurrentUserId();
+    const { circleId } = await params;
+
+    const circle = await Circle.findById(circleId);
+    if (!circle) {
+      return NextResponse.json(
+        { message: "Circle not found" },
+        { status: 404 }
+      );
+    }
+
+    // Only Admin or Owner can edit settings
+    const isAdmin =
+      circle.owner.toString() === userId ||
+      circle.admins.some((id: any) => id.toString() === userId);
+
+    if (!isAdmin) {
+      return NextResponse.json(
+        { message: "Forbidden" },
+        { status: 403 }
+      );
+    }
+
+    const { name, description, joinType, rules } = await req.json();
+
+    if (name) circle.name = name;
+    if (description !== undefined) circle.description = description;
+    if (joinType) circle.joinType = joinType;
+    if (rules) circle.rules = rules;
+
+    await circle.save();
+
+    return NextResponse.json({
+      success: true,
+      message: "Circle settings updated",
+      circle,
+    });
+  } catch (error) {
+    console.error("PATCH CIRCLE ERROR:", error);
+    return NextResponse.json(
+      { message: "Server error" },
+      { status: 500 }
+    );
+  }
+}
+
 
 
 export async function DELETE(

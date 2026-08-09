@@ -4,6 +4,7 @@ import connectDB from "../../../lib/db";
 import Artist from "../../../lib/models/Artist";
 import Post from "../../../lib/models/Post";
 import Comment from "../../../lib/models/Comment";
+import SharedPromptActivity from "../../../lib/models/SharedPromptActivity";
 import createNotification from "../../../lib/createNotification";
 
 import { getCurrentUserId } from "../../../lib/getCurrentUser";
@@ -17,27 +18,32 @@ export async function POST(req: Request) {
 
     const {
       postId,
+      activityId,
       body,
       parentComment,
       mentionedUsers,
     } = await req.json();
 
-    if (!postId || !body?.trim()) {
+    if ((!postId && !activityId) || !body?.trim()) {
       return NextResponse.json(
         { message: "Missing fields" },
         { status: 400 }
       );
     }
 
-    const post =
-      await Post.findById(postId);
-
-    if (!post) {
-      return NextResponse.json(
-        { message: "Post not found" },
-        { status: 404 }
-      );
+    let targetDocument;
+    if (postId) {
+      targetDocument = await Post.findById(postId);
+      if (!targetDocument) {
+        return NextResponse.json({ message: "Post not found" }, { status: 404 });
+      }
+    } else {
+      targetDocument = await SharedPromptActivity.findById(activityId);
+      if (!targetDocument) {
+        return NextResponse.json({ message: "Activity not found" }, { status: 404 });
+      }
     }
+
 
     if (parentComment) {
       const parent =
@@ -58,7 +64,8 @@ export async function POST(req: Request) {
 
     const comment =
       await Comment.create({
-        post: postId,
+        post: postId || null,
+        activity: activityId || null,
         author: userId,
         body,
         parentComment:
@@ -66,6 +73,12 @@ export async function POST(req: Request) {
         mentionedUsers:
           mentionedUsers || [],
       });
+
+    if (activityId) {
+      targetDocument.comments.push(comment._id);
+      await targetDocument.save();
+    }
+
 
     const currentUser = await Artist.findById(
       userId,
@@ -75,13 +88,15 @@ export async function POST(req: Request) {
       currentUser?.fullName || currentUser?.username || "Someone";
 
     if (!parentComment) {
-      if (post.author.toString() !== userId) {
+      const targetAuthorId = postId ? targetDocument.author.toString() : targetDocument.creator.toString();
+      
+      if (targetAuthorId !== userId) {
         await createNotification({
-          recipient: post.author,
+          recipient: targetAuthorId,
           sender: userId,
           type: "comment",
-          message: `${senderName} commented on your post.`,
-          entityId: post._id,
+          message: `${senderName} commented on your ${postId ? "post" : "activity"}.`,
+          entityId: targetDocument._id,
         });
       }
     } else {

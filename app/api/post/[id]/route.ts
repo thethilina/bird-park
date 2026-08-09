@@ -5,6 +5,7 @@ import { getCurrentUserId } from "../../../../lib/getCurrentUser";
 import mongoose from "mongoose";
 import "../../../../lib/models/artCollection"
 import "../../../../lib/models/Artist"
+import "../../../../lib/models/Circle"
 export const runtime = "nodejs";
 
 /* -------------------- GET POST -------------------- */
@@ -32,6 +33,10 @@ export async function GET(
       .populate(
         "artCollection",
         "title coverImage"
+      )
+      .populate(
+        "circle",
+        "name joinType"
       );
 
     if (!post) {

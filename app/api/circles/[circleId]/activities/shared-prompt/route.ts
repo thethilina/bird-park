@@ -14,11 +14,37 @@ export async function POST(
     const userId = await getCurrentUserId();
     const { circleId } = await params;
 
-    const { title, prompt, startDate, endDate } = await req.json();
+    const {
+      activityType = "art_jam",
+      title,
+      prompt,
+      promptA,
+      promptB,
+      description,
+      startDate,
+      endDate,
+      maxParticipants,
+      coverImage,
+    } = await req.json();
 
-    if (!title || !prompt || !startDate || !endDate) {
+
+    if (!title || !startDate || !endDate) {
       return NextResponse.json(
-        { message: "Missing fields" },
+        { message: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+
+    if (activityType === "art_jam" && !prompt) {
+      return NextResponse.json(
+        { message: "Art Jam requires a prompt" },
+        { status: 400 }
+      );
+    }
+
+    if (activityType === "prompt_battle" && (!promptA || !promptB)) {
+      return NextResponse.json(
+        { message: "Prompt Battle requires two prompts" },
         { status: 400 }
       );
     }
@@ -47,17 +73,25 @@ export async function POST(
     const activity = await SharedPromptActivity.create({
       circle: circleId,
       creator: userId,
+      activityType,
       title,
-      prompt,
+      description: description || "",
+      prompt: activityType === "art_jam" ? prompt : undefined,
+      promptA: activityType === "prompt_battle" ? promptA : undefined,
+      promptB: activityType === "prompt_battle" ? promptB : undefined,
       startDate,
       endDate,
+      maxParticipants: maxParticipants || null,
+      coverImage: coverImage || null,
     });
+
 
     return NextResponse.json({
       success: true,
       activity,
     });
   } catch (err) {
+    console.error(err);
     return NextResponse.json(
       { message: "Server error" },
       { status: 500 }
@@ -77,14 +111,16 @@ export async function GET(
 
     const activities = await SharedPromptActivity.find({
       circle: circleId,
-    }).sort({ createdAt: -1 });
+    })
+      .populate("submissions.artist", "username fullName profileImage")
+      .sort({ createdAt: -1 });
 
     const now = new Date();
 
     const enriched = activities.map((a) => {
       let status = "upcoming";
 
-      if (now > a.endDate) status = "completed";
+      if (now > a.endDate) status = "ended";
       else if (now >= a.startDate) status = "active";
 
       return {
@@ -97,7 +133,8 @@ export async function GET(
       success: true,
       activities: enriched,
     });
-  } catch {
+  } catch (err) {
+    console.error(err);
     return NextResponse.json(
       { message: "Server error" },
       { status: 500 }

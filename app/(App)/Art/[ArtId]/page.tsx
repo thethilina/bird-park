@@ -10,6 +10,7 @@ import { FaHeart } from "react-icons/fa";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { toast } from "react-toastify";
 import { useAuth } from "@/contexts/AuthContext";
+import { FaLock } from "react-icons/fa";
 
 
 /* ─────────────── helpers ─────────────── */
@@ -673,6 +674,8 @@ export default function Page() {
   const [heartCount, setHeartCount] = useState(0);
   const [heartAnimating, setHeartAnimating] = useState(false);
   const [totalCommentCount, setTotalCommentCount] = useState(0);
+  const [circleRole, setCircleRole] = useState<string | null>(null);
+  const [loadingRole, setLoadingRole] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
 
@@ -729,6 +732,27 @@ export default function Page() {
       fetchComments();
     }
   }, [ArtId]);
+
+  // Fetch circle role if post belongs to a circle
+  useEffect(() => {
+    async function fetchRole() {
+      if (post?.circle?._id) {
+        setLoadingRole(true);
+        try {
+          const res = await fetch(`/api/circles/${post.circle._id}/role`);
+          if (res.ok) {
+            const data = await res.json();
+            setCircleRole(data.role);
+          }
+        } catch (e) {
+          console.error(e);
+        } finally {
+          setLoadingRole(false);
+        }
+      }
+    }
+    fetchRole();
+  }, [post?.circle?._id]);
 
   // Update heart state when user loads
   useEffect(() => {
@@ -828,6 +852,43 @@ export default function Page() {
     }
   }
 
+  if (!post) {
+    return (
+      <div className="min-h-screen flex items-center justify-center dark:bg-(--background)">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#3B5D95]"></div>
+      </div>
+    );
+  }
+
+  if (loadingRole) {
+    return (
+      <div className="min-h-screen flex items-center justify-center dark:bg-(--background)">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#3B5D95]"></div>
+      </div>
+    );
+  }
+
+  // RESTRICTED VIEW FOR NON-MEMBERS
+  if (post.circle && circleRole === "none") {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-50 dark:bg-(--background)">
+        <div className="max-w-md w-full text-center bg-white dark:bg-[#1a1a2e] p-8 rounded-2xl shadow-xl border border-(--border) dark:border-(--borderdark)">
+          <FaLock className="mx-auto text-6xl text-gray-400 mb-6" />
+          <h1 className="text-2xl font-bold mb-4">Members Only</h1>
+          <p className="text-gray-600 dark:text-gray-400 mb-8">
+            This artwork belongs to the private circle <strong>{post.circle.name}</strong> collections. Join the circle to view and interact.
+          </p>
+          <Link
+            href={`/Circle/${post.circle._id}`}
+            className="inline-block px-6 py-3 bg-[#3B5D95] text-white rounded-full font-semibold hover:bg-[#2d4a78] transition-colors"
+          >
+            Go to Circle
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
 
   return (
 
@@ -863,20 +924,33 @@ export default function Page() {
         <div className="flex items-start justify-between w-full">
           <div>
             {/* USER */}
-            <div className="flex items-center lg:text-xl gap-x-3">
-              <Link
-                href={`/Profile/${post?.author?._id}`}
-                className="flex items-center gap-x-3"
-              >
+            <div className="flex items-center gap-x-3 lg:mb-6 lg:border-b lg:border-(--border) lg:pb-4">
+              <Link href={`/Profile/${post.author?._id}`}>
                 <Image
-                  src={post?.author?.profileImage || "/default-profile.png"}
-                  alt={post?.author?.fullName || "artist"}
-                  className="w-10 h-10 lg:w-12 lg:h-12 rounded-full object-cover"
+                  src={post.author?.profileImage || "/default-profile.png"}
+                  alt={post.author?.fullName || "artist"}
+                  className="w-10 h-10 lg:w-12 lg:h-12 rounded-full object-cover border border-(--border)"
                   width={48}
                   height={48}
                 />
-                <span>{post?.author?.fullName}</span>
               </Link>
+              <div className="flex flex-col">
+                <Link
+                  href={`/Profile/${post.author?._id}`}
+                  className="font-bold text-lg hover:underline"
+                >
+                  {post.author?.fullName || "Unknown"}
+                </Link>
+                {post.circle ? (
+                  <span className="text-sm text-[#3B5D95] font-medium">
+                    Art works belongs to <Link href={`/Circle/${post.circle._id}`} className="underline">{post.circle.name}</Link> collections
+                  </span>
+                ) : (
+                  <span className="text-sm text-gray-500">
+                    {timeAgo(post.createdAt)}
+                  </span>
+                )}
+              </div>
             </div>
 
             {/* TITLE */}

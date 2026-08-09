@@ -37,7 +37,7 @@ export async function GET(
     const cursor = searchParams.get("cursor");
     const limit = parseInt(searchParams.get("limit") || "12");
 
-    const query: any = { circle: circleId };
+    const query: any = { circle: circleId, activity: null };
     if (cursor) {
       query._id = { $lt: cursor };
     }
@@ -84,7 +84,7 @@ export async function POST(
     }
 
     const body = await req.json();
-    const { title, type, media, poemStyle, body: postBody, visibility } = body;
+    const { title, type, media, poemStyle, body: postBody, visibility, activityId } = body;
 
     if (!title || !type) {
       return NextResponse.json({ message: "Title and type required" }, { status: 400 });
@@ -98,6 +98,7 @@ export async function POST(
       media,
       poemStyle,
       circle: circleId,
+      activity: activityId || null,
       visibility: visibility === "public" ? "public" : "circle",
     });
 

@@ -101,6 +101,13 @@ const PostSchema = new Schema(
       default: null,
     },
 
+    activity: {
+      type: Schema.Types.ObjectId,
+      ref: "SharedPromptActivity",
+      default: null,
+    },
+
+
 
     visibility: {
       type: String,

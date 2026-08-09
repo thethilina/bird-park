@@ -16,7 +16,7 @@ export async function POST(
     const userId = await getCurrentUserId();
     const { activityId } = await params;
 
-    const { postId } = await req.json();
+    const { postId, chosenPrompt } = await req.json();
 
     const activity = await SharedPromptActivity.findById(activityId);
 
@@ -52,11 +52,14 @@ export async function POST(
       );
     }
 
-    if (post.type !== "art") {
-      return NextResponse.json(
-        { message: "Only art allowed" },
-        { status: 400 }
-      );
+    // Prompt Battle: require chosenPrompt
+    if (activity.activityType === "prompt_battle") {
+      if (!chosenPrompt || !["A", "B"].includes(chosenPrompt)) {
+        return NextResponse.json(
+          { message: "Please choose a prompt (A or B)" },
+          { status: 400 }
+        );
+      }
     }
 
     const alreadySubmitted = activity.submissions.some(
@@ -73,6 +76,7 @@ export async function POST(
     activity.submissions.push({
       artist: userId,
       post: postId,
+      chosenPrompt: activity.activityType === "prompt_battle" ? chosenPrompt : null,
     });
 
     await activity.save();
@@ -87,7 +91,7 @@ export async function POST(
         recipient: activity.creator,
         sender: userId,
         type: "activity_submission",
-        message: `${sender?.fullName || sender?.username || "Someone"} submitted artwork to your activity.`,
+        message: `${sender?.fullName || sender?.username || "Someone"} submitted work to your activity.`,
         entityId: activity._id,
       });
     }

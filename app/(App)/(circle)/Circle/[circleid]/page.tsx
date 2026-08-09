@@ -6,7 +6,9 @@ import CircleBar from "@/public/components/CircleBar";
 import PostCreate from "../../CircleComponents/Postcreate";
 import { FaLock, FaClock, FaUsers } from "react-icons/fa";
 import CircleGallery from "../../CircleComponents/CircleGallery";
+import ActivitySection from "../../CircleComponents/ActivitySection";
 import { AnimatePresence, motion } from "framer-motion";
+
 interface Circle {
   _id: string;
   name: string;
@@ -69,6 +71,7 @@ export default function Page() {
     });
 
   const [loading, setLoading] = useState(true);
+  const [triggerCreateOpen, setTriggerCreateOpen] = useState(0);
 
   useEffect(() => {
     if (!circleid) return;
@@ -130,6 +133,11 @@ export default function Page() {
     role === "admin" ||
     role === "owner";
 
+  const canCreateActivity =
+    role === "owner" ||
+    role === "admin" ||
+    role === "moderator";
+
   return (
     <div className="space-y-10">
 
@@ -139,6 +147,7 @@ export default function Page() {
         permissions={permissions}
         hasPendingRequest={hasPendingRequest}
         postCreateOpen={setIsPostCreateOpen}
+        onCreateActivity={() => setTriggerCreateOpen((n) => n + 1)}
       />
 
       {/* MEMBER CONTENT */}
@@ -162,6 +171,14 @@ export default function Page() {
     </motion.div>
   )}
 </AnimatePresence>
+
+        {/* ── Activities (above Community works) ── */}
+        <ActivitySection
+          circleId={circle._id}
+          canCreateActivity={canCreateActivity}
+          triggerCreate={triggerCreateOpen}
+        />
+
         <CircleGallery circleId={circle._id} />
         </>
       ) : (

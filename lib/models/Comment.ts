@@ -5,8 +5,13 @@ const CommentSchema = new Schema(
     post: {
       type: Schema.Types.ObjectId,
       ref: "Post",
-      required: true,
     },
+
+    activity: {
+      type: Schema.Types.ObjectId,
+      ref: "SharedPromptActivity",
+    },
+
 
     author: {
       type: Schema.Types.ObjectId,

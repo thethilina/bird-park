@@ -14,14 +14,38 @@ const SharedPromptActivitySchema = new Schema(
       required: true,
     },
 
+    activityType: {
+      type: String,
+      enum: ["art_jam", "prompt_battle"],
+      default: "art_jam",
+    },
+
+    coverImage: {
+      type: String,
+    },
+
+
     title: {
       type: String,
       required: true,
     },
 
+    description: {
+      type: String,
+    },
+
+    // Art Jam: single prompt
     prompt: {
       type: String,
-      required: true,
+    },
+
+    // Prompt Battle: two opposing prompts
+    promptA: {
+      type: String,
+    },
+
+    promptB: {
+      type: String,
     },
 
     startDate: {
@@ -32,6 +56,11 @@ const SharedPromptActivitySchema = new Schema(
     endDate: {
       type: Date,
       required: true,
+    },
+
+    maxParticipants: {
+      type: Number,
+      default: null,
     },
 
     submissions: [
@@ -46,13 +75,34 @@ const SharedPromptActivitySchema = new Schema(
           ref: "Post",
           required: true,
         },
+        // For Prompt Battle: which prompt the artist chose
+        chosenPrompt: {
+          type: String,
+          enum: ["A", "B", null],
+          default: null,
+        },
         submittedAt: {
           type: Date,
           default: Date.now,
         },
       },
     ],
+
+    comments: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Comment",
+      },
+    ],
+
+    topEmotions: [
+      {
+        emotion: String,
+        score: Number,
+      },
+    ],
   },
+
   {
     timestamps: true,
   }
