@@ -116,62 +116,182 @@ function Page() {
     { name: "3XL", value: "40px" },
   ];
 
-  const analyzeEmotion = async (
+const analyzeEmotion = async (
   postId: string,
   poem: string
 ) => {
   try {
-    const response = await fetch("/api/emotion/poem", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        poem,
-      }),
-    });
+    // --------------------------------------------------------
+    // Mark AI analysis as processing
+    // --------------------------------------------------------
 
-    if (!response.ok) return;
+    await fetch(
+      `/api/post/${postId}`,
+      {
+        method: "PATCH",
 
-    const data = await response.json();
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
 
-    const top3Emotions =
-      data.emotional_profile.themes.map(
-        (emotion: any) => ({
-          emotion: emotion.name,
-          score: emotion.weight,
-        })
+        body: JSON.stringify({
+          emotionAnalysis: {
+            status: "processing",
+          },
+        }),
+      }
+    );
+
+    // --------------------------------------------------------
+    // Send poem to AI API
+    // --------------------------------------------------------
+
+    const response = await fetch(
+      "/api/emotion/poem",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+
+        body: JSON.stringify({
+          poem,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        "Poem AI analysis failed"
       );
+    }
 
-    await fetch(`/api/post/${postId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        top3Emotions,
-        emotionAnalysis: {
-          status: "completed",
-          completedAt: new Date(),
+    const data =
+      await response.json();
+
+    console.log(
+      "Poem AI response:",
+      data
+    );
+
+    // --------------------------------------------------------
+    // Extract semantic analysis
+    // --------------------------------------------------------
+
+    const analysis =
+      data?.analysis;
+
+    if (!analysis) {
+      throw new Error(
+        "Invalid poem AI response"
+      );
+    }
+
+    const story =
+      analysis.story;
+
+    const cluster =
+      analysis.cluster;
+
+    const matching =
+      analysis.matching;
+
+    if (
+      !story ||
+      !cluster ||
+      !matching
+    ) {
+      throw new Error(
+        "Incomplete poem AI analysis"
+      );
+    }
+
+    // --------------------------------------------------------
+    // Save semantic analysis
+    // --------------------------------------------------------
+
+    await fetch(
+      `/api/post/${postId}`,
+      {
+        method: "PATCH",
+
+        headers: {
+          "Content-Type":
+            "application/json",
         },
-      }),
-    });
 
-    console.log("Poem emotion analysis completed.");
+        body: JSON.stringify({
+          semanticAnalysis: {
+            story,
+            cluster,
+
+            matching: {
+              cluster:
+                matching.cluster,
+
+              embedText:
+                matching.embed_text,
+
+              // Embedding will be generated later.
+              embedding: [],
+            },
+          },
+
+          emotionAnalysis: {
+            status: "completed",
+
+            completedAt:
+              new Date(),
+          },
+        }),
+      }
+    );
+
+    console.log(
+      "Poem semantic analysis completed."
+    );
+
   } catch (err) {
-    console.error(err);
 
-    await fetch(`/api/post/${postId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        emotionAnalysis: {
-          status: "failed",
-        },
-      }),
-    });
+    console.error(
+      "[POEM_ANALYSIS_ERROR]",
+      err
+    );
+
+    // --------------------------------------------------------
+    // Mark AI analysis as failed
+    // --------------------------------------------------------
+
+    try {
+      await fetch(
+        `/api/post/${postId}`,
+        {
+          method: "PATCH",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify({
+            emotionAnalysis: {
+              status: "failed",
+
+              completedAt: null,
+            },
+          }),
+        }
+      );
+    } catch (patchError) {
+
+      console.error(
+        "Failed to update AI status:",
+        patchError
+      );
+    }
   }
 };
 

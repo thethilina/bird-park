@@ -39,42 +39,177 @@ function Page() {
   }, [user?._id]);
 
 
-  const analyzeEmotion = async (postId: string, file: File) => {
-    try {
-      const formData = new FormData();
-      formData.append("image", file);
+const analyzeEmotion = async (
+  postId: string,
+  file: File
+) => {
+  try {
+    // --------------------------------------------------------
+    // Mark AI analysis as processing
+    // --------------------------------------------------------
 
-      const response = await fetch("/api/emotion/art", {
+    await fetch(`/api/post/${postId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        emotionAnalysis: {
+          status: "processing",
+        },
+      }),
+    });
+
+    // --------------------------------------------------------
+    // Send artwork to AI API
+    // --------------------------------------------------------
+
+    const formData = new FormData();
+
+    formData.append(
+      "image",
+      file
+    );
+
+    const response = await fetch(
+      "/api/emotion/art",
+      {
         method: "POST",
         body: formData,
-      });
+      }
+    );
 
-      if (!response.ok) return;
-
-      const data = await response.json();
-
-      const top3Emotions =
-        data.emotional_profile.themes.map((emotion: any) => ({
-          emotion: emotion.name,
-          score: emotion.weight,
-        }));
-
-      await fetch(`/api/post/${postId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          top3Emotions,
-        }),
-      });
-
-      console.log("Emotion analysis complete.");
-    } catch (err) {
-      console.error(err);
+    if (!response.ok) {
+      throw new Error(
+        "Artwork AI analysis failed"
+      );
     }
-  };
 
+    const data = await response.json();
+
+    console.log(
+      "Artwork AI response:",
+      data
+    );
+
+    // --------------------------------------------------------
+    // Extract new semantic analysis
+    // --------------------------------------------------------
+
+    const analysis =
+      data?.analysis;
+
+    if (!analysis) {
+      throw new Error(
+        "Invalid artwork AI response"
+      );
+    }
+
+    const story =
+      analysis.story;
+
+    const cluster =
+      analysis.cluster;
+
+    const matching =
+      analysis.matching;
+
+    if (
+      !story ||
+      !cluster ||
+      !matching
+    ) {
+      throw new Error(
+        "Incomplete artwork AI analysis"
+      );
+    }
+
+    // --------------------------------------------------------
+    // Save semantic analysis to Post
+    // --------------------------------------------------------
+
+    await fetch(
+      `/api/post/${postId}`,
+      {
+        method: "PATCH",
+
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+
+        body: JSON.stringify({
+          semanticAnalysis: {
+            story,
+            cluster,
+
+            matching: {
+              cluster:
+                matching.cluster,
+
+              embedText:
+                matching.embed_text,
+
+              // Do NOT save an embedding yet.
+              // That comes from the embedding model later.
+              embedding: [],
+            },
+          },
+
+          emotionAnalysis: {
+            status: "completed",
+
+            completedAt:
+              new Date(),
+          },
+        }),
+      }
+    );
+
+    console.log(
+      "Artwork semantic analysis completed."
+    );
+
+  } catch (err) {
+
+    console.error(
+      "[ART_ANALYSIS_ERROR]",
+      err
+    );
+
+    // --------------------------------------------------------
+    // Mark analysis as failed
+    // --------------------------------------------------------
+
+    try {
+      await fetch(
+        `/api/post/${postId}`,
+        {
+          method: "PATCH",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify({
+            emotionAnalysis: {
+              status: "failed",
+
+              completedAt: null,
+            },
+          }),
+        }
+      );
+    } catch (patchError) {
+
+      console.error(
+        "Failed to update AI status:",
+        patchError
+      );
+    }
+  }
+};
 
 
 

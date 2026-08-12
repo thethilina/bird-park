@@ -41,40 +41,7 @@ const ArtistSchema = new Schema(
       enum: Object.values(ArtistCategory),
     },
 
-    currentTop3Emotions: [
-      {
-        emotion: String,
-        score: Number,
-      },
-    ],
-
-    categoryHistory: [
-      {
-        category: String,
-        confidence: Number,
-        date: {
-          type: Date,
-          default: Date.now,
-        },
-      },
-    ],
-
-    emotionHistory: [
-      {
-        emotions: [
-          {
-            emotion: String,
-            score: Number,
-          },
-        ],
-
-        date: {
-          type: Date,
-          default: Date.now,
-        },
-      },
-    ],
-
+ 
     
      observers: [
   {

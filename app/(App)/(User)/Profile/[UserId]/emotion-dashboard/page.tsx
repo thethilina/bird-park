@@ -9,7 +9,7 @@ export default function EmotionDashboard() {
 
   const [data, setData] = useState<any>({
     posts: [],
-    topEmotions: [],
+    topClusters: [],
     timeline: [],
     totalPosts: 0,
   });
@@ -26,19 +26,27 @@ export default function EmotionDashboard() {
         );
 
         if (!res.ok) {
-          throw new Error("Failed to fetch data");
+          throw new Error(
+            "Failed to fetch analytics"
+          );
         }
 
         const json = await res.json();
 
         setData({
           posts: json.posts || [],
-          topEmotions: json.topEmotions || [],
-          timeline: json.timeline || [],
-          totalPosts: json.totalPosts || 0,
+          topClusters:
+            json.topClusters || [],
+          timeline:
+            json.timeline || [],
+          totalPosts:
+            json.totalPosts || 0,
         });
       } catch (err) {
-        console.error("Error loading analytics:", err);
+        console.error(
+          "Error loading analytics:",
+          err
+        );
       } finally {
         setLoading(false);
       }
@@ -49,111 +57,304 @@ export default function EmotionDashboard() {
     }
   }, [UserId]);
 
+  // ----------------------------------------------------------
+  // Loading
+  // ----------------------------------------------------------
+
   if (loading) {
     return (
       <div className="p-10 text-white">
-        Loading emotion dashboard...
+        Loading creative profile...
       </div>
     );
   }
 
-  return (
-    <div className="p-6 flex gap-6">
+  // ----------------------------------------------------------
+  // Render
+  // ----------------------------------------------------------
 
-      {/* LEFT PANEL */}
+  return (
+    <div className="p-6 flex gap-6 text-white">
+
+      {/* =====================================================
+          LEFT PANEL
+      ===================================================== */}
+
       <div className="w-1/3 space-y-4">
 
         <h1 className="text-2xl font-bold">
-          Emotion Profile
+          Creative Experience Profile
         </h1>
 
-        <div className="bg-gray-900 p-4 rounded-xl">
-          <p>Total Posts: {data.totalPosts}</p>
-        </div>
+        {/* Total Posts */}
 
         <div className="bg-gray-900 p-4 rounded-xl">
-          <h2 className="font-semibold mb-2">
-            Top Emotions
+
+          <p className="text-gray-400 text-sm">
+            Total Creations
+          </p>
+
+          <p className="text-2xl font-bold mt-1">
+            {data.totalPosts}
+          </p>
+
+        </div>
+
+        {/* Top Clusters */}
+
+        <div className="bg-gray-900 p-4 rounded-xl">
+
+          <h2 className="font-semibold mb-3">
+            Recurring Human Experiences
           </h2>
 
-          {data.topEmotions.length === 0 ? (
+          {data.topClusters.length === 0 ? (
+
             <p className="text-gray-400">
-              No emotion data yet
+              No semantic analysis yet
             </p>
+
           ) : (
-            data.topEmotions.map((e: any) => (
-              <div
-                key={e.emotion}
-                className="flex justify-between border-b border-gray-700 py-1"
-              >
-                <span>{e.emotion}</span>
-                <span>{e.count}</span>
-              </div>
-            ))
+
+            <div className="space-y-2">
+
+              {data.topClusters.map(
+                (item: any) => (
+
+                  <div
+                    key={item.cluster}
+                    className="flex justify-between
+                    border-b border-gray-700
+                    py-2"
+                  >
+
+                    <span>
+                      {item.cluster}
+                    </span>
+
+                    <span className="text-gray-400">
+                      {item.count}
+                    </span>
+
+                  </div>
+
+                )
+              )}
+
+            </div>
+
           )}
+
         </div>
+
       </div>
 
-      {/* RIGHT PANEL */}
+
+      {/* =====================================================
+          RIGHT PANEL
+      ===================================================== */}
+
       <div className="w-2/3 space-y-4">
 
         <h2 className="text-xl font-bold">
-          Emotion Timeline
+          Creative Journey
         </h2>
 
         {data.posts.length === 0 ? (
+
           <p className="text-gray-400">
-            No posts yet
+            No creations yet
           </p>
+
         ) : (
+
           <div className="space-y-4">
 
-            {data.posts.map((post: any) => {
-              const emotion =
-                data.timeline.find(
-                  (t: any) =>
-                    t.postId === post._id
-                )?.emotion || "unknown";
+            {data.posts.map(
+              (post: any) => {
 
-              return (
-                <div
-                  key={post._id}
-                  className="bg-gray-900 rounded-xl p-4 flex gap-4"
-                >
+                // ------------------------------------------------
+                // Find timeline entry
+                // ------------------------------------------------
 
-                  {/* IMAGE */}
-                  <div className="w-24 h-24 relative">
-                    <Image
-                      src={post.media?.url}
-                      alt={post.title}
-                      fill
-                      className="object-cover rounded-lg"
-                    />
+                const timelineItem =
+                  data.timeline.find(
+                    (item: any) =>
+                      String(item.postId) ===
+                      String(post._id)
+                  );
+
+                const cluster =
+                  timelineItem?.cluster ||
+                  post.semanticAnalysis?.cluster ||
+                  "Awaiting analysis";
+
+                const story =
+                  timelineItem?.story ||
+                  post.semanticAnalysis?.story ||
+                  null;
+
+                // ------------------------------------------------
+                // Render post
+                // ------------------------------------------------
+
+                return (
+                  <div
+                    key={post._id}
+                    className="bg-gray-900
+                    rounded-xl
+                    p-4
+                    flex gap-4"
+                  >
+
+                    {/* =================================================
+                        MEDIA
+                    ================================================= */}
+
+                    {post.type === "art" &&
+                    post.media?.url ? (
+
+                      <div
+                        className="
+                        w-24
+                        h-24
+                        relative
+                        flex-shrink-0
+                        "
+                      >
+
+                        <Image
+                          src={
+                            post.media.url
+                          }
+                          alt={
+                            post.title
+                          }
+                          fill
+                          className="
+                          object-cover
+                          rounded-lg
+                          "
+                        />
+
+                      </div>
+
+                    ) : (
+
+                      <div
+                        className="
+                        w-24
+                        h-24
+                        flex-shrink-0
+                        rounded-lg
+                        bg-gray-800
+                        flex
+                        items-center
+                        justify-center
+                        text-gray-400
+                        "
+                      >
+
+                        <span className="text-sm">
+                          Poem
+                        </span>
+
+                      </div>
+
+                    )}
+
+
+                    {/* =================================================
+                        INFO
+                    ================================================= */}
+
+                    <div
+                      className="
+                      flex
+                      flex-col
+                      justify-center
+                      min-w-0
+                      "
+                    >
+
+                      {/* Title */}
+
+                      <h3
+                        className="
+                        font-semibold
+                        truncate
+                        "
+                      >
+                        {post.title}
+                      </h3>
+
+
+                      {/* Type + Date */}
+
+                      <p
+                        className="
+                        text-sm
+                        text-gray-400
+                        mt-1
+                        "
+                      >
+
+                        {post.type === "art"
+                          ? "Artwork"
+                          : "Poem"}
+
+                        {" · "}
+
+                        {new Date(
+                          post.createdAt
+                        ).toDateString()}
+
+                      </p>
+
+
+                      {/* Cluster */}
+
+                      <span
+                        className="
+                        mt-2
+                        text-blue-400
+                        text-sm
+                        "
+                      >
+                        {cluster}
+                      </span>
+
+
+                      {/* AI Story */}
+
+                      {story && (
+
+                        <p
+                          className="
+                          text-sm
+                          text-gray-400
+                          mt-2
+                          line-clamp-2
+                          "
+                        >
+                          {story}
+                        </p>
+
+                      )}
+
+                    </div>
+
                   </div>
+                );
+              }
+            )}
 
-                  {/* INFO */}
-                  <div className="flex flex-col justify-center">
-                    <h3 className="font-semibold">
-                      {post.title}
-                    </h3>
-
-                    <p className="text-sm text-gray-400">
-                      {new Date(
-                        post.createdAt
-                      ).toDateString()}
-                    </p>
-
-                    <span className="mt-1 text-blue-400">
-                      {emotion}
-                    </span>
-                  </div>
-
-                </div>
-              );
-            })}
           </div>
+
         )}
+
       </div>
+
     </div>
   );
 }
