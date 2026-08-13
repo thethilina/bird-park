@@ -53,9 +53,7 @@ function CircleSideBar() {
             <Link href="/Circle" className='flex items-center gap-x-4 py-2.5 px-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors dark:text-gray-200'>
               <FaCompass className='size-5 text-gray-500 dark:text-gray-400' /> Discover
             </Link>
-            <button className='flex items-center gap-x-4 py-2.5 px-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors cursor-pointer text-left dark:text-gray-200'>
-              <FaRegCircleDot className='size-5 text-gray-500 dark:text-gray-400' /> Your Circles
-            </button>
+          
             <Link
               href="/Circle/create"
               className='flex items-center gap-x-4 py-2.5 px-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors cursor-pointer text-left dark:text-gray-200'
