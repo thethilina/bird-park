@@ -92,7 +92,7 @@ function MobileTopNavbar() {
   }, [isDropdownOpen, isMenuOpen]);
 
   return (
-    <nav className="sticky sm:hidden z-50 py-2.5 px-3 xs:px-4 bg-(--color-background) dark:bg-(--background) border-(--border) w-full top-0 border-b-2 flex items-center gap-x-2 justify-between">
+    <nav className="sticky sm:hidden z-50 py-2 px-4  xs:px-4 bg-(--color-background) dark:bg-(--background) border-(--border) w-full top-0 border-b-2 flex items-center gap-x-2 justify-between">
 
       {/* left: hamburger + logo */}
       <div className="flex items-center gap-x-2 shrink-0">
@@ -102,14 +102,14 @@ function MobileTopNavbar() {
       </div>
 
       {/* center: search - flexes, never overflows */}
-      <div className="relative flex-1 min-w-0 max-w-[220px] xs:max-w-none">
+      <form className="relative flex-1 min-w-0 max-w-[150px] xs:max-w-none">
         <IoMdSearch className="absolute right-3 top-1/2 -translate-y-1/2 size-5" />
         <input
           placeholder="Explore..."
           type="text"
           className="font-sans bg-(--colorbg) dark:bg-(--colorbgdark) border border-(--border) dark:border-(--borderdark) rounded-full py-1.5 pl-4 pr-9 w-full min-w-0 text-sm"
         />
-      </div>
+      </form>
 
       {/* right: notifications + avatar */}
       <div className="flex items-center gap-x-2.5 shrink-0 color-(--primary) dark:color-(--primarydark)">

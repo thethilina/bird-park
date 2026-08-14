@@ -93,7 +93,7 @@ function NavBar() {
 
   return (
     
-    <nav className="sticky py-5  bottom-0 sm:hidden   z-50 px-10 bg-(--color-background) dark:bg-(--background)  border-(--border)  lg:pt-5  w-full  border-b-2   lg:py-3   flex items-center justify-between ">
+    <nav className="fixed py-5  bottom-0 sm:hidden   z-50 px-10 bg-(--color-background) dark:bg-(--background)  border-(--border)  lg:pt-5  w-full  border-b-2   lg:py-3   flex items-center justify-between ">
 
 
     {/** right side */}

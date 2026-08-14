@@ -20,7 +20,7 @@ export default function AppLayout({
       <div className="flex-1">
         <NavBar />
         <MobileTopNavbar />
-        <div className="xl:px-15 lg:px-10 md:px-5 sm:px-2 ">
+        <div className="xl:px-15 lg:px-10     md:px-5 sm:px-2 ">
           {children}
         </div>
                 <MoobileNav />
