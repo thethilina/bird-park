@@ -348,23 +348,23 @@ const analyzeEmotion = async (
   };
 
   return (
-    <div className="">
+    <div className="px-3 sm:px-0 pb-15">
 
-      <div className="flex flex-col md:flex-row gap-4 mb-5">
+      <div className="flex flex-col md:flex-row gap-3 sm:gap-4 mb-4 sm:mb-5">
         <input
           placeholder="Title"
           value={title}
           onChange={(e) => { setTitle(e.target.value) }}
-          className="flex-1 rounded-xl border-2 border-dotted border-(--border) bg-(--colorbg) px-4 py-2 text-2xl dark:bg-(--colorbgdark)"
+          className="flex-1 min-w-0 rounded-xl border-2 border-dotted border-(--border) bg-(--colorbg) px-3 sm:px-4 py-2 text-lg sm:text-2xl dark:bg-(--colorbgdark)"
         />
 
         {/* Collection picker */}
-        <div className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-dotted border-(--border) bg-(--colorbg) dark:bg-(--colorbgdark)">
-          <label className="text-lg font-medium whitespace-nowrap">Add to Collection:</label>
+        <div className="flex flex-wrap items-center gap-2 px-3 sm:px-4 py-2 rounded-xl border-2 border-dotted border-(--border) bg-(--colorbg) dark:bg-(--colorbgdark)">
+          <label className="text-sm sm:text-lg font-medium whitespace-nowrap">Add to Collection:</label>
           <select
             value={selectedCollection}
             onChange={(e) => setSelectedCollection(e.target.value)}
-            className="p-1 text-lg border rounded bg-transparent border-(--border) dark:text-white text-black min-w-[150px]"
+            className="flex-1 min-w-[120px] p-1 text-sm sm:text-lg border rounded bg-transparent border-(--border) dark:text-white text-black"
           >
             <option value="">None</option>
             {collections.map((c) => (
@@ -376,7 +376,7 @@ const analyzeEmotion = async (
 
           <button
             onClick={() => setShowCreateCollectionModal(true)}
-            className="ml-auto flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-blue-500 hover:text-blue-600 bg-blue-500/10 hover:bg-blue-500/20 rounded-lg transition-colors"
+            className="ml-auto flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-sm font-medium text-blue-500 hover:text-blue-600 bg-blue-500/10 hover:bg-blue-500/20 rounded-lg transition-colors"
           >
             <span className="text-lg leading-none">+</span> New
           </button>
@@ -390,13 +390,13 @@ const analyzeEmotion = async (
         onChange={handleFileChange}
         style={{ display: 'none' }}
       />
-      {art === null ? <div onClick={handleIconClick} className=" hover:cursor-pointer w-full text-xl gap-y-3 items-center justify-center flex flex-col h-130 rounded-xl border-2 border-dotted border-(--border) bg-(--colorbg) dark:bg-(--colorbgdark)">
-        <IoCloudUpload size={40} />
+      {art === null ? <div onClick={handleIconClick} className=" hover:cursor-pointer w-full text-base sm:text-xl gap-y-2 sm:gap-y-3 items-center justify-center flex flex-col h-64 sm:h-96 md:h-130 rounded-xl border-2 border-dotted border-(--border) bg-(--colorbg) dark:bg-(--colorbgdark)">
+        <IoCloudUpload size={32} className="sm:w-10 sm:h-10" />
         <p>Upload your art</p>
 
       </div> : <>
 
-        <div className="relative w-full text-xl gap-y-3 items-center justify-center flex flex-col h-130 rounded-xl border-2 border-dotted border-(--border) bg-(--colorbg) dark:bg-(--colorbgdark)">
+        <div className="relative w-full text-base sm:text-xl gap-y-2 sm:gap-y-3 items-center justify-center flex flex-col h-64 sm:h-96 md:h-130 rounded-xl border-2 border-dotted border-(--border) bg-(--colorbg) dark:bg-(--colorbgdark)">
           <button
             onClick={handleRemoveArt}
             className="absolute top-2  hover:cursor-pointer right-2 z-10 flex items-center justify-center rounded-full bg-black/60 p-1.5 text-white hover:bg-black/80"
@@ -414,8 +414,8 @@ const analyzeEmotion = async (
 
       </>}
 
-      <div className="flex items-center justify-end w-full p-2 mt-4 text-right">
-        <button onClick={uploadArt} className="px-4 text-[#141414] py-2 bg-[#e6f0f0] text-lg rounded-4xl hover:cursor-pointer hover:bg-[#979ea0] font-bold">Upload</button>
+      <div className="flex items-center justify-center sm:justify-end w-full p-2 mt-4 text-right">
+        <button onClick={uploadArt} className="w-full sm:w-auto px-4 text-[#141414] py-2 bg-[#e6f0f0] text-lg rounded-4xl hover:cursor-pointer hover:bg-[#979ea0] font-bold">Upload</button>
       </div>
 
       {/* Fullscreen Preview */}

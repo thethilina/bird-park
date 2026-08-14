@@ -116,23 +116,17 @@ function Page() {
     { name: "3XL", value: "40px" },
   ];
 
-const analyzeEmotion = async (
-  postId: string,
-  poem: string
-) => {
-  try {
-    // --------------------------------------------------------
-    // Mark AI analysis as processing
-    // --------------------------------------------------------
+  const analyzeEmotion = async (postId: string, poem: string) => {
+    try {
+      // --------------------------------------------------------
+      // Mark AI analysis as processing
+      // --------------------------------------------------------
 
-    await fetch(
-      `/api/post/${postId}`,
-      {
+      await fetch(`/api/post/${postId}`, {
         method: "PATCH",
 
         headers: {
-          "Content-Type":
-            "application/json",
+          "Content-Type": "application/json",
         },
 
         body: JSON.stringify({
@@ -140,87 +134,61 @@ const analyzeEmotion = async (
             status: "processing",
           },
         }),
-      }
-    );
+      });
 
-    // --------------------------------------------------------
-    // Send poem to AI API
-    // --------------------------------------------------------
+      // --------------------------------------------------------
+      // Send poem to AI API
+      // --------------------------------------------------------
 
-    const response = await fetch(
-      "/api/emotion/poem",
-      {
+      const response = await fetch("/api/emotion/poem", {
         method: "POST",
 
         headers: {
-          "Content-Type":
-            "application/json",
+          "Content-Type": "application/json",
         },
 
         body: JSON.stringify({
           poem,
         }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Poem AI analysis failed");
       }
-    );
 
-    if (!response.ok) {
-      throw new Error(
-        "Poem AI analysis failed"
-      );
-    }
+      const data = await response.json();
 
-    const data =
-      await response.json();
+      console.log("Poem AI response:", data);
 
-    console.log(
-      "Poem AI response:",
-      data
-    );
+      // --------------------------------------------------------
+      // Extract semantic analysis
+      // --------------------------------------------------------
 
-    // --------------------------------------------------------
-    // Extract semantic analysis
-    // --------------------------------------------------------
+      const analysis = data?.analysis;
 
-    const analysis =
-      data?.analysis;
+      if (!analysis) {
+        throw new Error("Invalid poem AI response");
+      }
 
-    if (!analysis) {
-      throw new Error(
-        "Invalid poem AI response"
-      );
-    }
+      const story = analysis.story;
 
-    const story =
-      analysis.story;
+      const cluster = analysis.cluster;
 
-    const cluster =
-      analysis.cluster;
+      const matching = analysis.matching;
 
-    const matching =
-      analysis.matching;
+      if (!story || !cluster || !matching) {
+        throw new Error("Incomplete poem AI analysis");
+      }
 
-    if (
-      !story ||
-      !cluster ||
-      !matching
-    ) {
-      throw new Error(
-        "Incomplete poem AI analysis"
-      );
-    }
+      // --------------------------------------------------------
+      // Save semantic analysis
+      // --------------------------------------------------------
 
-    // --------------------------------------------------------
-    // Save semantic analysis
-    // --------------------------------------------------------
-
-    await fetch(
-      `/api/post/${postId}`,
-      {
+      await fetch(`/api/post/${postId}`, {
         method: "PATCH",
 
         headers: {
-          "Content-Type":
-            "application/json",
+          "Content-Type": "application/json",
         },
 
         body: JSON.stringify({
@@ -229,11 +197,9 @@ const analyzeEmotion = async (
             cluster,
 
             matching: {
-              cluster:
-                matching.cluster,
+              cluster: matching.cluster,
 
-              embedText:
-                matching.embed_text,
+              embedText: matching.embed_text,
 
               // Embedding will be generated later.
               embedding: [],
@@ -243,37 +209,25 @@ const analyzeEmotion = async (
           emotionAnalysis: {
             status: "completed",
 
-            completedAt:
-              new Date(),
+            completedAt: new Date(),
           },
         }),
-      }
-    );
+      });
 
-    console.log(
-      "Poem semantic analysis completed."
-    );
+      console.log("Poem semantic analysis completed.");
+    } catch (err) {
+      console.error("[POEM_ANALYSIS_ERROR]", err);
 
-  } catch (err) {
+      // --------------------------------------------------------
+      // Mark AI analysis as failed
+      // --------------------------------------------------------
 
-    console.error(
-      "[POEM_ANALYSIS_ERROR]",
-      err
-    );
-
-    // --------------------------------------------------------
-    // Mark AI analysis as failed
-    // --------------------------------------------------------
-
-    try {
-      await fetch(
-        `/api/post/${postId}`,
-        {
+      try {
+        await fetch(`/api/post/${postId}`, {
           method: "PATCH",
 
           headers: {
-            "Content-Type":
-              "application/json",
+            "Content-Type": "application/json",
           },
 
           body: JSON.stringify({
@@ -283,89 +237,75 @@ const analyzeEmotion = async (
               completedAt: null,
             },
           }),
-        }
-      );
-    } catch (patchError) {
-
-      console.error(
-        "Failed to update AI status:",
-        patchError
-      );
+        });
+      } catch (patchError) {
+        console.error("Failed to update AI status:", patchError);
+      }
     }
-  }
-};
+  };
 
-const handleUpload = async () => {
-  if (!title.trim()) {
-    errorToast("Please enter a title.");
-    return;
-  }
+  const handleUpload = async () => {
+    if (!title.trim()) {
+      errorToast("Please enter a title.");
+      return;
+    }
 
-  if (!poem.trim()) {
-    errorToast("Please write your poem.");
-    return;
-  }
+    if (!poem.trim()) {
+      errorToast("Please write your poem.");
+      return;
+    }
 
-  try {
-    loader.start();
-    setUploading(true);
+    try {
+      loader.start();
+      setUploading(true);
 
-    const res = await fetch("/api/post/poem", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title: title.trim(),
-        body: poem,
-        poemStyle: {
-          fontFamily: font,
-          fontSize,
-          fontColor: textColor,
-          backgroundColor: bgColor,
+      const res = await fetch("/api/post/poem", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        collection: selectedCollection || undefined,
-        visibility,
-      }),
-    });
+        body: JSON.stringify({
+          title: title.trim(),
+          body: poem,
+          poemStyle: {
+            fontFamily: font,
+            fontSize,
+            fontColor: textColor,
+            backgroundColor: bgColor,
+          },
+          collection: selectedCollection || undefined,
+          visibility,
+        }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (!res.ok) {
-      throw new Error(data.message);
+      if (!res.ok) {
+        throw new Error(data.message);
+      }
+
+      analyzeEmotion(data.post._id, poem);
+
+      successToast("Poem uploaded successfully!");
+
+      loader.done();
+
+      setTimeout(() => {
+        router.push(`/Profile/${user?._id}`);
+      }, 1000);
+    } catch (err: any) {
+      console.error(err);
+
+      loader.done();
+
+      errorToast(err.message || "Failed to upload poem.");
+    } finally {
+      setUploading(false);
     }
-
-    analyzeEmotion(
-      data.post._id,
-      poem
-    );
-
-    successToast(
-      "Poem uploaded successfully!"
-    );
-
-    loader.done();
-
-    setTimeout(() => {
-      router.push(`/Profile/${user?._id}`);
-    }, 1000);
-  } catch (err: any) {
-    console.error(err);
-
-    loader.done();
-
-    errorToast(
-      err.message ||
-        "Failed to upload poem."
-    );
-  } finally {
-    setUploading(false);
-  }
-};
+  };
 
   return (
-    <div className="">
-
+    <div className="px-3 sm:px-0 max-w-full overflow-x-hidden pb-15">
       {/* Title */}
       <div className="w-full mb-3">
         <input
@@ -373,70 +313,110 @@ const handleUpload = async () => {
           placeholder="Poem Title..."
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full px-2 py-1 text-2xl font-semibold bg-transparent border-b outline-none border-(--border)"
+          className="w-full px-2 py-1 text-lg sm:text-2xl font-semibold bg-transparent border-b outline-none border-(--border)"
         />
       </div>
 
       {/* Toolbar */}
-      <div className="mb-5 w-full rounded-xl border-2 border-dotted border-(--border) bg-(--colorbg) px-4 py-2 text-2xl dark:bg-(--colorbgdark) flex flex-wrap items-center gap-4 text-base">
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium">Font:</label>
-          <select
-            value={font}
-            onChange={(e) => setFont(e.target.value)}
-            className="p-1 text-sm border rounded bg-transparent border-(--border) dark:text-white text-black"
-          >
-            {fontOptions.map((f, idx) => (
-              <option key={idx} value={f.value} className="text-black">
-                {f.name}
+      <div className="mb-4 sm:mb-5 w-full rounded-xl border-2 border-dotted border-(--border) bg-(--colorbg) px-3 py-3 sm:px-4 sm:py-2 dark:bg-(--colorbgdark) text-sm sm:text-base">
+        {/* Row 1 on mobile: Font + Size share the row, grid on mobile so they never overflow */}
+        <div className="grid grid-cols-2 gap-x-3 gap-y-2 sm:flex sm:flex-wrap sm:items-center sm:gap-4">
+          <div className="flex flex-col gap-1 min-w-0 sm:flex-row sm:items-center sm:gap-2">
+            <label className="text-xs sm:text-sm font-medium">Font</label>
+            <select
+              value={font}
+              onChange={(e) => setFont(e.target.value)}
+              className="w-full p-1.5 sm:p-1 text-xs sm:text-sm border rounded bg-transparent border-(--border) dark:text-white text-black min-w-0"
+            >
+              {fontOptions.map((f, idx) => (
+                <option key={idx} value={f.value} className="text-black">
+                  {f.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-1 min-w-0 sm:flex-row sm:items-center sm:gap-2">
+            <label className="text-xs sm:text-sm font-medium">Size</label>
+            <select
+              value={fontSize}
+              onChange={(e) => setFontSize(e.target.value)}
+              className="w-full p-1.5 sm:p-1 text-xs sm:text-sm border rounded bg-transparent border-(--border) dark:text-white text-black min-w-0"
+            >
+              {sizeOptions.map((s, idx) => (
+                <option key={idx} value={s.value} className="text-black">
+                  {s.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Text / Bg colors: paired on mobile so they sit on their own compact row.
+              FIX: flex-wrap + min-w-0 so this row can never force the page wider
+              than the viewport on small screens. */}
+          <div className="flex flex-wrap items-center gap-2 col-span-2 sm:col-span-1 min-w-0">
+            <div className="flex items-center gap-2 shrink-0">
+              <label className="text-xs sm:text-sm font-medium">Text</label>
+              <input
+                type="color"
+                value={textColor}
+                onChange={(e) => setTextColor(e.target.value)}
+                className="w-7 h-7 sm:w-6 sm:h-6 border rounded cursor-pointer border-(--border) p-0 shrink-0 appearance-none [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch]:rounded"
+              />
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <label className="text-xs sm:text-sm font-medium">Bg</label>
+              <input
+                type="color"
+                value={bgColor}
+                onChange={(e) => setBgColor(e.target.value)}
+                className="w-7 h-7 sm:w-6 sm:h-6 border rounded cursor-pointer border-(--border) p-0 shrink-0 appearance-none [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch]:rounded"
+              />
+            </div>
+
+            <div className="flex items-center gap-2 min-w-0 sm:hidden">
+              <label className="text-xs font-medium whitespace-nowrap">Visibility</label>
+              <select
+                value={visibility}
+                onChange={(e) => setVisibility(e.target.value)}
+                className="p-1.5 text-xs border rounded bg-transparent border-(--border) dark:text-white text-black min-w-0 flex-1"
+              >
+                <option value="public" className="text-black">
+                  Public
+                </option>
+                <option value="circle" className="text-black">
+                  Circle only
+                </option>
+              </select>
+            </div>
+          </div>
+
+          {/* Visibility: hidden here on mobile (rendered above), shown normally on sm+ */}
+          <div className="hidden sm:flex items-center gap-2">
+            <label className="text-xs sm:text-sm font-medium">Visibility:</label>
+            <select
+              value={visibility}
+              onChange={(e) => setVisibility(e.target.value)}
+              className="p-1 text-xs sm:text-sm border rounded bg-transparent border-(--border) dark:text-white text-black"
+            >
+              <option value="public" className="text-black">
+                Public
               </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium">Size:</label>
-          <select
-            value={fontSize}
-            onChange={(e) => setFontSize(e.target.value)}
-            className="p-1 text-sm border rounded bg-transparent border-(--border) dark:text-white text-black"
-          >
-            {sizeOptions.map((s, idx) => (
-              <option key={idx} value={s.value} className="text-black">
-                {s.name}
+              <option value="circle" className="text-black">
+                Circle only
               </option>
-            ))}
-          </select>
+            </select>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium">Text:</label>
-          <input
-            type="color"
-            value={textColor}
-            onChange={(e) => setTextColor(e.target.value)}
-            className="w-6 h-6 border rounded cursor-pointer border-(--border)"
-          />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium">Bg:</label>
-          <input
-            type="color"
-            value={bgColor}
-            onChange={(e) => setBgColor(e.target.value)}
-            className="w-6 h-6 border rounded cursor-pointer border-(--border)"
-          />
-        </div>
-
-        {/* Collection picker */}
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium">Collection:</label>
-          <div className="flex items-center gap-2 border border-(--border) rounded bg-transparent p-1">
+        {/* Collection picker: always its own full-width row for room to breathe */}
+        <div className="flex flex-wrap items-center gap-2 w-full min-w-0 mt-3 pt-3 border-t border-dotted border-(--border) sm:mt-2 sm:pt-2">
+          <label className="text-xs sm:text-sm font-medium whitespace-nowrap shrink-0">Collection:</label>
+          <div className="flex items-center gap-2 border border-(--border) rounded bg-transparent p-1.5 sm:p-1 flex-1 min-w-0">
             <select
               value={selectedCollection}
               onChange={(e) => setSelectedCollection(e.target.value)}
-              className="text-sm bg-transparent outline-none dark:text-white text-black min-w-[100px]"
+              className="text-xs sm:text-sm bg-transparent outline-none dark:text-white text-black min-w-0 flex-1"
             >
               <option value="">None</option>
               {collections.map((c) => (
@@ -445,37 +425,21 @@ const handleUpload = async () => {
                 </option>
               ))}
             </select>
-            <div className="w-[1px] h-4 bg-(--border)"></div>
+            <div className="w-[1px] h-4 bg-(--border) shrink-0"></div>
             <button
               onClick={() => setShowCreateCollectionModal(true)}
-              className="text-sm font-medium text-blue-500 hover:text-blue-600 transition-colors px-1 whitespace-nowrap flex items-center gap-1"
+              className="text-xs sm:text-sm font-medium text-blue-500 hover:text-blue-600 transition-colors px-1 whitespace-nowrap flex items-center gap-1 shrink-0"
               title="Create new collection"
             >
               <span className="text-base leading-none">+</span> New
             </button>
           </div>
         </div>
-
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium">Visibility:</label>
-          <select
-            value={visibility}
-            onChange={(e) => setVisibility(e.target.value)}
-            className="p-1 text-sm border rounded bg-transparent border-(--border) dark:text-white text-black"
-          >
-            <option value="public" className="text-black">
-              Public
-            </option>
-            <option value="circle" className="text-black">
-              Circle only
-            </option>
-          </select>
-        </div>
       </div>
 
       {/* Poem Editor */}
       <div
-        className="w-full gap-y-3 items-center justify-center flex flex-col h-130 rounded-xl border-2 border-dotted border-(--border) p-4"
+        className="w-full gap-y-3 items-center justify-center flex flex-col h-64 sm:h-96 md:h-130 rounded-xl border-2 border-dotted border-(--border) p-3 sm:p-4"
         style={{ backgroundColor: bgColor }}
       >
         <textarea
@@ -488,17 +452,11 @@ const handleUpload = async () => {
       </div>
 
       {/* Buttons */}
-      <div className="flex items-center justify-end w-full p-2 mt-4 text-right gap-3">
-        <button
-          disabled={uploading}
-          className="mr-3 px-4 py-2 opacity-60 cursor-not-allowed"
-        >
-          Draft
-        </button>
+      <div className="flex flex-col-reverse sm:flex-row items-center justify-end w-full p-2 mt-4 text-right gap-3">
         <button
           onClick={handleUpload}
           disabled={uploading}
-          className="px-6 py-2 font-bold bg-[#192942] hover:bg-[#2c456e] text-white rounded-xl flex items-center gap-2 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+          className="w-full sm:w-auto justify-center px-6 py-2 font-bold bg-[#192942] hover:bg-[#2c456e] text-white rounded-xl flex items-center gap-2 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
         >
           <IoCloudUpload />
           {uploading ? "Uploading..." : "Upload"}
