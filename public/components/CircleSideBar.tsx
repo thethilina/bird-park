@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { IoMdSearch } from "react-icons/io";
 import { FaCompass } from "react-icons/fa6";
 import { FaRegCircleDot } from "react-icons/fa6";
@@ -10,6 +11,7 @@ import Link from "next/link";
 function CircleSideBar() {
   const [circles, setCircles] = useState<any[]>([]);
   const [search, setSearch] = useState("");
+  const router = useRouter();
 
   const fetchCircles = async () => {
     try {
@@ -27,9 +29,16 @@ function CircleSideBar() {
     fetchCircles();
   }, []);
 
-  const filtered = circles.filter((c) =>
-    c.name?.toLowerCase().includes(search.toLowerCase())
-  );
+
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== "Enter") return;
+
+    const trimmed = search.trim();
+    if (!trimmed) return;
+
+    router.push(`/Circle/search?q=${encodeURIComponent(trimmed)}`);
+  };
 
   return (
     <>
@@ -42,6 +51,7 @@ function CircleSideBar() {
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={handleSearchKeyDown}
               placeholder="Search circles"
               type="text"
               className="font-sans bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full py-2 px-4 pr-10 w-full  outline-none dark:text-white dark:placeholder-gray-400 focus:border-white/30 transition-colors"
@@ -69,9 +79,9 @@ function CircleSideBar() {
               <h1 className='text-xl font-medium text-gray-500 dark:text-gray-400'>Circles you are in</h1>
             </div>
 
-            {filtered.length > 0 ? (
+            {circles.length > 0 ? (
               <div className="flex flex-col gap-1 max-h-[50vh] overflow-y-auto pr-1">
-                {filtered.map((c) => (
+                {circles.map((c) => (
                   <Link
                     key={c._id}
                     href={`/Circle/${c._id}`}
@@ -92,7 +102,7 @@ function CircleSideBar() {
               </div>
             ) : (
               <p className="text-xs text-gray-400 italic pl-2">
-                {search ? "No circles match your search" : "No circles joined yet"}
+                No circles joined yet
               </p>
             )}
           </div>

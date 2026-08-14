@@ -20,6 +20,7 @@ export async function GET(
 
     const posts = await Post.find({
     author: userId,
+    circle: null,
   })
     .sort({
       createdAt: -1,

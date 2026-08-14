@@ -20,7 +20,10 @@ export async function GET(
       .populate("owner", "username fullName")
       .populate("members", "username fullName profileImage")
       .populate("admins", "username fullName")
-      .populate("moderators", "username fullName");
+      .populate("moderators", "username fullName")
+      .populate("joinRequests.user", "username fullName profileImage")
+      .populate("reports.reporter", "username fullName profileImage")
+      .populate("reports.post", "title");
 
     if (!circle) {
       return NextResponse.json(

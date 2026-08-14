@@ -11,6 +11,7 @@ import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { toast } from "react-toastify";
 import { useAuth } from "@/contexts/AuthContext";
 import { FaLock } from "react-icons/fa";
+import { IoPencil } from "react-icons/io5";
 
 
 /* ─────────────── helpers ─────────────── */
@@ -300,7 +301,7 @@ function CommentItem({
         const data = await res.json();
         setReplyCount(data.replies?.length || 0);
       }
-    } catch {}
+    } catch { }
   }
 
   async function fetchReplies() {
@@ -678,6 +679,13 @@ export default function Page() {
   const [loadingRole, setLoadingRole] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Edit states
+  const [isEditingPost, setIsEditingPost] = useState(false);
+  const [editTitle, setEditTitle] = useState("");
+  const [editBody, setEditBody] = useState("");
+  const [editPoemStyle, setEditPoemStyle] = useState<any>({});
+  const [savingPost, setSavingPost] = useState(false);
+
 
   /* fetch post */
 
@@ -1047,7 +1055,7 @@ export default function Page() {
                 "
 
                 style={{
-                  height:"calc(100vh - 300px)"
+                  height: "calc(100vh - 300px)"
                 }}
 
               >
@@ -1177,7 +1185,7 @@ export default function Page() {
         "
 
         style={{
-          height:"calc(100vh - 100px)"
+          height: "calc(100vh - 100px)"
         }}
 
       >
@@ -1278,7 +1286,7 @@ export default function Page() {
                       transition-opacity
                     "
                   >
-                    <GoComment className="size-5 lg:size-7"/>
+                    <GoComment className="size-5 lg:size-7" />
                   </button>
 
 

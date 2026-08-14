@@ -17,10 +17,39 @@ import {
   IoGridOutline,
   IoTimeOutline,
   IoCogOutline,
+  IoPulseOutline,
+  IoAnalyticsOutline,
 } from "react-icons/io5";
 import Link from "next/link";
 
-type Tab = "overview" | "members" | "requests" | "reports" | "posts" | "settings";
+type Tab = "overview" | "members" | "requests" | "reports" | "posts" | "settings" | "emotions";
+
+interface EmotionEntry {
+  emotion: string;
+  score: number;
+}
+
+interface EmotionData {
+  topEmotions: EmotionEntry[];
+  emotionHistory: { emotions: EmotionEntry[]; date: string }[];
+  memberStats: {
+    _id: string;
+    fullName: string;
+    username: string;
+    profileImage?: string;
+    totalPosts: number;
+    analyzed: number;
+    pending: number;
+    failed: number;
+    topCluster?: string;
+  }[];
+  summary: {
+    totalPosts: number;
+    totalAnalyzed: number;
+    totalPending: number;
+    totalFailed: number;
+  };
+}
 
 interface CircleRule {
   title: string;
@@ -66,6 +95,8 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<Tab>((searchParams?.get("tab") as Tab) || "overview");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [emotionData, setEmotionData] = useState<EmotionData | null>(null);
+  const [emotionLoading, setEmotionLoading] = useState(false);
 
   // Settings state
   const [editName, setEditName] = useState("");
@@ -97,6 +128,16 @@ export default function AdminDashboard() {
       const data = await res.json();
       if (data.success) setPosts(data.posts);
     } catch {}
+  }, [circleid]);
+
+  const fetchEmotions = useCallback(async () => {
+    setEmotionLoading(true);
+    try {
+      const res = await fetch(`/api/circles/${circleid}/emotions`);
+      const data = await res.json();
+      if (data.success) setEmotionData(data);
+    } catch {}
+    finally { setEmotionLoading(false); }
   }, [circleid]);
 
   useEffect(() => {
@@ -294,6 +335,7 @@ export default function AdminDashboard() {
     { key: "requests" as Tab, label: "Requests", icon: <IoTimeOutline size={16} />, badge: pendingRequests.length },
     { key: "reports" as Tab, label: "Reports", icon: <IoFlagOutline size={16} />, badge: pendingReports.length },
     { key: "posts" as Tab, label: "Posts", icon: <IoGridOutline size={16} />, badge: posts.length },
+    { key: "emotions" as Tab, label: "Emotions", icon: <IoPulseOutline size={16} />, hidden: !(isOwner || isAdminStatus) },
     { key: "settings" as Tab, label: "Settings", icon: <IoCogOutline size={16} />, hidden: !(isOwner || isAdminStatus) },
   ].filter(t => !t.hidden);
 
@@ -338,11 +380,25 @@ export default function AdminDashboard() {
 
       <div className="max-w-5xl mx-auto px-4 lg:px-8 py-6">
         {/* Tab Nav */}
-        <div className="flex gap-1 overflow-x-auto pb-1 border-b border-white/10 mb-6">
+        <div className="flex gap-1 overflow-x-auto pb-1 border-b border-white/10 mb-6"
+          onClick={(e) => {
+            // Lazy-load emotions data when switching to emotions tab
+            const btn = (e.target as HTMLElement).closest("button");
+            if (btn?.dataset.tabkey === "emotions" && !emotionData && !emotionLoading) {
+              fetchEmotions();
+            }
+          }}
+        >
           {TABS.map((tab) => (
             <button
               key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
+              data-tabkey={tab.key}
+              onClick={() => {
+                setActiveTab(tab.key);
+                if (tab.key === "emotions" && !emotionData && !emotionLoading) {
+                  fetchEmotions();
+                }
+              }}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors cursor-pointer whitespace-nowrap -mb-px ${
                 activeTab === tab.key
                   ? "border-white text-white"
@@ -656,6 +712,187 @@ export default function AdminDashboard() {
                   </button>
                 </div>
               ))
+            )}
+          </div>
+        )}
+
+        {/* ── Emotions Tab ── */}
+        {activeTab === "emotions" && (
+          <div className="space-y-8">
+            {emotionLoading ? (
+              <div className="flex items-center justify-center py-20">
+                <div className="w-8 h-8 border-2 border-white/20 border-t-white/80 rounded-full animate-spin" />
+              </div>
+            ) : !emotionData ? (
+              <div className="text-center py-16 text-gray-500">
+                <IoPulseOutline size={36} className="mx-auto mb-3 opacity-40" />
+                <p className="text-sm">Could not load emotion data.</p>
+                <button
+                  onClick={fetchEmotions}
+                  className="mt-4 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-xs text-white font-semibold transition-colors cursor-pointer"
+                >
+                  Retry
+                </button>
+              </div>
+            ) : (
+              <>
+                {/* Summary cards */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {[
+                    { label: "Total Posts", value: emotionData.summary.totalPosts, color: "text-white" },
+                    { label: "Analyzed", value: emotionData.summary.totalAnalyzed, color: "text-emerald-400" },
+                    { label: "Pending", value: emotionData.summary.totalPending, color: "text-yellow-400" },
+                    { label: "Failed", value: emotionData.summary.totalFailed, color: "text-red-400" },
+                  ].map((s) => (
+                    <div key={s.label} className="p-5 rounded-2xl border border-white/5 bg-[#141414]">
+                      <p className={`text-3xl font-bold ${s.color}`}>{s.value}</p>
+                      <p className="text-xs uppercase tracking-wider font-semibold text-gray-500 mt-1">{s.label}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Top Emotions */}
+                <div className="p-6 rounded-2xl border border-white/5 bg-[#141414]">
+                  <div className="flex items-center gap-2 mb-6">
+                    <IoAnalyticsOutline size={18} className="text-gray-400" />
+                    <h2 className="text-lg font-bold text-white">Top Themes</h2>
+                    <span className="text-xs text-gray-500 ml-1">(AI semantic clusters from analyzed posts)</span>
+                  </div>
+
+                  {emotionData.topEmotions.length === 0 ? (
+                    <p className="text-sm text-gray-500 italic">No analyzed posts yet. Submit posts to the circle and the AI will detect creative themes.</p>
+                  ) : (
+                    <div className="space-y-3">
+                      {emotionData.topEmotions.map((e, i) => {
+                        const maxScore = Math.max(...emotionData.topEmotions.map((x) => x.score), 1);
+                        const pct = Math.round((e.score / maxScore) * 100);
+                        const hue = (i * 47 + 200) % 360;
+                        return (
+                          <div key={e.emotion}>
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-sm font-medium text-white capitalize">{e.emotion}</span>
+                              <span className="text-xs text-gray-400 font-mono">{e.score.toFixed(2)}</span>
+                            </div>
+                            <div className="h-2 w-full rounded-full bg-white/5 overflow-hidden">
+                              <div
+                                className="h-full rounded-full transition-all duration-700"
+                                style={{
+                                  width: `${pct}%`,
+                                  background: `hsl(${hue}, 70%, 60%)`,
+                                }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
+                {/* Emotion History */}
+                {emotionData.emotionHistory.length > 0 && (
+                  <div className="p-6 rounded-2xl border border-white/5 bg-[#141414]">
+                    <div className="flex items-center gap-2 mb-5">
+                      <IoTimeOutline size={18} className="text-gray-400" />
+                      <h2 className="text-lg font-bold text-white">Emotion History</h2>
+                      <span className="text-xs text-gray-500 ml-1">(latest {emotionData.emotionHistory.length} snapshots)</span>
+                    </div>
+
+                    <div className="space-y-4 max-h-[420px] overflow-y-auto pr-1">
+                      {emotionData.emotionHistory.map((snapshot, si) => {
+                        const topInSnapshot = snapshot.emotions?.slice(0, 3) ?? [];
+                        return (
+                          <div
+                            key={si}
+                            className="flex items-start gap-4 p-4 rounded-xl bg-white/[0.03] border border-white/5"
+                          >
+                            <div className="flex-shrink-0 text-right min-w-[60px]">
+                              <p className="text-[10px] text-gray-600 uppercase tracking-wider font-semibold">
+                                {new Date(snapshot.date).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                              </p>
+                              <p className="text-[10px] text-gray-700">
+                                {new Date(snapshot.date).getFullYear()}
+                              </p>
+                            </div>
+                            <div className="flex-1 flex flex-wrap gap-2">
+                              {topInSnapshot.map((em) => (
+                                <span
+                                  key={em.emotion}
+                                  className="px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-gray-300 border border-white/10"
+                                >
+                                  {em.emotion}
+                                  <span className="ml-1 text-gray-500 font-mono text-[10px]">{em.score.toFixed(1)}</span>
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Member Stats */}
+                <div className="p-6 rounded-2xl border border-white/5 bg-[#141414]">
+                  <div className="flex items-center gap-2 mb-5">
+                    <IoPeopleOutline size={18} className="text-gray-400" />
+                    <h2 className="text-lg font-bold text-white">Member Contributions</h2>
+                  </div>
+
+                  {emotionData.memberStats.length === 0 ? (
+                    <p className="text-sm text-gray-500 italic">No posts yet.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {emotionData.memberStats.map((m) => (
+                        <div
+                          key={m._id}
+                          className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.03] transition-colors"
+                        >
+                          <div className="w-9 h-9 rounded-full overflow-hidden bg-[#2A2A2A] flex-shrink-0 flex items-center justify-center text-sm font-bold text-white">
+                            {m.profileImage ? (
+                              <img src={m.profileImage} alt={m.fullName} className="w-full h-full object-cover" />
+                            ) : (
+                              m.fullName?.[0]?.toUpperCase() || "?"
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-white truncate">{m.fullName}</p>
+                            {m.username && <p className="text-xs text-gray-500">@{m.username}</p>}
+                            {m.topCluster && (
+                              <span className="mt-1 inline-block text-[10px] px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-gray-400 truncate max-w-[160px]">
+                                {m.topCluster}
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-3 text-right flex-shrink-0">
+                            <div>
+                              <p className="text-sm font-bold text-white">{m.totalPosts}</p>
+                              <p className="text-[10px] uppercase tracking-wider text-gray-500">posts</p>
+                            </div>
+                            <div className="flex gap-1">
+                              {m.analyzed > 0 && (
+                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400">
+                                  {m.analyzed} ✓
+                                </span>
+                              )}
+                              {m.pending > 0 && (
+                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-yellow-500/10 text-yellow-400">
+                                  {m.pending} ⏳
+                                </span>
+                              )}
+                              {m.failed > 0 && (
+                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-red-500/10 text-red-400">
+                                  {m.failed} ✗
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </>
             )}
           </div>
         )}

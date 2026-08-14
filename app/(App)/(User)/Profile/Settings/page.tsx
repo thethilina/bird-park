@@ -2,14 +2,16 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import InputFiled from '@/public/components/Tn/InputFiled'
 import { useAuth } from "@/contexts/AuthContext";
-  import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import { useTopLoader } from 'nextjs-toploader';
+import SettingsSkeleton from '@/public/components/SettingsSkeleton';
 
 function page() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user, setUser } = useAuth();
   const [thereisachange , setThereisachange] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [username , setUsername] = useState('');
   const [fullName , setFullName] = useState('');
   const [birthday , setBirthday] = useState('');
@@ -115,12 +117,13 @@ position: "top-right",
   };
 
   useEffect(() => {
-    if (user) {
+    if (user !== undefined && user !== null) {
       setUsername(user.username || '');
       setFullName(user.fullName || '');
       setBirthday(user.birthday ? new Date(user.birthday).toISOString().split('T')[0] : '');
       setBio(user.bio || '');
       setProfileImage(user.profileImage || '');
+      setIsLoading(false);
     }
   }, [user]);
 
@@ -189,6 +192,8 @@ savesuccess()
 
     }
   };
+
+  if (isLoading) return <SettingsSkeleton />;
 
   return (
     <div className='space-y-15  font-sans'>

@@ -4,14 +4,26 @@ import ProfileBar from "@/public/components/ProfileBar";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
+import { IoPencil } from "react-icons/io5";
+import { toast } from "react-toastify";
+import ProfileBarSkeleton from "@/public/components/ProfileBarSkeleton";
 
 
 function Page() {
 
   const { UserId } = useParams();
 
+  const { user: currentUser } = useAuth();
   const [user, setUser] = useState<any>(null);
   const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Edit State
+  const [editingPost, setEditingPost] = useState<any>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editBody, setEditBody] = useState("");
+  const [saving, setSaving] = useState(false);
 
 
   useEffect(() => {
@@ -50,6 +62,8 @@ function Page() {
           error
         );
 
+      } finally {
+        setLoading(false);
       }
 
     };
@@ -67,7 +81,7 @@ function Page() {
     <div className="space-y-5">
 
 
-      <ProfileBar User={user}/>
+      {loading ? <ProfileBarSkeleton /> : <ProfileBar User={user}/>}
 
 
 
@@ -85,16 +99,25 @@ function Page() {
       >
 
 
-      {
+      {loading ? (
+        Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="animate-pulse bg-white/5 border border-white/10 h-[400px] w-full" />
+        ))
+      ) : posts.length === 0 ? (
+        <div className="col-span-full py-20 text-center text-gray-500">
+          <p>No posts yet.</p>
+        </div>
+      ) : (
         posts.map((post)=>{
 
 
           return (
 
-          <Link
-            key={post._id}
-            href={`/Art/${post._id}`}
-          >
+          <div key={post._id} className="relative group">
+            <Link
+              href={`/Art/${post._id}`}
+              className="block h-full"
+            >
 
 
           {
@@ -183,14 +206,109 @@ function Page() {
 
           </Link>
 
-          )
-
-
+            {currentUser?._id === UserId && (
+              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setEditingPost(post);
+                    setEditTitle(post.title || "");
+                    setEditBody(post.body || "");
+                  }}
+                  className="p-2 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors backdrop-blur-sm"
+                >
+                  <IoPencil size={16} />
+                </button>
+              </div>
+            )}
+          </div>
+        );
         })
-      }
+      )}
 
 
       </div>
+
+      {/* Edit Modal */}
+      {editingPost && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-[#141414] border border-white/10 rounded-2xl w-full max-w-md overflow-hidden">
+            <div className="p-5 border-b border-white/10 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-white">Edit {editingPost.type === "poem" ? "Poem" : "Post"}</h2>
+              <button
+                onClick={() => setEditingPost(null)}
+                className="text-gray-400 hover:text-white"
+              >
+                Close
+              </button>
+            </div>
+            <div className="p-5 space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Title</label>
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#3B5D95] transition-colors"
+                />
+              </div>
+              {editingPost.type === "poem" && (
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 uppercase mb-1">Body</label>
+                  <textarea
+                    value={editBody}
+                    onChange={(e) => setEditBody(e.target.value)}
+                    rows={6}
+                    className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#3B5D95] transition-colors resize-none"
+                  />
+                </div>
+              )}
+            </div>
+            <div className="p-5 border-t border-white/10 flex justify-end gap-3 bg-black/20">
+              <button
+                onClick={() => setEditingPost(null)}
+                className="px-5 py-2.5 rounded-xl font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  if (!editTitle.trim()) return toast.error("Title is required");
+                  if (editingPost.type === "poem" && !editBody.trim()) return toast.error("Body is required");
+                  
+                  setSaving(true);
+                  try {
+                    const res = await fetch(`/api/post/${editingPost._id}`, {
+                      method: "PATCH",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        title: editTitle.trim(),
+                        ...(editingPost.type === "poem" && { body: editBody.trim() })
+                      })
+                    });
+                    
+                    if (res.ok) {
+                      toast.success("Post updated successfully");
+                      setPosts(posts.map(p => p._id === editingPost._id ? { ...p, title: editTitle.trim(), body: editingPost.type === "poem" ? editBody.trim() : p.body } : p));
+                      setEditingPost(null);
+                    } else {
+                      toast.error("Failed to update post");
+                    }
+                  } catch (e) {
+                    toast.error("Something went wrong");
+                  } finally {
+                    setSaving(false);
+                  }
+                }}
+                disabled={saving}
+                className="px-5 py-2.5 rounded-xl font-semibold bg-[#3B5D95] text-white hover:bg-[#2d4a78] transition-colors disabled:opacity-50"
+              >
+                {saving ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
 
     </div>

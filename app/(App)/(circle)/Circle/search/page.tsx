@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface Circle {
   _id: string;
@@ -15,57 +15,42 @@ interface Circle {
     score: number;
   }[];
   members?: string[];
+  isMember?: boolean;
+  memberCount?: number;
 }
 
-export default function Page() {
+function SearchResultsContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q") || "";
 
-  const [recommended, setRecommended] = useState<Circle[]>([]);
-  const [suggestions, setSuggestions] = useState<Circle[]>([]);
-
-  const [loadingRecommended, setLoadingRecommended] =
-    useState(true);
-
-  const [loadingSuggestions, setLoadingSuggestions] =
-    useState(true);
+  const [results, setResults] = useState<Circle[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCircles = async () => {
+    const fetchResults = async () => {
+      if (!query) {
+        setResults([]);
+        setLoading(false);
+        return;
+      }
+      
+      setLoading(true);
       try {
-        const [recommendedRes, suggestionsRes] =
-          await Promise.all([
-            fetch("/api/circles/recommended"),
-            fetch("/api/circles/discover"),
-          ]);
-
-        if (recommendedRes.ok) {
-          const data = await recommendedRes.json();
-
-          setRecommended(
-            data.circles || []
-          );
-        }
-
-        if (suggestionsRes.ok) {
-          const data = await suggestionsRes.json();
-
-          setSuggestions(
-            data.circles || []
-          );
+        const res = await fetch(`/api/circles/search?q=${encodeURIComponent(query)}`);
+        if (res.ok) {
+          const data = await res.json();
+          setResults(data.circles || []);
         }
       } catch (error) {
-        console.error(
-          "Failed to fetch circles:",
-          error
-        );
+        console.error("Failed to fetch search results:", error);
       } finally {
-        setLoadingRecommended(false);
-        setLoadingSuggestions(false);
+        setLoading(false);
       }
     };
 
-    fetchCircles();
-  }, []);
+    fetchResults();
+  }, [query]);
 
   const openCircle = (circleId: string) => {
     router.push(`/Circle/${circleId}`);
@@ -73,112 +58,43 @@ export default function Page() {
 
   return (
     <div className="pt-5 px-10 pb-20">
-
-      {/* =====================================================
-          HEADER
-      ===================================================== */}
-
       <div className="mb-10">
         <h1 className="text-3xl font-semibold text-white">
-          Discover Circles
+          Search Results
         </h1>
-
         <p className="mt-2 text-gray-400">
-          Find creative spaces where your interests,
-          emotions and people intersect.
+          Showing results for <span className="text-white font-medium">"{query}"</span>
         </p>
       </div>
 
-
-      {/* =====================================================
-          RECOMMENDED FOR YOU
-      ===================================================== */}
-
-      <section className="mb-12">
-
-        <div className="mb-5">
-          <h2 className="text-xl font-semibold text-white">
-            Circles for You
-          </h2>
-
-          <p className="text-sm text-gray-400 mt-1">
-            Communities that resonate with your creative
-            interests and emotional profile.
-          </p>
-        </div>
-
-
-        {loadingRecommended ? (
-          <CircleSkeleton />
-        ) : recommended.length === 0 ? (
-          <EmptyState
-            text="No personalized circles yet."
-          />
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-
-            {recommended.map((circle) => (
-              <CircleCard
-                key={circle._id}
-                circle={circle}
-                onClick={() =>
-                  openCircle(circle._id)
-                }
-              />
-            ))}
-
-          </div>
-        )}
-
-      </section>
-
-
-      {/* =====================================================
-          MORE SUGGESTIONS
-      ===================================================== */}
-
       <section>
-
-        <div className="mb-5">
-          <h2 className="text-xl font-semibold text-white">
-            More Circles to Explore
-          </h2>
-
-          <p className="text-sm text-gray-400 mt-1">
-            Discover communities connected to people
-            around you.
-          </p>
-        </div>
-
-
-        {loadingSuggestions ? (
+        {loading ? (
           <CircleSkeleton />
-        ) : suggestions.length === 0 ? (
-          <EmptyState
-            text="No more circles to discover."
-          />
+        ) : results.length === 0 ? (
+          <EmptyState text={query ? "No circles found for this search." : "Enter a search term to find circles."} />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-
-            {suggestions.map((circle) => (
+            {results.map((circle) => (
               <CircleCard
                 key={circle._id}
                 circle={circle}
-                onClick={() =>
-                  openCircle(circle._id)
-                }
+                onClick={() => openCircle(circle._id)}
               />
             ))}
-
           </div>
         )}
-
       </section>
-
     </div>
   );
 }
 
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div className="p-10 text-white">Loading...</div>}>
+      <SearchResultsContent />
+    </Suspense>
+  );
+}
 
 /* ============================================================
    CIRCLE CARD
@@ -208,11 +124,8 @@ function CircleCard({
         hover:-translate-y-1
       "
     >
-
       {/* COVER */}
-
       <div className="relative h-36 w-full overflow-hidden bg-[#1c1c1c]">
-
         {circle.image ? (
           <img
             src={circle.image}
@@ -239,14 +152,11 @@ function CircleCard({
               to-[#101010]
             "
           >
-            <span className="text-4xl">
-              ◌
-            </span>
+            <span className="text-4xl">◌</span>
           </div>
         )}
 
         {/* ICON */}
-
         {circle.icon && (
           <div
             className="
@@ -269,28 +179,20 @@ function CircleCard({
             />
           </div>
         )}
-
       </div>
 
-
       {/* CONTENT */}
-
       <div className="p-5">
-
         <div className={circle.icon ? "mt-3" : ""}>
-
           <h3 className="text-lg font-semibold text-white">
             {circle.name}
           </h3>
-
           {circle.category && (
             <span className="mt-1 inline-block text-xs text-gray-500">
               {circle.category}
             </span>
           )}
-
         </div>
-
 
         {circle.description && (
           <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-gray-400">
@@ -298,41 +200,31 @@ function CircleCard({
           </p>
         )}
 
-
         {/* EMOTIONS */}
-
-        {circle.topEmotions &&
-          circle.topEmotions.length > 0 && (
-            <div className="mt-4 flex flex-wrap gap-2">
-
-              {circle.topEmotions
-                .slice(0, 3)
-                .map((emotion) => (
-                  <span
-                    key={emotion.emotion}
-                    className="
-                      rounded-full
-                      bg-white/5
-                      px-3
-                      py-1
-                      text-xs
-                      text-gray-400
-                    "
-                  >
-                    {emotion.emotion}
-                  </span>
-                ))}
-
-            </div>
-          )}
-
+        {circle.topEmotions && circle.topEmotions.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {circle.topEmotions.slice(0, 3).map((emotion) => (
+              <span
+                key={emotion.emotion}
+                className="
+                  rounded-full
+                  bg-white/5
+                  px-3
+                  py-1
+                  text-xs
+                  text-gray-400
+                "
+              >
+                {emotion.emotion}
+              </span>
+            ))}
+          </div>
+        )}
 
         {/* FOOTER */}
-
         <div className="mt-5 flex items-center justify-between">
-
           <span className="text-xs text-gray-500">
-            {circle.members?.length || 0} members
+            {circle.memberCount ?? circle.members?.length ?? 0} members
           </span>
 
           <button
@@ -352,17 +244,13 @@ function CircleCard({
               hover:bg-gray-200
             "
           >
-            Explore
+            {circle.isMember ? "View" : "Explore"}
           </button>
-
         </div>
-
       </div>
-
     </div>
   );
 }
-
 
 /* ============================================================
    LOADING
@@ -371,7 +259,6 @@ function CircleCard({
 function CircleSkeleton() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-
       {[1, 2, 3].map((item) => (
         <div
           key={item}
@@ -384,38 +271,24 @@ function CircleSkeleton() {
             animate-pulse
           "
         >
-
           <div className="h-36 bg-white/5" />
-
           <div className="p-5 space-y-3">
-
             <div className="h-5 w-1/2 rounded bg-white/5" />
-
             <div className="h-3 w-full rounded bg-white/5" />
-
             <div className="h-3 w-4/5 rounded bg-white/5" />
-
             <div className="h-8 w-20 rounded bg-white/5" />
-
           </div>
-
         </div>
       ))}
-
     </div>
   );
 }
-
 
 /* ============================================================
    EMPTY
 ============================================================ */
 
-function EmptyState({
-  text,
-}: {
-  text: string;
-}) {
+function EmptyState({ text }: { text: string }) {
   return (
     <div
       className="
