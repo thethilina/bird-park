@@ -172,11 +172,11 @@ export default function CreateCirclePage() {
   };
 
   return (
-    <div className=" mx-30 my-10 flex flex-col items-center justify-start  px-4 bg-[#06060B] text-white">
+    <div className=" flex flex-col items-center justify-start  pt-5 py-5  px-3 md:px-5 pb-20 bg-[#06060B] text-white">
       {/* Header */}
       <div className="w-full  mb-8">
    
-        <h1 className="text-3xl font-bold">Create a Circle</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold">Create a Circle</h1>
         <p className="text-gray-500 mt-1 text-xl">
           Build a community around your art, share work, and grow together.
         </p>

@@ -72,14 +72,14 @@ export default function Page() {
   };
 
   return (
-    <div className="pt-5 px-10 pb-20">
+    <div className="pt-5  px-3 md:px-5 pb-15 ">
 
       {/* =====================================================
           HEADER
       ===================================================== */}
 
       <div className="mb-10">
-        <h1 className="text-3xl font-semibold text-white">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-white">
           Discover Circles
         </h1>
 
