@@ -26,6 +26,7 @@ function NavBar() {
   const { user } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
     const router = useRouter()
 
   const toggleDarkMode = () => {
@@ -110,10 +111,25 @@ function NavBar() {
 
     {/** search bar */}
 
-    <div className="relative hidden lg:block">
-      <IoMdSearch className="absolute right-3 top-1 size-7  " />
-      <input placeholder="Explore..." type="text" className="font-sans bg-(--colorbg) dark:bg-(--colorbgdark) border border-(--border) dark:border-(--borderdark)   rounded-xl py-1.5 px-4" />
-    </div>
+    <form
+      className="relative hidden lg:block"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+          router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+        }
+      }}
+    >
+      <IoMdSearch className="absolute right-3 top-1/2 -translate-y-1/2 size-6 cursor-pointer" onClick={() => { if (searchQuery.trim()) router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`); }} />
+      <input
+        id="navbar-search-input"
+        placeholder="Explore..."
+        type="text"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="font-sans bg-(--colorbg) dark:bg-(--colorbgdark) border border-(--border) dark:border-(--borderdark) rounded-xl py-1.5 px-4 pr-10"
+      />
+    </form>
 
     {/** left side */}
     <div className="flex items-center gap-x-5 lg:gap-x-7 color-(--primary) dark:color-(--primarydark) ">

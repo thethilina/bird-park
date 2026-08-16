@@ -313,34 +313,34 @@ const hasRules = circle?.rules && circle.rules.length > 0;
 const dropdownItemClass = "flex items-center w-full text-left px-4 py-2 cursor-pointer transition-colors hover:bg-(--hover) dark:hover:bg-(--hoverdark) rounded";
 
   return (
-    <nav className='   z-99 lg:block w-full  bg-(--color-background) dark:bg-(--background)  border-(--border)   flex flex-col items-center    gap-y-5'>
+    <nav className='z-99 lg:block w-full bg-(--color-background) dark:bg-(--background) border-(--border) flex flex-col items-center gap-y-3 sm:gap-y-5'>
   
-  <div className='   space-y-5'>
+  <div className='w-full space-y-3 sm:space-y-5'>
   
    {/**circle bannar */}
-   <Image src={circle?.image} alt='bannar' width={800} height={400} className='sticky  w-full lg:h-40 xl:h-50  object-cover' />
+   <Image src={circle?.image} alt='bannar' width={800} height={400} className='sticky w-full h-28 sm:h-32 md:h-36 lg:h-40 xl:h-50 object-cover' />
 
    
-  <div className='mx-10 py-5 sticky space-y-5 border-b-2 border-(--border)'>
+  <div className='mx-4 sm:mx-6 lg:mx-10 py-3 sm:py-5 sticky space-y-3 sm:space-y-5 border-b-2 border-(--border)'>
     {/**circle name */}
-    <div className='flex gap-x-5  items-center'>
-      <Image src={circle?.icon} width={100} height={100} alt='grpicon' className='w-20 h-20 object-cover rounded-xl' />
-      <h1 className='text-2xl  text-center'>{circle?.name}</h1>
+    <div className='flex gap-x-3 sm:gap-x-5 items-center'>
+      <Image src={circle?.icon} width={100} height={100} alt='grpicon' className='w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 object-cover rounded-xl flex-shrink-0' />
+      <h1 className='text-lg sm:text-xl lg:text-2xl break-words'>{circle?.name}</h1>
     </div>
 
     {/**buttons */}
-      <div className='flex text-2xl items-center justify-between'>
+      <div className='flex flex-wrap gap-y-3 text-base sm:text-lg lg:text-2xl items-center justify-between'>
 
-        <div className='flex gap-x-5 items-center'>
-          <h1>{circle?.members?.length} Members</h1>
+        <div className='flex gap-x-3 sm:gap-x-5 items-center'>
+          <h1 className='whitespace-nowrap'>{circle?.members?.length} Members</h1>
           <div className='flex'>
             {circle?.members?.slice(0, 5).map((user) => ( 
-              <Image key={user._id} src={user.profileImage} width={40} height={40} alt='avatar' className=' object-cover rounded-full border border-(--border) dark:border-(--borderdark) -ml-2' />   
+              <Image key={user._id} src={user.profileImage} width={40} height={40} alt='avatar' className='w-7 h-7 sm:w-9 sm:h-9 lg:w-10 lg:h-10 object-cover rounded-full border border-(--border) dark:border-(--borderdark) -ml-2' />   
             ))}
           </div>
         </div>
 
-        <div className='flex items-center gap-x-5'>
+        <div className='flex items-center gap-x-2 sm:gap-x-5'>
 
     {/* ===== MAIN BUTTON (role-based) ===== */}
 
@@ -349,11 +349,11 @@ const dropdownItemClass = "flex items-center w-full text-left px-4 py-2 cursor-p
 
             <button
 
-              className="bg-(--colorbg) dark:bg-(--colorbgdark) py-1 border px-4 rounded-full text-xl items-center gap-x-3 flex cursor-pointer transition-colors hover:bg-(--hover) dark:hover:bg-(--hoverdark)"
+              className="bg-(--colorbg) dark:bg-(--colorbgdark) py-1 border px-3 sm:px-4 rounded-full text-sm sm:text-base lg:text-xl items-center gap-x-2 sm:gap-x-3 flex cursor-pointer transition-colors hover:bg-(--hover) dark:hover:bg-(--hoverdark) whitespace-nowrap"
               onClick={openJoinRulesModal}
             >
 
-              <FaUserPlus size={18} />
+              <FaUserPlus size={16} className="sm:w-[18px] sm:h-[18px]" />
 
               Join
 
@@ -366,10 +366,10 @@ const dropdownItemClass = "flex items-center w-full text-left px-4 py-2 cursor-p
           role === "none" && circle?.joinType === "approval" && !hasPendingRequest && (
 
             <button
-              className="bg-(--colorbg) dark:bg-(--colorbgdark) py-1 border px-4 rounded-full text-xl items-center gap-x-3 flex cursor-pointer transition-colors hover:bg-(--hover) dark:hover:bg-(--hoverdark)"
+              className="bg-(--colorbg) dark:bg-(--colorbgdark) py-1 border px-3 sm:px-4 rounded-full text-sm sm:text-base lg:text-xl items-center gap-x-2 sm:gap-x-3 flex cursor-pointer transition-colors hover:bg-(--hover) dark:hover:bg-(--hoverdark) whitespace-nowrap"
               onClick={openJoinRulesModal}
             >
-              <FaUserPlus size={18} />
+              <FaUserPlus size={16} className="sm:w-[18px] sm:h-[18px]" />
               Request
             </button>
 
@@ -381,7 +381,7 @@ const dropdownItemClass = "flex items-center w-full text-left px-4 py-2 cursor-p
 
             <button
 
-              className="bg-(--colorbg) dark:bg-(--colorbgdark) py-1 border px-4 rounded-full text-xl flex items-center gap-x-2 cursor-pointer transition-colors hover:bg-(--hover) dark:hover:bg-(--hoverdark)"
+              className="bg-(--colorbg) dark:bg-(--colorbgdark) py-1 border px-3 sm:px-4 rounded-full text-sm sm:text-base lg:text-xl flex items-center gap-x-2 cursor-pointer transition-colors hover:bg-(--hover) dark:hover:bg-(--hoverdark) whitespace-nowrap"
               onClick={()=>setMenuOpen(!menuOpen)}
               ref={menuTriggerRef}
 
@@ -401,13 +401,14 @@ const dropdownItemClass = "flex items-center w-full text-left px-4 py-2 cursor-p
 
               onClick={postCreateOpen.bind(null,true)}
 
-              className="bg-(--colorbg) dark:bg-(--colorbgdark) py-1 border px-4 rounded-full text-xl items-center gap-x-3 flex cursor-pointer transition-colors hover:bg-(--hover) dark:hover:bg-(--hoverdark)"
+              className="bg-(--colorbg) dark:bg-(--colorbgdark) py-1 border px-3 sm:px-4 rounded-full text-sm sm:text-base lg:text-xl items-center gap-x-2 sm:gap-x-3 flex cursor-pointer transition-colors hover:bg-(--hover) dark:hover:bg-(--hoverdark) whitespace-nowrap"
 
             >
 
-              <IoMdAddCircle size={18} />
+              <IoMdAddCircle size={16} className="sm:w-[18px] sm:h-[18px]" />
 
-              Create Post
+              <span className="hidden xs:inline">Create Post</span>
+              <span className="xs:hidden">Post</span>
 
             </button>
 
@@ -421,11 +422,11 @@ const dropdownItemClass = "flex items-center w-full text-left px-4 py-2 cursor-p
 
               onClick={goToDashboard}
 
-              className="bg-(--colorbg) dark:bg-(--colorbgdark) py-1 border px-4 rounded-full text-xl items-center gap-x-3 flex cursor-pointer transition-colors hover:bg-(--hover) dark:hover:bg-(--hoverdark)"
+              className="bg-(--colorbg) dark:bg-(--colorbgdark) py-1 border px-3 sm:px-4 rounded-full text-sm sm:text-base lg:text-xl items-center gap-x-2 sm:gap-x-3 flex cursor-pointer transition-colors hover:bg-(--hover) dark:hover:bg-(--hoverdark) whitespace-nowrap"
 
             >
 
-              <MdDashboard size={18} />
+              <MdDashboard size={16} className="sm:w-[18px] sm:h-[18px]" />
 
               Dashboard
 
@@ -436,7 +437,7 @@ const dropdownItemClass = "flex items-center w-full text-left px-4 py-2 cursor-p
 
  {/* ===== DROPDOWN MENU TRIGGER (hamburger) ===== */}
 
-        <div className="relative text-lg ">
+        <div className="relative text-base sm:text-lg">
 
 
           <button
@@ -445,7 +446,7 @@ const dropdownItemClass = "flex items-center w-full text-left px-4 py-2 cursor-p
 
             onClick={()=>setMenuOpen(!menuOpen)}
 
-            className=" rounded-full text-xl flex items-center justify-center cursor-pointer transition-colors hover:bg-(--hover) dark:hover:bg-(--hoverdark) p-2"
+            className="rounded-full text-lg sm:text-xl flex items-center justify-center cursor-pointer transition-colors hover:bg-(--hover) dark:hover:bg-(--hoverdark) p-2"
 
           >
 
@@ -459,7 +460,7 @@ const dropdownItemClass = "flex items-center w-full text-left px-4 py-2 cursor-p
           {
             menuOpen && (
 
-              <div ref={menuDropdownRef} className="absolute right-0 mt-2 bg-(--color-background) dark:bg-(--background) border border-(--border) dark:border-(--borderdark) rounded-lg shadow-lg p-2 text-md z-50 w-56">
+              <div ref={menuDropdownRef} className="absolute right-0 mt-2 bg-(--color-background) dark:bg-(--background) border border-(--border) dark:border-(--borderdark) rounded-lg shadow-lg p-2 text-sm sm:text-md z-50 w-48 sm:w-56 max-w-[calc(100vw-2rem)]">
 
                 {/* ---- VISITOR (none, no pending) ---- */}
                 {
@@ -586,11 +587,11 @@ const dropdownItemClass = "flex items-center w-full text-left px-4 py-2 cursor-p
 
       <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 px-4">
 
-        <div className="bg-(--color-background) dark:bg-(--background) border border-(--border) dark:border-(--borderdark) rounded-lg shadow-lg w-full max-w-md p-6 space-y-4">
+        <div className="bg-(--color-background) dark:bg-(--background) border border-(--border) dark:border-(--borderdark) rounded-lg shadow-lg w-full max-w-md p-4 sm:p-6 space-y-4 max-h-[90vh] overflow-y-auto">
 
-          <h2 className="text-2xl font-semibold">Circle Rules</h2>
+          <h2 className="text-xl sm:text-2xl font-semibold">Circle Rules</h2>
 
-          <div className="max-h-72 overflow-y-auto space-y-4">
+          <div className="max-h-56 sm:max-h-72 overflow-y-auto space-y-3 sm:space-y-4">
 
             {
               hasRules ? (
@@ -598,15 +599,15 @@ const dropdownItemClass = "flex items-center w-full text-left px-4 py-2 cursor-p
                 circle.rules!.map((rule, idx) => (
 
                   <div key={rule._id} className="border border-(--border) dark:border-(--borderdark) rounded-lg p-3">
-                    <p className="font-semibold text-lg">{idx + 1}. {rule.title}</p>
-                    <p className="text-md opacity-80 mt-1">{rule.description}</p>
+                    <p className="font-semibold text-base sm:text-lg">{idx + 1}. {rule.title}</p>
+                    <p className="text-sm sm:text-md opacity-80 mt-1">{rule.description}</p>
                   </div>
 
                 ))
 
               ) : (
 
-                <p className="text-md opacity-70">This circle has no rules yet.</p>
+                <p className="text-sm sm:text-md opacity-70">This circle has no rules yet.</p>
 
               )
             }
@@ -616,12 +617,12 @@ const dropdownItemClass = "flex items-center w-full text-left px-4 py-2 cursor-p
           {
             rulesModalMode === "join" && (
 
-              <label className="flex items-center gap-x-3 text-lg cursor-pointer">
+              <label className="flex items-start sm:items-center gap-x-3 text-base sm:text-lg cursor-pointer">
                 <input
                   type="checkbox"
                   checked={agreedToRules}
                   onChange={(e) => setAgreedToRules(e.target.checked)}
-                  className="w-5 h-5 cursor-pointer"
+                  className="w-5 h-5 cursor-pointer mt-0.5 sm:mt-0 flex-shrink-0"
                 />
                 I have read and agree to the circle rules
               </label>
@@ -629,7 +630,7 @@ const dropdownItemClass = "flex items-center w-full text-left px-4 py-2 cursor-p
             )
           }
 
-          <div className="flex justify-end gap-x-3 text-lg">
+          <div className="flex justify-end gap-x-3 text-base sm:text-lg">
 
             <button
               onClick={closeRulesModal}
@@ -671,15 +672,15 @@ const dropdownItemClass = "flex items-center w-full text-left px-4 py-2 cursor-p
 
       <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 px-4">
 
-        <div className="bg-(--color-background) dark:bg-(--background) border border-(--border) dark:border-(--borderdark) rounded-lg shadow-lg w-full max-w-md p-6 space-y-4">
+        <div className="bg-(--color-background) dark:bg-(--background) border border-(--border) dark:border-(--borderdark) rounded-lg shadow-lg w-full max-w-md p-4 sm:p-6 space-y-4 max-h-[90vh] overflow-y-auto">
 
-          <h2 className="text-2xl font-semibold">About {circle?.name}</h2>
+          <h2 className="text-xl sm:text-2xl font-semibold">About {circle?.name}</h2>
 
-          <p className="text-md opacity-80 max-h-60 overflow-y-auto">
+          <p className="text-sm sm:text-md opacity-80 max-h-60 overflow-y-auto">
             {circle?.description || "No description provided for this circle."}
           </p>
 
-          <div className="flex justify-end text-lg">
+          <div className="flex justify-end text-base sm:text-lg">
 
             <button
               onClick={()=>setAboutModalOpen(false)}

@@ -26,6 +26,7 @@ function MobileTopNavbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter()
 
   const toggleDarkMode = () => {
@@ -102,11 +103,22 @@ function MobileTopNavbar() {
       </div>
 
       {/* center: search - flexes, never overflows */}
-      <form className="relative flex-1 min-w-0 max-w-[150px] xs:max-w-none">
-        <IoMdSearch className="absolute right-3 top-1/2 -translate-y-1/2 size-5" />
+      <form
+        className="relative flex-1 min-w-0 max-w-[150px] xs:max-w-none"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (searchQuery.trim()) {
+            router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+          }
+        }}
+      >
+        <IoMdSearch className="absolute right-3 top-1/2 -translate-y-1/2 size-5 cursor-pointer" onClick={() => { if (searchQuery.trim()) router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`); }} />
         <input
+          id="mobile-navbar-search-input"
           placeholder="Explore..."
           type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
           className="font-sans bg-(--colorbg) dark:bg-(--colorbgdark) border border-(--border) dark:border-(--borderdark) rounded-full py-1.5 pl-4 pr-9 w-full min-w-0 text-sm"
         />
       </form>

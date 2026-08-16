@@ -24,7 +24,13 @@ const ArtistSchema = new Schema(
 
     password: {
       type: String,
-      required: true,
+      required: false, // optional for Google-only users
+    },
+
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true, // allows multiple null values
     },
 
     profileImage: String,
@@ -41,8 +47,9 @@ const ArtistSchema = new Schema(
       enum: Object.values(ArtistCategory),
     },
 
- 
-    
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
+
      observers: [
   {
     type: Schema.Types.ObjectId,
@@ -55,6 +62,7 @@ const ArtistSchema = new Schema(
 
      
     
+
   
 
     connections: [

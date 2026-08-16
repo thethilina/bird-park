@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 
 import Artist from "../../../../lib/models/Artist";
 import connectDB from "../../../../lib/db";
+import { isPasswordAcceptable } from "@/lib/passwordStrength";
 
 export const runtime = "nodejs";
 
@@ -22,13 +23,30 @@ export async function POST(req: Request) {
       );
     }
 
+    // Validate username format
+    if (!/^[a-zA-Z0-9_]+$/.test(username) || username.length < 3) {
+      return NextResponse.json(
+        { message: "Username must be at least 3 characters and contain only letters, numbers, and underscores" },
+        { status: 400 }
+      );
+    }
+
+    // Validate password strength
+    if (!isPasswordAcceptable(password)) {
+      return NextResponse.json(
+        { message: "Password is too weak. Use at least 8 characters with a mix of uppercase, lowercase, numbers, and symbols." },
+        { status: 400 }
+      );
+    }
+
     const existingUser = await Artist.findOne({
       $or: [{ email }, { username }],
     });
 
     if (existingUser) {
+      const field = existingUser.email === email.toLowerCase() ? "Email" : "Username";
       return NextResponse.json(
-        { message: "Email or Username already exists" },
+        { message: `${field} already exists` },
         { status: 400 }
       );
     }
@@ -92,4 +110,4 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
-}
+}
