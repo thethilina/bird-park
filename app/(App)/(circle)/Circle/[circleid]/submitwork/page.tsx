@@ -6,6 +6,7 @@ import { IoCloudUpload, IoClose, IoChevronBack } from "react-icons/io5";
 import { useTopLoader } from "nextjs-toploader";
 import { toast } from "react-toastify";
 import Link from "next/link";
+import { analyzeArtEmotion, analyzePoemEmotion } from "@/lib/analyzeEmotion";
 
 export default function CircleSubmitWorkPage() {
   const { circleid } = useParams<{ circleid: string }>();
@@ -70,6 +71,9 @@ export default function CircleSubmitWorkPage() {
       const data = await res.json();
       if (!data.success) throw new Error(data.message);
       
+      // Await emotion analysis
+      await analyzeArtEmotion(data.post._id, file);
+
       toast.success("Artwork posted successfully!");
       router.push(`/Circle/${circleid}`);
     } catch (err: any) {
@@ -98,6 +102,9 @@ export default function CircleSubmitWorkPage() {
       const data = await res.json();
       if (!data.success) throw new Error(data.message);
       
+      // Await emotion analysis
+      await analyzePoemEmotion(data.post._id, poemBody);
+
       toast.success("Poem posted successfully!");
       router.push(`/Circle/${circleid}`);
     } catch (err: any) {

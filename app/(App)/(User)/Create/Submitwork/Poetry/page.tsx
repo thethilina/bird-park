@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import { IoCloudUpload } from "react-icons/io5";
 import { useTopLoader } from "nextjs-toploader";
@@ -7,6 +6,7 @@ import { toast } from "react-toastify";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import CreateCollectionModal from "@/public/components/CreateCollectionModal";
+import { analyzePoemEmotion } from "@/lib/analyzeEmotion";
 
 function Page() {
   const [title, setTitle] = useState("");
@@ -116,133 +116,7 @@ function Page() {
     { name: "3XL", value: "40px" },
   ];
 
-  const analyzeEmotion = async (postId: string, poem: string) => {
-    try {
-      // --------------------------------------------------------
-      // Mark AI analysis as processing
-      // --------------------------------------------------------
 
-      await fetch(`/api/post/${postId}`, {
-        method: "PATCH",
-
-        headers: {
-          "Content-Type": "application/json",
-        },
-
-        body: JSON.stringify({
-          emotionAnalysis: {
-            status: "processing",
-          },
-        }),
-      });
-
-      // --------------------------------------------------------
-      // Send poem to AI API
-      // --------------------------------------------------------
-
-      const response = await fetch("/api/emotion/poem", {
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json",
-        },
-
-        body: JSON.stringify({
-          poem,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Poem AI analysis failed");
-      }
-
-      const data = await response.json();
-
-      console.log("Poem AI response:", data);
-
-      // --------------------------------------------------------
-      // Extract semantic analysis
-      // --------------------------------------------------------
-
-      const analysis = data?.analysis;
-
-      if (!analysis) {
-        throw new Error("Invalid poem AI response");
-      }
-
-      const story = analysis.story;
-
-      const cluster = analysis.cluster;
-
-      const matching = analysis.matching;
-
-      if (!story || !cluster || !matching) {
-        throw new Error("Incomplete poem AI analysis");
-      }
-
-      // --------------------------------------------------------
-      // Save semantic analysis
-      // --------------------------------------------------------
-
-      await fetch(`/api/post/${postId}`, {
-        method: "PATCH",
-
-        headers: {
-          "Content-Type": "application/json",
-        },
-
-        body: JSON.stringify({
-          semanticAnalysis: {
-            story,
-            cluster,
-
-            matching: {
-              cluster: matching.cluster,
-
-              embedText: matching.embed_text,
-
-              // Embedding will be generated later.
-              embedding: [],
-            },
-          },
-
-          emotionAnalysis: {
-            status: "completed",
-
-            completedAt: new Date(),
-          },
-        }),
-      });
-
-      console.log("Poem semantic analysis completed.");
-    } catch (err) {
-      console.error("[POEM_ANALYSIS_ERROR]", err);
-
-      // --------------------------------------------------------
-      // Mark AI analysis as failed
-      // --------------------------------------------------------
-
-      try {
-        await fetch(`/api/post/${postId}`, {
-          method: "PATCH",
-
-          headers: {
-            "Content-Type": "application/json",
-          },
-
-          body: JSON.stringify({
-            emotionAnalysis: {
-              status: "failed",
-
-              completedAt: null,
-            },
-          }),
-        });
-      } catch (patchError) {
-        console.error("Failed to update AI status:", patchError);
-      }
-    }
-  };
 
   const handleUpload = async () => {
     if (!title.trim()) {
@@ -284,15 +158,13 @@ function Page() {
         throw new Error(data.message);
       }
 
-      analyzeEmotion(data.post._id, poem);
+      await analyzePoemEmotion(data.post._id, poem);
 
       successToast("Poem uploaded successfully!");
 
       loader.done();
 
-      setTimeout(() => {
-        router.push(`/Profile/${user?._id}`);
-      }, 1000);
+      router.push(`/Profile/${user?._id}`);
     } catch (err: any) {
       console.error(err);
 

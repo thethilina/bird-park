@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { useTopLoader } from "nextjs-toploader";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { analyzeArtEmotion, analyzePoemEmotion } from "@/lib/analyzeEmotion";
 
 type ActivityStatus = "upcoming" | "active" | "ended";
 type ActivityType = "art_jam" | "prompt_battle";
@@ -142,6 +143,13 @@ function SubmissionForm({
       });
       const postData = await postRes.json();
       if (!postRes.ok) throw new Error(postData.message);
+
+      // Await emotion analysis
+      if (postType === "art") {
+        await analyzeArtEmotion(postData.post._id, file!);
+      } else {
+        await analyzePoemEmotion(postData.post._id, poem);
+      }
 
       // Link to activity
       const submitRes = await fetch(
