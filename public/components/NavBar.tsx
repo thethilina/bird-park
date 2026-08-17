@@ -92,17 +92,16 @@ function NavBar() {
 
   return (
     
-    <nav className="sticky hidden xl:px-15 lg:px-10 md:px-5 sm:px-2   z-50 py-1  bg-(--color-background) dark:bg-(--background)  border-(--border)  lg:pt-5  w-full top-0 border-b-2   lg:py-3   sm:flex items-center justify-between ">
+    <nav className="sticky hidden xl:px-15 lg:px-10 md:px-5 sm:px-2   z-50 py-2  bg-(--color-background) dark:bg-(--background)  border-(--border)  lg:pt-5  w-full top-0 border-b-2   lg:py-3   sm:flex items-center justify-between ">
 
 
     {/** right side */}
     <div className="flex  items-center  gap-x-4 lg:gap-x-8">
-    <GiHamburgerMenu className="lg:hidden" />
 
     <Image src={logo} alt="birdpark logo" className="lg:w-9 w-7 hidden dark:block " />     
     <Image src={logolight} alt="birdpark logo" className="lg:w-10 w-7 dark:hidden " />
 
-    <ul className=" items-center gap-x-5 text-2xl hidden lg:flex">
+    <ul className=" items-center gap-x-5 text-2xl  flex">
    <Link href={"/"}><li>Board</li></Link>
       <Link href={"/Circle"}><li>Circles</li></Link>
     </ul>
@@ -112,7 +111,7 @@ function NavBar() {
     {/** search bar */}
 
     <form
-      className="relative hidden lg:block"
+      className="relative "
       onSubmit={(e) => {
         e.preventDefault();
         if (searchQuery.trim()) {
@@ -127,7 +126,7 @@ function NavBar() {
         type="text"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="font-sans bg-(--colorbg) dark:bg-(--colorbgdark) border border-(--border) dark:border-(--borderdark) rounded-xl py-1.5 px-4 pr-10"
+        className="       font-sans bg-(--colorbg) dark:bg-(--colorbgdark) border border-(--border) dark:border-(--borderdark) rounded-xl py-1.5 px-4 pr-10"
       />
     </form>
 
@@ -145,14 +144,14 @@ function NavBar() {
     
     <NotificationDropdown />
 
-    <Image ref={avatarRef} onClick={() => setIsDropdownOpen(!isDropdownOpen)} src={user?.profileImage || userData.avatar} width={36} height={36} alt="user avatar" className="w-7 lg:w-9 rounded-full border border-white cursor-pointer" />
+    <Image ref={avatarRef} onClick={() => setIsDropdownOpen(!isDropdownOpen)} src={user?.profileImage || userData.avatar} width={20} height={20} alt="user avatar" className="w-8 h-8 hover:cursor-pointer  transition-transform hover:scale-105  rounded-full border border-white "/>
     </div>
 
     {/** dropdown */}
     <div ref={dropdownRef} className={`absolute z-200 top-full mr-2 mt-2 right-0 font-sans  w-60  bg-(--color-background) dark:bg-(--background)     border border-(--border) dark:border-(--borderdark) rounded-lg shadow-lg py-2 ${isDropdownOpen ? 'block' : 'hidden'}`}>
 
-    <Link href={`/Profile/${user?._id}`}  onClick={()=>{setIsDropdownOpen(false)}}   >  <div  className=" flex gap-x-4  items-center transition-transform hover:scale-105   font-medium text-lg px-4 py-4 mx-2 border-b border-(--border) dark:border-(--borderdark)">
-        <Image src={user?.profileImage || userData.avatar} width={20} height={20} alt="user avatar" className="w-8 h-8 transition-transform hover:scale-105  rounded-full border border-white " />
+    <Link href={`/Profile/${user?._id}`}  onClick={()=>{setIsDropdownOpen(false)}}   >  <div  className=" flex gap-x-4  items-center      font-medium text-lg px-4 py-4 mx-2 border-b border-(--border) dark:border-(--borderdark)">
+        <Image src={user?.profileImage || userData.avatar} width={20} height={20} alt="user avatar" className="w-8 h-8  rounded-full border border-white " />
         <p className="  ">{user?.fullName || "Guest User"}</p>
       </div>          </Link> 
 

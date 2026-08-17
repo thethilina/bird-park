@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import ProfileBar from "@/public/components/ProfileBar";
 import CollectionCard from "@/public/components/Profile/CollectionCArd";
+import CollectionCardSkeleton from "@/public/components/Profile/CollectionCardSkeleton";
 import { useParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTopLoader } from "nextjs-toploader";
@@ -144,19 +145,34 @@ function Page() {
     <div className="space-y-5">
       <ProfileBar User={profileUser} />
 
-    
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        {isOwnProfile && (
-          <div             onClick={() => setShowModal(true)}
-  className="items-center flex border-(--border) bg-[#0e0e14] hover:cursor-pointer text-center gap-y-3 p-4 flex-col justify-center w-full aspect-square border rounded-xl hover:bg-[#1a1a24] transition-colors">
-            <MdOutlineCreateNewFolder size={40} />
-            <h1 className="text-lg font-medium">Create new collection</h1>
-          </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+        {loading ? (
+          Array.from({ length: 6 }).map((_, idx) => (
+            <CollectionCardSkeleton key={idx} />
+          ))
+        ) : (
+          <>
+            {isOwnProfile && (
+              <div 
+                onClick={() => setShowModal(true)}
+                className="items-center flex border-(--border) bg-[#0e0e14] hover:cursor-pointer text-center gap-y-3 p-4 flex-col justify-center w-full aspect-square border rounded-xl hover:bg-[#1a1a24] transition-all hover:scale-105 active:scale-95 duration-200"
+              >
+                <MdOutlineCreateNewFolder size={40} />
+                <h1 className="text-sm sm:text-base font-medium">Create new collection</h1>
+              </div>
+            )}
+            
+            {collections.length === 0 && !isOwnProfile ? (
+              <div className="col-span-full py-16 px-4 text-center border border-dashed border-neutral-300 dark:border-neutral-700 rounded-xl bg-white/5 w-full">
+                <p className="text-neutral-500 dark:text-neutral-400 font-medium">This artist has not created any collections yet.</p>
+              </div>
+            ) : (
+              collections.map((collection) => (
+                <CollectionCard key={collection._id} collection={collection} />
+              ))
+            )}
+          </>
         )}
-        
-        {collections.map((collection) => (
-          <CollectionCard key={collection._id} collection={collection} />
-        ))}
       </div>
 
 

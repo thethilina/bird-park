@@ -17,17 +17,22 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useRef } from 'react';
 import { PiEyeClosedFill } from "react-icons/pi";
 import { TbPlugConnectedX } from "react-icons/tb";
+import { usePathname } from 'next/navigation';
 
 
 function ProfileBar({ User }: any) {
   const { user } = useAuth();
+  const pathname = usePathname();
   const  [ connectionStatus , setconnectionStatues ] = useState('not_sent')
   const loader = useTopLoader()
   const [sentreqID , setsentreqID] = useState(null)
   const [receivedID , setreverivedID] = useState(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const avatarRef = useRef<HTMLButtonElement | null>(null);
+  const hamburgerMenuRef = useRef<HTMLDivElement | null>(null);
+  const hamburgerButtonRef = useRef<HTMLButtonElement | null>(null);
 
 
 const success = (msg: string) =>
@@ -295,115 +300,248 @@ useEffect(() => {
       ) {
         setIsDropdownOpen(false);
       }
+      if (
+        showHamburgerMenu &&
+        hamburgerMenuRef.current &&
+        !hamburgerMenuRef.current.contains(target) &&
+        hamburgerButtonRef.current &&
+        !hamburgerButtonRef.current.contains(target)
+      ) {
+        setShowHamburgerMenu(false);
+      }
     }
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isDropdownOpen]);
+  }, [isDropdownOpen, showHamburgerMenu]);
+
+  const isWorksActive = pathname === `/Profile/${User?._id}`;
+  const isCollectionsActive = pathname === `/Profile/${User?._id}/collections`;
 
   return (
-    <div className=' space-y-5 border-(--border)  border-b-2 py-7  z-49 w-full bg-(--color-background) dark:bg-(--background)  ) '>
-     <div className="   py-1   bg-(--color-background)   )    w-full      flex items-center justify-between ">
+    <div className='space-y-6 border-b-2 border-(--border) dark:border-(--borderdark) py-6 w-full bg-(--color-background) dark:bg-(--background)  relative'>
+      
+      {/* Profile info row */}
+      <div className="w-full flex flex-col md:flex-row md:items-center justify-between gap-y-4">
+        <div className='flex gap-x-4 items-center'>
+          <Image 
+            src={User?.profileImage || testavetar} 
+            alt='profileImage' 
+            width={80} 
+            height={80} 
+            className='w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-full border border-(--border) dark:border-(--borderdark)'
+          />
+          <div>
+            <h1 className='text-xl sm:text-2xl font-semibold'>{User?.username}</h1>
+            <p className='text-sm sm:text-base text-(--text-muted) dark:text-(--text-muted-dark)'>{`@${User?.email}`}</p>
+          </div>
+        </div>
 
-    <div  className='flex gap-x-4 items-center'>
-    <Image src={User?.profileImage} alt='profileImage' width={100} height={100} className='w-20 h-20 object-cover rounded-full border border-(--border) dark:border-(--borderdark)'/>
-    <div>
-      <h1 className='text-2xl '>{User?.username}</h1>
-      <p className='text-xl text-(--text-muted) dark:text-(--text-muted-dark)'>{`@${User?.email}`}</p>
-    </div>
-    </div>
+        <div className='flex items-center text-xl gap-x-10'>
+          <h1> Connections  {User?.connections?.length || 0}</h1>
+          <h1>Observers {User?.observers?.length || 0} </h1>
+        </div>
+      </div>
 
-    <div className='flex items-center text-xl gap-x-10'>
-      <h1> Connections  {User?.connections?.length}</h1>
-      <h1>Observers {User?.observers?.length} </h1>
-    </div>
+      {/* Profile actions and navigation tabs row */}
+      <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-y-4 pt-2 relative">
+        <div className="flex items-center gap-x-3 justify-center sm:justify-start">
+          {user?._id === User?._id ? (
+            <Link
+              href={`/Profile/Settings`}
+              className="bg-[#0D1725] hover:bg-[#1a2c47] border border-(--border) dark:border-(--borderdark) px-4 py-1.5 rounded-full text-base sm:text-lg items-center gap-x-2 flex transition-all duration-200 hover:scale-105 active:scale-95"
+            >
+              <LuCirclePlus />
+              <span>Settings</span>
+            </Link>
+          ) : (
+            <div className="relative">
+              {connectionStatus === "connected" ? (
+                <>
+                  <button 
+                    ref={avatarRef} 
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}  
+                    className='bg-(--colorbg) hover:cursor-pointer dark:bg-(--colorbgdark) py-1.5 border border-(--border) dark:border-(--borderdark) px-4 rounded-full text-base sm:text-lg items-center gap-x-2 flex hover:scale-105 active:scale-95 transition-all duration-200'
+                  >
+                    <PiPlugsConnectedBold />
+                    <span>Connected</span>
+                  </button>
 
-     </div>
+                  <div ref={dropdownRef} className={`absolute left-0 mt-2 z-50 w-48 bg-[#192942] border border-(--border) dark:border-(--borderdark) rounded-xl shadow-lg py-2 ${isDropdownOpen ? 'block' : 'hidden'}`}>
+                    <button 
+                      onClick={removeconnection} 
+                      className='w-full text-left text-sm px-4 py-2 hover:bg-[#263e64] hover:text-white transition-colors flex gap-x-2 items-center hover:cursor-pointer'
+                    >
+                      <TbPlugConnectedX />
+                      <span>Remove connection</span>
+                    </button>
+                  </div>
+                </>
+              ) : connectionStatus === "not_sent" ? (
+                <button 
+                  onClick={sendrequest} 
+                  className='bg-[#192942] hover:bg-[#2c456e] hover:cursor-pointer py-1.5 border border-(--border) dark:border-(--borderdark) px-4 rounded-full text-base sm:text-lg items-center gap-x-2 flex hover:scale-105 active:scale-95 transition-all duration-200'
+                >
+                  <BsSendPlusFill />
+                  <span>Connect</span>
+                </button>
+              ) : connectionStatus === "observing" ? (
+                <>
+                  <button 
+                    ref={avatarRef} 
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}  
+                    className='bg-[#192942] hover:bg-[#1f314e] hover:cursor-pointer py-1.5 border border-(--border) dark:border-(--borderdark) px-4 rounded-full text-base sm:text-lg items-center gap-x-2 flex hover:scale-105 active:scale-95 transition-all duration-200'
+                  >
+                    <BsFillEyeFill />
+                    <span>Observing</span>
+                  </button>
 
-
-
-
-    <div className="  bg-(--color-background) )   w-full    flex items-center justify-between ">
-
- 
-
-  {user?._id === User?._id ? (
-   <Link
-  href={`/Profile/Settings`}
-  className=" bg-[#0D1725] py-1 border px-4 rounded-full text-xl items-center gap-x-3 flex"
->
- <LuCirclePlus />
-  Settings
-</Link>
-    ) : (
-      <>
-        {connectionStatus === "connected" ? ( <>
-          <button  ref={avatarRef} onClick={() => setIsDropdownOpen(!isDropdownOpen)}  className='bg-(--colorbg) hover:cursor-pointer dark:bg-(--colorbgdark) py-1 border px-4 rounded-full text-xl items-center gap-x-3 flex'>
-            <PiPlugsConnectedBold />
-            Connected
-          </button>
-
-              <div ref={dropdownRef} className={`absolute z-200  space-y-2  mt-25 px-3  translate-x-2/10 bg-[#192942]  border border-(--border) dark:border-(--borderdark) rounded-b-2xl rounded-r-2xl shadow-lg py-2 ${isDropdownOpen ? 'block' : 'hidden'}`}>
-            <button onClick={removeconnection} className='text-xl px-2 py-1  hover:font-medium hover:bg-[#263e64] hover:cursor-pointer border-b flex gap-x-2 items-center'><TbPlugConnectedX  />Remove connection</button>
-
+                  <div ref={dropdownRef} className={`absolute left-0 mt-2 z-20 w-48 bg-[#192942] border border-(--border) dark:border-(--borderdark) rounded-xl shadow-lg py-2 ${isDropdownOpen ? 'block' : 'hidden'}`}>
+                    <button 
+                      onClick={cancelsentreq} 
+                      className='w-full text-left text-sm px-4 py-2 hover:bg-[#263e64] hover:text-white transition-colors flex gap-x-2 items-center hover:cursor-pointer'
+                    >
+                      <PiEyeClosedFill />
+                      <span>Stop observing</span>
+                    </button>
+                  </div>
+                </>
+              ) : connectionStatus === "observer" ? (
+                <>
+                  <button  
+                    ref={avatarRef} 
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}  
+                    className='bg-[#192942] hover:cursor-pointer py-1.5 border border-(--border) dark:border-(--borderdark) px-4 rounded-full text-base sm:text-lg items-center gap-x-2 flex hover:scale-105 active:scale-95 transition-all duration-200'
+                  >
+                    <GrConnect />
+                    <span>Respond</span>
+                  </button>
+                  
+                  <div ref={dropdownRef} className={`absolute left-0 mt-2 z-20 w-48 bg-[#192942] border border-(--border) dark:border-(--borderdark) rounded-xl shadow-lg py-2 ${isDropdownOpen ? 'block' : 'hidden'}`}>
+                    <button 
+                      onClick={acceptrequst} 
+                      className='w-full text-left text-sm px-4 py-2 hover:bg-[#263e64] hover:text-white transition-colors flex gap-x-2 items-center hover:cursor-pointer border-b border-white/5 pb-2'
+                    >
+                      <PiPlugsConnectedBold />
+                      <span>Connect</span>
+                    </button>
+                    <button 
+                      onClick={deletereq} 
+                      className='w-full text-left text-sm px-4 py-2 hover:bg-[#263e64] hover:text-white transition-colors flex gap-x-2 items-center hover:cursor-pointer pt-2'
+                    >
+                      <TbPlugConnectedX />
+                      <span>Delete Request</span>
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <button className='bg-(--colorbg) dark:bg-(--colorbgdark) py-1.5 border border-(--border) dark:border-(--borderdark) px-4 rounded-full text-base sm:text-lg items-center gap-x-2 flex hover:scale-105 active:scale-95 transition-all duration-200'>
+                  <LuCirclePlus />
+                </button>
+              )}
             </div>
-          </>
-        ) : connectionStatus === "not_sent" ? (
-          <button onClick={sendrequest} className='bg-[#192942] hover:bg-[#2c456e]  hover:cursor-pointer py-1 border px-4 rounded-full text-xl items-center gap-x-3 flex'>
-            <BsSendPlusFill />
-            Connect
-          </button>
-        ) :  connectionStatus === "observing" ? (
-          <>
-          <button ref={avatarRef} onClick={() => setIsDropdownOpen(!isDropdownOpen)}  className='bg-[#192942] hover:bg-[#1f314e] hover:cursor-pointer py-1 border px-4 rounded-full text-xl items-center gap-x-3 flex'>
-            <BsFillEyeFill />
-            Observing
+          )}
+        </div>
+
+        {/* Works/Collections Tabs */}
+        <div className='flex gap-x-3 py-2 px-2 border border-(--border) dark:border-(--borderdark) rounded-full text-xl items-center bg-transparent justify-center mx-auto sm:mx-0'>
+          <Link href={`/Profile/${User?._id}`}>
+            <button className={`rounded-full border hover:cursor-pointer px-5 flex items-center justify-center transition-all duration-200 ${
+              isWorksActive 
+                ? 'bg-neutral-900 text-white dark:bg-white dark:text-black font-semibold border-transparent shadow-sm' 
+                : 'border-(--border) text-neutral-500 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
+            }`}>
+              Works
+            </button>
+          </Link>
+          <Link href={`/Profile/${User?._id}/collections`}>
+            <button className={`rounded-full border hover:cursor-pointer px-5 flex items-center justify-center transition-all duration-200 ${
+              isCollectionsActive 
+                ? 'bg-neutral-900 text-white dark:bg-white dark:text-black font-semibold border-transparent shadow-sm' 
+                : 'border-(--border) text-neutral-500 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
+            }`}>
+              Collections
+            </button>
+          </Link>
+        </div>
+        
+        {/* Hamburger Menu Trigger */}
+        <div className="relative flex justify-center sm:justify-end">
+          <button
+            ref={hamburgerButtonRef}
+            onClick={() => setShowHamburgerMenu(!showHamburgerMenu)}
+            className="p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center justify-center hover:cursor-pointer"
+          >
+            <GiHamburgerMenu className="size-6 text-neutral-500 hover:text-neutral-800 dark:hover:text-white" />
           </button>
 
-          <div ref={dropdownRef} className={`absolute z-200   mt-25 px-5 translate-x-2/10 bg-[#192942]  border border-(--border) dark:border-(--borderdark) rounded-b-2xl rounded-r-2xl shadow-lg py-2 ${isDropdownOpen ? 'block' : 'hidden'}`}>
-            <button onClick={cancelsentreq} className='text-xl px-2 py-1  hover:font-medium hover:bg-[#263e64] hover:cursor-pointer border-b flex gap-x-2 items-center'><PiEyeClosedFill /> Stop observing</button>
+          {/* Hamburger Dropdown Menu */}
+          {showHamburgerMenu && (
+            <div 
+              ref={hamburgerMenuRef} 
+              className="absolute right-0 mt-2 z-200 w-52 bg-white dark:bg-[#0c0c14] border border-(--border) dark:border-(--borderdark) rounded-xl shadow-xl py-2 font-sans"
+            >
+              {user?._id === User?._id ? (
+                <>
+                  <button 
+                    onClick={() => {
+                      navigator.clipboard.writeText(window.location.href);
+                      success("Profile link copied to clipboard!");
+                      setShowHamburgerMenu(false);
+                    }}
+                    className="w-full text-left text-sm px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 transition-colors hover:cursor-pointer flex items-center gap-x-2"
+                  >
+                    Share Profile
+                  </button>
+                  <Link href={`/Profile/${User?._id}/emotion-dashboard`} onClick={() => setShowHamburgerMenu(false)}>
+                    <div className="w-full text-left text-sm px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 transition-colors hover:cursor-pointer flex items-center gap-x-2">
+                      Emotion Dashboard
+                    </div>
+                  </Link>
+                  <Link href="/Profile/Settings" onClick={() => setShowHamburgerMenu(false)}>
+                    <div className="w-full text-left text-sm px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 transition-colors hover:cursor-pointer flex items-center gap-x-2">
+                      Settings
+                    </div>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <button 
+                    onClick={() => {
+                      navigator.clipboard.writeText(window.location.href);
+                      success("Profile link copied to clipboard!");
+                      setShowHamburgerMenu(false);
+                    }}
+                    className="w-full text-left text-sm px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 transition-colors hover:cursor-pointer flex items-center gap-x-2"
+                  >
+                    Share Profile
+                  </button>
+                  <button 
+                    onClick={() => {
+                      success("Artist reported successfully. Thank you!");
+                      setShowHamburgerMenu(false);
+                    }}
+                    className="w-full text-left text-sm px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-red-600 dark:text-red-400 transition-colors hover:cursor-pointer flex items-center gap-x-2 font-medium"
+                  >
+                    Report Artist
+                  </button>
+                  <button 
+                    onClick={() => {
+                      success("Artist blocked successfully.");
+                      setShowHamburgerMenu(false);
+                    }}
+                    className="w-full text-left text-sm px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-red-600 dark:text-red-400 transition-colors hover:cursor-pointer flex items-center gap-x-2 font-medium"
+                  >
+                    Block Artist
+                  </button>
+                </>
+              )}
             </div>
-          </>
-        ) :  connectionStatus === "observer" ? (<>
-          <button  ref={avatarRef} onClick={() => setIsDropdownOpen(!isDropdownOpen)}  className='bg-[#192942] hover:cursor-pointer py-1 border px-4 rounded-full text-xl items-center gap-x-3 flex'>
-            <GrConnect  />
-            Repond
-          </button>
-          
-            <div ref={dropdownRef} className={`absolute z-200  space-y-2  mt-40 px-3  translate-x-2/10 bg-[#192942]  border border-(--border) dark:border-(--borderdark) rounded-b-2xl rounded-r-2xl shadow-lg py-2 ${isDropdownOpen ? 'block' : 'hidden'}`}>
-            <button onClick={acceptrequst} className='text-xl px-2 py-1  hover:font-medium hover:bg-[#263e64] hover:cursor-pointer border-b flex gap-x-2 items-center'><PiPlugsConnectedBold /> Connect</button>
-            <button onClick={deletereq} className='text-xl px-2 py-1  hover:font-medium hover:bg-[#263e64] hover:cursor-pointer border-b flex gap-x-2 items-center'><TbPlugConnectedX  /> Delete Request</button>
-
-            </div>
-            
-            </>
-        ): (
-          <button className='bg-(--colorbg) dark:bg-(--colorbgdark) py-1 border px-4 rounded-full text-xl items-center gap-x-3 flex'>
-            <LuCirclePlus />
-          </button>
-        )}
-      </>
-    )}
-
-
-    <div className='flex gap-x-3 py-2 px-2 border rounded-full text-xl items-center'>
-
-    <Link href={`/Profile/${User?._id}`}>
-      <button className='rounded-full border hover:cursor-pointer  px-5 flex items-center  justify-center'>Works</button>
-    </Link>
-    <Link href={`/Profile/${User?._id}/collections`}>
-      <button className='rounded-full border hover:cursor-pointer px-5 flex items-center justify-center'>Collections</button>
-    </Link>
+          )}
+        </div>
+      </div>
     </div>
-
-
-
-    <GiHamburgerMenu className="size-6" />
-
-
-    </div>
-    </div>
-  )
+  );
 }
 
-export default ProfileBar
+export default ProfileBar;

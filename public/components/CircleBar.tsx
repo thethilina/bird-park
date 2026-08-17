@@ -335,7 +335,7 @@ const dropdownItemClass = "flex items-center w-full text-left px-4 py-2 cursor-p
           <h1 className='whitespace-nowrap'>{circle?.members?.length} Members</h1>
           <div className='flex'>
             {circle?.members?.slice(0, 5).map((user) => ( 
-              <Image key={user._id} src={user.profileImage} width={40} height={40} alt='avatar' className='w-7 h-7 sm:w-9 sm:h-9 lg:w-10 lg:h-10 object-cover rounded-full border border-(--border) dark:border-(--borderdark) -ml-2' />   
+              <Image key={user._id} src={user.profileImage }width={20} height={20} alt='avatar' className='w-6 h-6 sm:w-9 sm:h-9 lg:w-10 lg:h-10  rounded-full border border-(--border) dark:border-(--borderdark) -ml-2' />   
             ))}
           </div>
         </div>

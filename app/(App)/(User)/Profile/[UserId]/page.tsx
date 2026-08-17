@@ -101,11 +101,11 @@ function Page() {
 
       {loading ? (
         Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="animate-pulse bg-white/5 border border-white/10 h-[400px] w-full" />
+          <div key={i} className="animate-pulse bg-white/5 border border-white/10  h-64 sm:h-80 md:h-100 w-full" />
         ))
       ) : posts.length === 0 ? (
-        <div className="col-span-full py-20 text-center text-gray-500">
-          <p>No posts yet.</p>
+        <div className="col-span-full py-16 px-4 text-center border border-dashed border-neutral-300 dark:border-neutral-700  bg-white/5">
+          <p className="text-neutral-500 dark:text-neutral-400 font-medium">No artworks or poems published yet.</p>
         </div>
       ) : (
         posts.map((post)=>{
@@ -113,7 +113,7 @@ function Page() {
 
           return (
 
-          <div key={post._id} className="relative group">
+          <div key={post._id} className="relative group overflow-hidden">
             <Link
               href={`/Art/${post._id}`}
               className="block h-full"
@@ -129,6 +129,7 @@ function Page() {
                 bg-(--colorbg)
                 border
                 border-(--border)
+                h-64 sm:h-80 md:h-100
                 "
               >
 
@@ -137,7 +138,7 @@ function Page() {
                   alt={post.title}
                   className="
                   object-cover
-                  h-100
+                  h-full
                   w-full
                   "
                 />
@@ -150,7 +151,7 @@ function Page() {
 
               <div
                 className="
-                h-100
+                h-64 sm:h-80 md:h-100
                 border
                 border-(--border)
                 p-5
