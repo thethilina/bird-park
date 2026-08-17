@@ -19,11 +19,10 @@ import { PiEyeClosedFill } from "react-icons/pi";
 import { TbPlugConnectedX } from "react-icons/tb";
 import { usePathname } from 'next/navigation';
 
-
 function ProfileBar({ User }: any) {
   const { user } = useAuth();
   const pathname = usePathname();
-  const  [ connectionStatus , setconnectionStatues ] = useState('not_sent')
+  const [ connectionStatus , setconnectionStatues ] = useState('not_sent')
   const loader = useTopLoader()
   const [sentreqID , setsentreqID] = useState(null)
   const [receivedID , setreverivedID] = useState(null)
@@ -34,25 +33,21 @@ function ProfileBar({ User }: any) {
   const hamburgerMenuRef = useRef<HTMLDivElement | null>(null);
   const hamburgerButtonRef = useRef<HTMLButtonElement | null>(null);
 
+  const success = (msg: string) =>
+    toast(msg, {
+      position: "top-right",
+      autoClose: 2000,
+      type: "success",
+    });
 
-const success = (msg: string) =>
-  toast(msg, {
-    position: "top-right",
-    autoClose: 2000,
-    type: "success",
-  });
-
-const errorToast = (msg: string) =>
-  toast(msg, {
-    position: "top-right",
-    autoClose: 2000,
-    type: "error",
-  });
-
+  const errorToast = (msg: string) =>
+    toast(msg, {
+      position: "top-right",
+      autoClose: 2000,
+      type: "error",
+    });
 
   const acceptrequst = async()=>{
-
-
     try{
        loader.start()
        const response = await fetch('/api/connection/accept', {
@@ -60,7 +55,6 @@ const errorToast = (msg: string) =>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
         "requestId": receivedID
-
         }),
       });
 
@@ -71,30 +65,16 @@ const errorToast = (msg: string) =>
         return;
       }
 
-  
-        success(`Connected with ${User?.username} sucessfully!`)   
-        loader.done()
+      success(`Connected with ${User?.username} sucessfully!`)   
+      loader.done()
       setconnectionStatues("connected")
-
     }catch(error){
-
         errorToast("Error accepting the request")
         loader.done()
-
-
     }
-
-
-
-
   }
 
-
-
-
- const cancelsentreq = async()=>{
-
-
+  const cancelsentreq = async()=>{
     try{
        loader.start()
        const response = await fetch(`/api/connection/request/${sentreqID}`, {
@@ -102,7 +82,6 @@ const errorToast = (msg: string) =>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
         "requestId": sentreqID
-
         }),
       });
 
@@ -113,29 +92,16 @@ const errorToast = (msg: string) =>
         return;
       }
 
-  
       success(`Stop observing ${User?.username} sucessfully!`)
-        loader.done()
+      loader.done()
       setconnectionStatues("not_sent")
-
     }catch(error){
-
        errorToast("Error removing the request")
-        loader.done()
-
-
+       loader.done()
     }
-
-
-
-
   }
 
-
-
- const deletereq = async()=>{
-
-
+  const deletereq = async()=>{
     try{
        loader.start()
        const response = await fetch(`/api/connection/decline`, {
@@ -143,7 +109,6 @@ const errorToast = (msg: string) =>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
         "requestId": receivedID
-
         }),
       });
 
@@ -154,33 +119,21 @@ const errorToast = (msg: string) =>
         return;
       }
 
-  
       success(`Request from ${User?.username} has declined sucessfully!`)
-        loader.done()
+      loader.done()
       setconnectionStatues("not_sent")
-
     }catch(error){
-
        errorToast("Error declining the request")
-        loader.done()
-
-
+       loader.done()
     }
-
-
-
-
   }
 
   const removeconnection = async()=>{
-
-
     try{
        loader.start()
        const response = await fetch(`/api/connection/${User._id}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-       
       });
 
       const data = await response.json();
@@ -191,29 +144,15 @@ const errorToast = (msg: string) =>
       }
 
       success("Connection removed successfully!")
-        loader.done()
+      loader.done()
       setconnectionStatues("not_sent")
-
     }catch(error){
-
        errorToast("Error removing the connection")
-        loader.done()
-
-
+       loader.done()
     }
-
-
-
-
   }
 
-
-
-
-
   const sendrequest = async()=>{
-
-
     try{
        loader.start()
        const response = await fetch('/api/connection/request', {
@@ -221,7 +160,6 @@ const errorToast = (msg: string) =>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
         "receiverId": User._id
-
         }),
       });
 
@@ -234,59 +172,40 @@ const errorToast = (msg: string) =>
 
       setsentreqID(data.request._id)
       success("Request sent successfully!")
-        loader.done()
+      loader.done()
       setconnectionStatues("observing")
-
     }catch(error){
-
        errorToast("Error sending the request")
-        loader.done()
-
-
+       loader.done()
     }
-
-
-
-
   }
 
+  useEffect(() => {
+    const getStatus = async () => {
+      if (!user?._id || !User?._id) return;
+      if (user._id === User._id) return;
 
+      try {
+        const res = await fetch(
+          `/api/connection/status/${User._id}`
+        );
 
+        const data = await res.json();
+        if (data.status === "observer") {
+          setreverivedID(data.requestId)
+        }
 
-
-
-
-
-  
-useEffect(() => {
-  const getStatus = async () => {
-    if (!user?._id || !User?._id) return;
-
-    if (user._id === User._id) return;
-
-    try {
-      const res = await fetch(
-        `/api/connection/status/${User._id}`
-      );
-
-      const data = await res.json();
-      if (data.status === "observer") {
-        setreverivedID(data.requestId)
+        if (data.status === "observing"){
+          setsentreqID(data.requestId)
+        }
+        setconnectionStatues(data.status);
+      } catch (err) {
+        console.error(err);
       }
+    };
 
-      if (data.status === "observing"){
-        setsentreqID(data.requestId)
-
-      }
-      setconnectionStatues(data.status);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  getStatus();
-}, [user?._id, User?._id]);
-
+    getStatus();
+  }, [user?._id, User?._id]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -319,10 +238,10 @@ useEffect(() => {
   const isCollectionsActive = pathname === `/Profile/${User?._id}/collections`;
 
   return (
-    <div className='space-y-6 border-b-2 border-(--border) dark:border-(--borderdark) py-6 w-full bg-(--color-background) dark:bg-(--background)  relative'>
+    <div className='space-y-2 border-b-2 border-(--border) dark:border-(--borderdark) py-6 w-full bg-(--color-background) dark:bg-(--background) relative'>
       
       {/* Profile info row */}
-      <div className="w-full flex flex-col md:flex-row md:items-center justify-between gap-y-4">
+      <div className="w-full flex flex-row items-center justify-between gap-y-4">
         <div className='flex gap-x-4 items-center'>
           <Image 
             src={User?.profileImage || testavetar} 
@@ -337,31 +256,115 @@ useEffect(() => {
           </div>
         </div>
 
-        <div className='flex items-center text-xl gap-x-10'>
+        {/* Desktop Connections & Observers */}
+        <div className='hidden sm:flex items-center text-xl gap-x-10'>
           <h1> Connections  {User?.connections?.length || 0}</h1>
           <h1>Observers {User?.observers?.length || 0} </h1>
         </div>
+
+        {/* Mobile Hamburger Menu Icon (Top Right) */}
+        <div className="relative flex sm:hidden justify-end">
+          <button
+            ref={hamburgerButtonRef}
+            onClick={() => setShowHamburgerMenu(!showHamburgerMenu)}
+            className="p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center justify-center hover:cursor-pointer"
+          >
+            <GiHamburgerMenu className="size-6 text-neutral-500 hover:text-neutral-800 dark:hover:text-white" />
+          </button>
+
+          {/* Hamburger Dropdown Menu */}
+          {showHamburgerMenu && (
+            <div 
+              ref={hamburgerMenuRef} 
+              className="absolute right-0 top-8 mt-2 z-200 w-52 bg-white dark:bg-[#0c0c14] border border-(--border) dark:border-(--borderdark) rounded-xl shadow-xl py-2 font-sans"
+            >
+              {user?._id === User?._id ? (
+                <>
+                  <button 
+                    onClick={() => {
+                      navigator.clipboard.writeText(window.location.href);
+                      success("Profile link copied to clipboard!");
+                      setShowHamburgerMenu(false);
+                    }}
+                    className="w-full text-left text-sm px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 transition-colors hover:cursor-pointer flex items-center gap-x-2"
+                  >
+                    Share Profile
+                  </button>
+                  <Link href={`/Profile/${User?._id}/emotion-dashboard`} onClick={() => setShowHamburgerMenu(false)}>
+                    <div className="w-full text-left text-sm px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 transition-colors hover:cursor-pointer flex items-center gap-x-2">
+                      Emotion Dashboard
+                    </div>
+                  </Link>
+                  <Link href="/Profile/Settings" onClick={() => setShowHamburgerMenu(false)}>
+                    <div className="w-full text-left text-sm px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 transition-colors hover:cursor-pointer flex items-center gap-x-2">
+                      Settings
+                    </div>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <button 
+                    onClick={() => {
+                      navigator.clipboard.writeText(window.location.href);
+                      success("Profile link copied to clipboard!");
+                      setShowHamburgerMenu(false);
+                    }}
+                    className="w-full text-left text-sm px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 transition-colors hover:cursor-pointer flex items-center gap-x-2"
+                  >
+                    Share Profile
+                  </button>
+                  <button 
+                    onClick={() => {
+                      success("Artist reported successfully. Thank you!");
+                      setShowHamburgerMenu(false);
+                    }}
+                    className="w-full text-left text-sm px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-red-600 dark:text-red-400 transition-colors hover:cursor-pointer flex items-center gap-x-2 font-medium"
+                  >
+                    Report Artist
+                  </button>
+                  <button 
+                    onClick={() => {
+                      success("Artist blocked successfully.");
+                      setShowHamburgerMenu(false);
+                    }}
+                    className="w-full text-left text-sm px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-red-600 dark:text-red-400 transition-colors hover:cursor-pointer flex items-center gap-x-2 font-medium"
+                  >
+                    Block Artist
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Mobile Connections & Observers Row */}
+      <div className='flex sm:hidden items-center text-lg gap-x-6 justify-start'>
+        <h1> Connections {User?.connections?.length || 0}</h1>
+        <h1> Observers {User?.observers?.length || 0}</h1>
       </div>
 
       {/* Profile actions and navigation tabs row */}
       <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-y-4 pt-2 relative">
-        <div className="flex items-center gap-x-3 justify-center sm:justify-start">
+        
+        {/* Action Buttons (Full width on mobile) */}
+        <div className="flex items-center gap-x-3 w-full sm:w-auto justify-center sm:justify-start">
           {user?._id === User?._id ? (
             <Link
               href={`/Profile/Settings`}
-              className="bg-[#0D1725] hover:bg-[#1a2c47] border border-(--border) dark:border-(--borderdark) px-4 py-1.5 rounded-full text-base sm:text-lg items-center gap-x-2 flex transition-all duration-200 hover:scale-105 active:scale-95"
+              className="w-full sm:w-auto justify-center bg-[#0D1725] hover:bg-[#1a2c47] border border-(--border) dark:border-(--borderdark) px-4 py-1.5 rounded-full text-base sm:text-lg items-center gap-x-2 flex transition-all duration-200 hover:scale-105 active:scale-95"
             >
               <LuCirclePlus />
               <span>Settings</span>
             </Link>
           ) : (
-            <div className="relative">
+            <div className="relative w-full sm:w-auto">
               {connectionStatus === "connected" ? (
                 <>
                   <button 
                     ref={avatarRef} 
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}  
-                    className='bg-(--colorbg) hover:cursor-pointer dark:bg-(--colorbgdark) py-1.5 border border-(--border) dark:border-(--borderdark) px-4 rounded-full text-base sm:text-lg items-center gap-x-2 flex hover:scale-105 active:scale-95 transition-all duration-200'
+                    className='w-full sm:w-auto justify-center bg-(--colorbg) hover:cursor-pointer dark:bg-(--colorbgdark) py-1.5 border border-(--border) dark:border-(--borderdark) px-4 rounded-full text-base sm:text-lg items-center gap-x-2 flex hover:scale-105 active:scale-95 transition-all duration-200'
                   >
                     <PiPlugsConnectedBold />
                     <span>Connected</span>
@@ -380,7 +383,7 @@ useEffect(() => {
               ) : connectionStatus === "not_sent" ? (
                 <button 
                   onClick={sendrequest} 
-                  className='bg-[#192942] hover:bg-[#2c456e] hover:cursor-pointer py-1.5 border border-(--border) dark:border-(--borderdark) px-4 rounded-full text-base sm:text-lg items-center gap-x-2 flex hover:scale-105 active:scale-95 transition-all duration-200'
+                  className='w-full sm:w-auto justify-center bg-[#192942] hover:bg-[#2c456e] hover:cursor-pointer py-1.5 border border-(--border) dark:border-(--borderdark) px-4 rounded-full text-base sm:text-lg items-center gap-x-2 flex hover:scale-105 active:scale-95 transition-all duration-200'
                 >
                   <BsSendPlusFill />
                   <span>Connect</span>
@@ -390,7 +393,7 @@ useEffect(() => {
                   <button 
                     ref={avatarRef} 
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}  
-                    className='bg-[#192942] hover:bg-[#1f314e] hover:cursor-pointer py-1.5 border border-(--border) dark:border-(--borderdark) px-4 rounded-full text-base sm:text-lg items-center gap-x-2 flex hover:scale-105 active:scale-95 transition-all duration-200'
+                    className='w-full sm:w-auto justify-center bg-[#192942] hover:bg-[#1f314e] hover:cursor-pointer py-1.5 border border-(--border) dark:border-(--borderdark) px-4 rounded-full text-base sm:text-lg items-center gap-x-2 flex hover:scale-105 active:scale-95 transition-all duration-200'
                   >
                     <BsFillEyeFill />
                     <span>Observing</span>
@@ -411,7 +414,7 @@ useEffect(() => {
                   <button  
                     ref={avatarRef} 
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}  
-                    className='bg-[#192942] hover:cursor-pointer py-1.5 border border-(--border) dark:border-(--borderdark) px-4 rounded-full text-base sm:text-lg items-center gap-x-2 flex hover:scale-105 active:scale-95 transition-all duration-200'
+                    className='w-full sm:w-auto justify-center bg-[#192942] hover:cursor-pointer py-1.5 border border-(--border) dark:border-(--borderdark) px-4 rounded-full text-base sm:text-lg items-center gap-x-2 flex hover:scale-105 active:scale-95 transition-all duration-200'
                   >
                     <GrConnect />
                     <span>Respond</span>
@@ -435,7 +438,7 @@ useEffect(() => {
                   </div>
                 </>
               ) : (
-                <button className='bg-(--colorbg) dark:bg-(--colorbgdark) py-1.5 border border-(--border) dark:border-(--borderdark) px-4 rounded-full text-base sm:text-lg items-center gap-x-2 flex hover:scale-105 active:scale-95 transition-all duration-200'>
+                <button className='w-full sm:w-auto justify-center bg-(--colorbg) dark:bg-(--colorbgdark) py-1.5 border border-(--border) dark:border-(--borderdark) px-4 rounded-full text-base sm:text-lg items-center gap-x-2 flex hover:scale-105 active:scale-95 transition-all duration-200'>
                   <LuCirclePlus />
                 </button>
               )}
@@ -444,9 +447,9 @@ useEffect(() => {
         </div>
 
         {/* Works/Collections Tabs */}
-        <div className='flex gap-x-3 py-2 px-2 border border-(--border) dark:border-(--borderdark) rounded-full text-xl items-center bg-transparent justify-center mx-auto sm:mx-0'>
-          <Link href={`/Profile/${User?._id}`}>
-            <button className={`rounded-full border hover:cursor-pointer px-5 flex items-center justify-center transition-all duration-200 ${
+        <div className='flex gap-x-3 py-2 px-2 border border-(--border) dark:border-(--borderdark) rounded-full text-xl items-center bg-transparent justify-center w-full sm:w-auto'>
+          <Link href={`/Profile/${User?._id}`} className='flex-1 sm:flex-initial'>
+            <button className={`w-full rounded-full border hover:cursor-pointer px-5 flex items-center justify-center transition-all duration-200 ${
               isWorksActive 
                 ? 'bg-neutral-900 text-white dark:bg-white dark:text-black font-semibold border-transparent shadow-sm' 
                 : 'border-(--border) text-neutral-500 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
@@ -454,8 +457,8 @@ useEffect(() => {
               Works
             </button>
           </Link>
-          <Link href={`/Profile/${User?._id}/collections`}>
-            <button className={`rounded-full border hover:cursor-pointer px-5 flex items-center justify-center transition-all duration-200 ${
+          <Link href={`/Profile/${User?._id}/collections`} className='flex-1 sm:flex-initial'>
+            <button className={`w-full rounded-full border hover:cursor-pointer px-5 flex items-center justify-center transition-all duration-200 ${
               isCollectionsActive 
                 ? 'bg-neutral-900 text-white dark:bg-white dark:text-black font-semibold border-transparent shadow-sm' 
                 : 'border-(--border) text-neutral-500 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
@@ -465,8 +468,8 @@ useEffect(() => {
           </Link>
         </div>
         
-        {/* Hamburger Menu Trigger */}
-        <div className="relative flex justify-center sm:justify-end">
+        {/* Desktop Hamburger Menu Trigger */}
+        <div className="relative hidden sm:flex justify-end">
           <button
             ref={hamburgerButtonRef}
             onClick={() => setShowHamburgerMenu(!showHamburgerMenu)}

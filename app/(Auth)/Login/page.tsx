@@ -18,7 +18,7 @@ function Page() {
   const loader = useTopLoader();
   const { setUser } = useAuth();
 
-  const inputClass = "w-full bg-[#2D2D44] border-none rounded-full py-4 px-6 text-sm placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-white/20 transition-all [&:-webkit-autofill]:shadow-[inset_0_0_0px_1000px_#2D2D44] [&:-webkit-autofill]:[-webkit-text-fill-color:white]";
+  const inputClass = "w-full bg-[#2D2D44] border-none rounded-full py-4 px-6 text-sm placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-white/20 transition-all";
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -101,7 +101,6 @@ function Page() {
               onChange={(e) => setEmail(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
               className={inputClass}
-              style={{ WebkitTextFillColor: 'inherit' }}
             />
             <input
               placeholder='Password'
@@ -110,7 +109,6 @@ function Page() {
               onChange={(e) => setPassword(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
               className={inputClass}
-              style={{ WebkitTextFillColor: 'inherit' }}
             />
           </div>
 
