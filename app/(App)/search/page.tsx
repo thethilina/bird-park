@@ -134,8 +134,14 @@ function SearchResultsContent() {
   ];
 
   return (
-    <div className="min-h-screen pb-24  mx-auto"
-      style={{ padding: isMobile ? "1rem 1rem 6rem" : "1.5rem 1.5rem 6rem" }}
+    <div
+      className="min-h-screen max-w-7xl mx-auto"
+      style={{
+        padding: isMobile ? "1rem 0.875rem 6rem" : "1.5rem 1.5rem 6rem",
+        overflowX: "hidden",   /* nothing bleeds past the viewport */
+        width: "100%",
+        boxSizing: "border-box",
+      }}
     >
       {/* ── HEADER ─────────────────────────────────────────────────────── */}
       <div style={{ marginBottom: isMobile ? "1.25rem" : "2rem" }}>
@@ -168,13 +174,13 @@ function SearchResultsContent() {
         style={{
           display: "flex",
           alignItems: "center",
-          gap: isMobile ? "0.375rem" : "0.75rem",
+          gap: isMobile ? "0.3rem" : "0.75rem",
           marginBottom: isMobile ? "1.25rem" : "2rem",
           overflowX: "auto",
           paddingBottom: "0.25rem",
-          /* Hide scrollbar but keep scroll */
           scrollbarWidth: "none",
           msOverflowStyle: "none",
+          width: "100%",
         }}
       >
         {tabs.map((tab) => {
@@ -186,10 +192,14 @@ function SearchResultsContent() {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: isMobile ? "0.3rem" : "0.5rem",
-                padding: isMobile ? "0.45rem 0.75rem" : "0.75rem 1.25rem",
-                borderRadius: "0.75rem",
-                fontSize: isMobile ? "0.825rem" : "1rem",
+                justifyContent: "center",
+                gap: "0.3rem",
+                /* On mobile: icon-only for inactive, icon+label for active */
+                padding: isMobile
+                  ? isActive ? "0.4rem 0.7rem" : "0.4rem 0.55rem"
+                  : "0.75rem 1.25rem",
+                borderRadius: "0.65rem",
+                fontSize: "0.8rem",
                 fontWeight: 500,
                 whiteSpace: "nowrap",
                 cursor: "pointer",
@@ -203,14 +213,19 @@ function SearchResultsContent() {
               }}
             >
               {tab.icon}
-              {/* On very small screens, hide label for non-active tabs if too many */}
-              <span>{tab.label}</span>
-              {tab.count > 0 && (
+              {/* Label: always on desktop; only on active tab on mobile */}
+              {(!isMobile || isActive) && (
+                <span style={{ fontSize: isMobile ? "0.8rem" : "1rem" }}>
+                  {tab.label}
+                </span>
+              )}
+              {/* Count badge: desktop only */}
+              {!isMobile && tab.count > 0 && (
                 <span
                   style={{
-                    padding: isMobile ? "1px 5px" : "2px 8px",
+                    padding: "2px 8px",
                     borderRadius: "0.5rem",
-                    fontSize: isMobile ? "0.7rem" : "0.8rem",
+                    fontSize: "0.8rem",
                     background: isActive ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.08)",
                     color: isActive ? "#fff" : "#6b7280",
                   }}

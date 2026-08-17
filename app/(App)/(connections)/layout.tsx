@@ -12,7 +12,7 @@ export default function UserLayout({
 }>) {
   return (
     <div className="min-h-full flex flex-col">
-      <div className="flex flex-1">
+      <div className="flex flex-col lg:flex-row flex-1">
         <ConnectionBar/>
         <div className="flex-1">{children}</div>
       </div>
