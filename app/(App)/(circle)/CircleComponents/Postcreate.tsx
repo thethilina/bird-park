@@ -254,45 +254,42 @@ function PostCreate({ circleId , postCreateOpen }: PostCreateProps) {
   };
 
   return (
-    <div className="mx-4 sm:mx-6 lg:mx-10  my-5">
+    <div className="mx-4 sm:mx-6 lg:mx-10 my-5 max-w-full overflow-x-hidden">
       {/* Type switcher */}
-      <div className="flex items-center justify-between gap-2 mb-5">
+      <div className="flex items-center justify-between gap-2 mb-4 sm:mb-5">
         <div className="flex gap-2 items-center">
-        <button
-          onClick={() => setPostType("art")}
-          className={`py-1 px-4 sm:px-5 sm:py-2 rounded-full text-lg font-bold transition-colors hover:cursor-pointer ${
-            postType === "art"
-              ? "bg-[#e6f0f0] text-[#141414]"
-              : "border-2 border-dotted border-(--border) bg-(--colorbg) dark:bg-(--colorbgdark)"
-          }`}
-        >
-          Art
-        </button>
-        <button
-          onClick={() => setPostType("poem")}
-          className={`py-1 px-4 sm:px-5 sm:py-2 rounded-full text-lg font-bold transition-colors hover:cursor-pointer ${
-            postType === "poem"
-              ? "bg-[#192942] text-white"
-              : "border-2 border-dotted border-(--border) bg-(--colorbg) dark:bg-(--colorbgdark)"
-          }`}
-        >
-          Poem
-        </button>
-          </div>
-        <MdCancel onClick={() => postCreateOpen(false)} size={25} className="hover:cursor-pointer hover:scale-110 transition-transform" />
-
+          <button
+            onClick={() => setPostType("art")}
+            className={`py-1 px-3 sm:px-5 sm:py-2 rounded-full text-base sm:text-lg font-bold transition-colors hover:cursor-pointer ${
+              postType === "art"
+                ? "bg-[#e6f0f0] text-[#141414]"
+                : "border-2 border-dotted border-(--border) bg-(--colorbg) dark:bg-(--colorbgdark)"
+            }`}
+          >
+            Art
+          </button>
+          <button
+            onClick={() => setPostType("poem")}
+            className={`py-1 px-3 sm:px-5 sm:py-2 rounded-full text-base sm:text-lg font-bold transition-colors hover:cursor-pointer ${
+              postType === "poem"
+                ? "bg-[#192942] text-white"
+                : "border-2 border-dotted border-(--border) bg-(--colorbg) dark:bg-(--colorbgdark)"
+            }`}
+          >
+            Poem
+          </button>
+        </div>
+        <MdCancel onClick={() => postCreateOpen(false)} size={25} className="hover:cursor-pointer hover:scale-110 transition-transform shrink-0" />
       </div>
 
       {/* Title + Visibility */}
-      <div className="flex flex-col md:flex-row gap-4 mb-5">
+      <div className="flex flex-col md:flex-row gap-3 sm:gap-4 mb-4 sm:mb-5">
         <input
           placeholder="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="flex-1 rounded-xl border-2 border-dotted border-(--border) bg-(--colorbg) px-4 py-2 text-2xl dark:bg-(--colorbgdark)"
+          className="flex-1 min-w-0 rounded-xl border-2 border-dotted border-(--border) bg-(--colorbg) px-3 sm:px-4 py-2 text-lg sm:text-2xl dark:bg-(--colorbgdark)"
         />
-
-      
       </div>
 
       {postType === "art" ? (
@@ -307,13 +304,13 @@ function PostCreate({ circleId , postCreateOpen }: PostCreateProps) {
           {art === null ? (
             <div
               onClick={handleIconClick}
-              className="hover:cursor-pointer w-full text-xl gap-y-3 items-center justify-center flex flex-col h-130 rounded-xl border-2 border-dotted border-(--border) bg-(--colorbg) dark:bg-(--colorbgdark)"
+              className="hover:cursor-pointer w-full text-base sm:text-xl gap-y-2 sm:gap-y-3 items-center justify-center flex flex-col h-64 sm:h-96 md:h-130 rounded-xl border-2 border-dotted border-(--border) bg-(--colorbg) dark:bg-(--colorbgdark)"
             >
-              <IoCloudUpload size={40} />
+              <IoCloudUpload size={32} className="sm:w-10 sm:h-10" />
               <p>Upload your art</p>
             </div>
           ) : (
-            <div className="relative w-full text-xl gap-y-3 items-center justify-center flex flex-col h-130 rounded-xl border-2 border-dotted border-(--border) bg-(--colorbg) dark:bg-(--colorbgdark)">
+            <div className="relative w-full text-base sm:text-xl gap-y-2 sm:gap-y-3 items-center justify-center flex flex-col h-64 sm:h-96 md:h-130 rounded-xl border-2 border-dotted border-(--border) bg-(--colorbg) dark:bg-(--colorbgdark)">
               <button
                 onClick={handleRemoveArt}
                 className="absolute top-2 hover:cursor-pointer right-2 z-10 flex items-center justify-center rounded-full bg-black/60 p-1.5 text-white hover:bg-black/80"
@@ -333,61 +330,64 @@ function PostCreate({ circleId , postCreateOpen }: PostCreateProps) {
       ) : (
         <>
           {/* Poem toolbar */}
-          <div className="mb-5 w-full rounded-xl border-2 border-dotted border-(--border) bg-(--colorbg) px-4 py-2 dark:bg-(--colorbgdark) flex flex-wrap items-center gap-4 text-base">
-            <div className="flex items-center gap-2">
-              <label className="text-sm font-medium">Font:</label>
-              <select
-                value={font}
-                onChange={(e) => setFont(e.target.value)}
-                className="p-1 text-sm border rounded bg-transparent border-(--border) dark:text-white text-black"
-              >
-                {fontOptions.map((f, idx) => (
-                  <option key={idx} value={f.value} className="text-black">
-                    {f.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className="mb-4 sm:mb-5 w-full rounded-xl border-2 border-dotted border-(--border) bg-(--colorbg) px-3 py-3 sm:px-4 sm:py-2 dark:bg-(--colorbgdark) text-sm sm:text-base">
+            <div className="grid grid-cols-2 gap-x-3 gap-y-2 sm:flex sm:flex-wrap sm:items-center sm:gap-4">
+              <div className="flex flex-col gap-1 min-w-0 sm:flex-row sm:items-center sm:gap-2">
+                <label className="text-xs sm:text-sm font-medium">Font</label>
+                <select
+                  value={font}
+                  onChange={(e) => setFont(e.target.value)}
+                  className="w-full p-1.5 sm:p-1 text-xs sm:text-sm border rounded bg-transparent border-(--border) dark:text-white text-black min-w-0"
+                >
+                  {fontOptions.map((f, idx) => (
+                    <option key={idx} value={f.value} className="text-black">
+                      {f.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            <div className="flex items-center gap-2">
-              <label className="text-sm font-medium">Size:</label>
-              <select
-                value={fontSize}
-                onChange={(e) => setFontSize(e.target.value)}
-                className="p-1 text-sm border rounded bg-transparent border-(--border) dark:text-white text-black"
-              >
-                {sizeOptions.map((s, idx) => (
-                  <option key={idx} value={s.value} className="text-black">
-                    {s.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+              <div className="flex flex-col gap-1 min-w-0 sm:flex-row sm:items-center sm:gap-2">
+                <label className="text-xs sm:text-sm font-medium">Size</label>
+                <select
+                  value={fontSize}
+                  onChange={(e) => setFontSize(e.target.value)}
+                  className="w-full p-1.5 sm:p-1 text-xs sm:text-sm border rounded bg-transparent border-(--border) dark:text-white text-black min-w-0"
+                >
+                  {sizeOptions.map((s, idx) => (
+                    <option key={idx} value={s.value} className="text-black">
+                      {s.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            <div className="flex items-center gap-2">
-              <label className="text-sm font-medium">Text:</label>
-              <input
-                type="color"
-                value={textColor}
-                onChange={(e) => setTextColor(e.target.value)}
-                className="w-6 h-6 border rounded cursor-pointer border-(--border)"
-              />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <label className="text-sm font-medium">Bg:</label>
-              <input
-                type="color"
-                value={bgColor}
-                onChange={(e) => setBgColor(e.target.value)}
-                className="w-6 h-6 border rounded cursor-pointer border-(--border)"
-              />
+              <div className="flex flex-wrap items-center gap-2 col-span-2 min-w-0">
+                <div className="flex items-center gap-2 shrink-0">
+                  <label className="text-xs sm:text-sm font-medium">Text</label>
+                  <input
+                    type="color"
+                    value={textColor}
+                    onChange={(e) => setTextColor(e.target.value)}
+                    className="w-7 h-7 sm:w-6 sm:h-6 border rounded cursor-pointer border-(--border) p-0 shrink-0 appearance-none [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch]:rounded"
+                  />
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <label className="text-xs sm:text-sm font-medium">Bg</label>
+                  <input
+                    type="color"
+                    value={bgColor}
+                    onChange={(e) => setBgColor(e.target.value)}
+                    className="w-7 h-7 sm:w-6 sm:h-6 border rounded cursor-pointer border-(--border) p-0 shrink-0 appearance-none [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch]:rounded"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Poem editor */}
           <div
-            className="w-full gap-y-3 items-center justify-center flex flex-col h-130 rounded-xl border-2 border-dotted border-(--border) p-4"
+            className="w-full gap-y-3 items-center justify-center flex flex-col h-64 sm:h-96 md:h-130 rounded-xl border-2 border-dotted border-(--border) p-3 sm:p-4"
             style={{ backgroundColor: bgColor }}
           >
             <textarea
@@ -401,11 +401,11 @@ function PostCreate({ circleId , postCreateOpen }: PostCreateProps) {
         </>
       )}
 
-      <div className="flex items-center   justify-end w-full p-2 mt-4 text-right">
+      <div className="flex items-center justify-center sm:justify-end w-full p-2 mt-4 text-right">
         <button
           onClick={handleUpload}
           disabled={uploading}
-          className="px-4 text-[#141414] py-2 bg-[#e6f0f0] text-lg rounded-4xl hover:cursor-pointer hover:bg-[#979ea0] font-bold disabled:opacity-60 disabled:cursor-not-allowed"
+          className="w-full sm:w-auto px-4 text-[#141414] py-2 bg-[#e6f0f0] text-lg rounded-4xl hover:cursor-pointer hover:bg-[#979ea0] font-bold disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {uploading ? "Uploading..." : "Upload"}
         </button>
