@@ -9,7 +9,7 @@ import { useTopLoader } from "nextjs-toploader";
 import { toast } from "react-toastify";
 import { IoClose, IoAdd, IoImageOutline } from "react-icons/io5";
 import { MdOutlineCreateNewFolder } from "react-icons/md";
-import Image from "next/image";
+import Image from "next/image";import ProfileBarSkeleton from "@/public/components/ProfileBarSkeleton";
 
 function Page() {
   const { UserId } = useParams();
@@ -142,8 +142,9 @@ function Page() {
   const isOwnProfile = user?._id === UserId || user?._id === profileUser?._id;
 
   return (
-    <div className="space-y-5">
-      <ProfileBar User={profileUser} />
+    <div className="space-y-5 pt-5  px-3 md:px-5 pb-20 ">
+      {loading ? <ProfileBarSkeleton /> : <ProfileBar User={profileUser} />}
+
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
         {loading ? (
@@ -152,15 +153,15 @@ function Page() {
           ))
         ) : (
           <>
-            {isOwnProfile && (
-              <div 
-                onClick={() => setShowModal(true)}
-                className="items-center flex border-(--border) bg-[#0e0e14] hover:cursor-pointer text-center gap-y-3 p-4 flex-col justify-center w-full aspect-square border rounded-xl hover:bg-[#1a1a24] transition-all hover:scale-105 active:scale-95 duration-200"
-              >
-                <MdOutlineCreateNewFolder size={40} />
-                <h1 className="text-sm sm:text-base font-medium">Create new collection</h1>
-              </div>
-            )}
+     {isOwnProfile && (
+  <div 
+    onClick={() => setShowModal(true)}
+    className="items-center flex border-(--border) bg-[#0e0e14] hover:cursor-pointer text-center gap-y-3 p-4 flex-col justify-center w-full h-full min-h-[180px] border rounded-xl hover:bg-[#1a1a24] transition-all hover:scale-105 active:scale-95 duration-200"
+  >
+    <MdOutlineCreateNewFolder size={40} />
+    <h1 className="text-sm sm:text-base font-medium">Create new collection</h1>
+  </div>
+)}
             
             {collections.length === 0 && !isOwnProfile ? (
               <div className="col-span-full py-16 px-4 text-center border border-dashed border-neutral-300 dark:border-neutral-700 rounded-xl bg-white/5 w-full">

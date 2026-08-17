@@ -479,7 +479,7 @@ useEffect(() => {
           {showHamburgerMenu && (
             <div 
               ref={hamburgerMenuRef} 
-              className="absolute right-0 mt-2 z-200 w-52 bg-white dark:bg-[#0c0c14] border border-(--border) dark:border-(--borderdark) rounded-xl shadow-xl py-2 font-sans"
+              className="absolute right-0 top-6 mt-2 z-200 w-52 bg-white dark:bg-[#0c0c14] border border-(--border) dark:border-(--borderdark) rounded-xl shadow-xl py-2 font-sans"
             >
               {user?._id === User?._id ? (
                 <>

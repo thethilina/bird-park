@@ -78,7 +78,7 @@ function Page() {
 
   return (
 
-    <div className="space-y-5">
+    <div className="space-y-5 pt-5  px-3 md:px-5 pb-20  ">
 
 
       {loading ? <ProfileBarSkeleton /> : <ProfileBar User={user}/>}
@@ -104,7 +104,7 @@ function Page() {
           <div key={i} className="animate-pulse bg-white/5 border border-white/10  h-64 sm:h-80 md:h-100 w-full" />
         ))
       ) : posts.length === 0 ? (
-        <div className="col-span-full py-16 px-4 text-center border border-dashed border-neutral-300 dark:border-neutral-700  bg-white/5">
+        <div className="col-span-full py-16 px-4 text-center border border-dashed border-neutral-300 dark:border-neutral-700 rounded-xl  bg-white/5">
           <p className="text-neutral-500 dark:text-neutral-400 font-medium">No artworks or poems published yet.</p>
         </div>
       ) : (

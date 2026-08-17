@@ -199,9 +199,9 @@ savesuccess()
     <div className=' space-y-5 sm:space-y-15 font-sans   px-3 md:px-5 pb-20 '>
       <ToastContainer />
       {/** top section */}
-      <div className='flex sticky  top-12   bg-(--background) sm:relative flex-col sm:flex-row justify-between items-start sm:items-center border-b-2 border-(--border) pb-5 gap-y-4 sm:gap-y-0'>
+      <div className='flex sticky  top-12 sm:top-0   bg-(--background) sm:relative flex-col sm:flex-row justify-between items-start sm:items-center border-b-2 border-(--border) pb-5 gap-y-4 sm:gap-y-0'>
         <div className='space-y-3'>
-          <h1 className=' pt-2 font-semibold text-xl lg:text-2xl'>Choose how you appear on Bird Park</h1>    
+          <h1 className=' pt-2 font-semibold text-lg lg:text-2xl'>Choose how you appear on Bird Park</h1>    
           <h2>Signed as {user?.email}</h2>
         </div>
 
@@ -229,7 +229,7 @@ savesuccess()
       <div className='flex flex-col lg:flex-row items-start gap-y-10 lg:gap-y-0 lg:gap-x-10 w-full'>
         {/** avatar */}
         <div className='space-y-3 w-full lg:w-1/2'>
-          <h2 className='text-xl font-semibold'>Avatar</h2>
+          <h2 className='sm:text-xl font-semibold'>Avatar</h2>
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
             Your avatar will appear throughout Bird Park next to your posts, comments, and anywhere your presence is seen.
           </p>
@@ -272,7 +272,7 @@ savesuccess()
 
         {/** Full Name*/}
         <div className='w-full lg:w-1/2 space-y-3'>
-          <h1 className='text-xl font-semibold'>Full Name</h1>
+          <h1 className='sm:text-xl font-semibold'>Full Name</h1>
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
             Add your full name for Bird Park crew identification—it helps the community recognize and trust who’s behind the work.
           </p>
@@ -284,7 +284,7 @@ savesuccess()
       <div className='flex flex-col lg:flex-row items-start gap-y-10 lg:gap-y-0 lg:gap-x-10 w-full'>
         {/** User Name */}
         <div className='space-y-3 w-full lg:w-1/2'>
-          <h1 className='text-xl font-semibold'>User Name</h1>
+          <h1 className='sm:text-xl font-semibold'>User Name</h1>
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
             Choose a name that reflects you and your work. This name will be visible across Bird Park wherever your presence appears.
           </p>
@@ -293,7 +293,7 @@ savesuccess()
 
         {/**birthday */}
         <div className='space-y-3 w-full lg:w-1/2'>
-          <h1 className='text-xl font-semibold'>Birthday</h1>
+          <h1 className='sm:text-xl font-semibold'>Birthday</h1>
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
             Add your birthdate to help us understand your age and keep the Bird Park community safe and appropriate for everyone.
           </p>
