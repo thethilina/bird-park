@@ -8,6 +8,8 @@ export function proxy(req: NextRequest) {
   if (
     pathname === "/Login" ||
     pathname === "/Register" ||
+    pathname === "/privacy-policy" ||
+    pathname === "/terms-of-service" ||
     pathname.startsWith("/api/")
   ) {
     return NextResponse.next();

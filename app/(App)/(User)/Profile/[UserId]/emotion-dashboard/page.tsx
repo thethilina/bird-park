@@ -21,32 +21,22 @@ export default function EmotionDashboard() {
       try {
         setLoading(true);
 
-        const res = await fetch(
-          `/api/analytics/user/${UserId}/emotions`
-        );
+        const res = await fetch(`/api/analytics/user/${UserId}/emotions`);
 
         if (!res.ok) {
-          throw new Error(
-            "Failed to fetch analytics"
-          );
+          throw new Error("Failed to fetch analytics");
         }
 
         const json = await res.json();
 
         setData({
           posts: json.posts || [],
-          topClusters:
-            json.topClusters || [],
-          timeline:
-            json.timeline || [],
-          totalPosts:
-            json.totalPosts || 0,
+          topClusters: json.topClusters || [],
+          timeline: json.timeline || [],
+          totalPosts: json.totalPosts || 0,
         });
       } catch (err) {
-        console.error(
-          "Error loading analytics:",
-          err
-        );
+        console.error("Error loading analytics:", err);
       } finally {
         setLoading(false);
       }
@@ -63,7 +53,7 @@ export default function EmotionDashboard() {
 
   if (loading) {
     return (
-      <div className="p-10 text-white">
+      <div className="p-6 sm:p-10 text-white">
         Loading creative profile...
       </div>
     );
@@ -74,15 +64,15 @@ export default function EmotionDashboard() {
   // ----------------------------------------------------------
 
   return (
-    <div className="p-6 flex gap-6 text-white">
+    <div className="p-4 sm:p-6 flex flex-col md:flex-row gap-6 text-white">
 
       {/* =====================================================
           LEFT PANEL
       ===================================================== */}
 
-      <div className="w-1/3 space-y-4">
+      <div className="w-full md:w-1/3 space-y-4">
 
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-xl sm:text-2xl font-bold">
           Creative Experience Profile
         </h1>
 
@@ -118,28 +108,24 @@ export default function EmotionDashboard() {
 
             <div className="space-y-2">
 
-              {data.topClusters.map(
-                (item: any) => (
+              {data.topClusters.map((item: any) => (
 
-                  <div
-                    key={item.cluster}
-                    className="flex justify-between
-                    border-b border-gray-700
-                    py-2"
-                  >
+                <div
+                  key={item.cluster}
+                  className="flex justify-between border-b border-gray-700 py-2 gap-2"
+                >
 
-                    <span>
-                      {item.cluster}
-                    </span>
+                  <span className="truncate">
+                    {item.cluster}
+                  </span>
 
-                    <span className="text-gray-400">
-                      {item.count}
-                    </span>
+                  <span className="text-gray-400 flex-shrink-0">
+                    {item.count}
+                  </span>
 
-                  </div>
+                </div>
 
-                )
-              )}
+              ))}
 
             </div>
 
@@ -154,9 +140,9 @@ export default function EmotionDashboard() {
           RIGHT PANEL
       ===================================================== */}
 
-      <div className="w-2/3 space-y-4">
+      <div className="w-full md:w-2/3 space-y-4">
 
-        <h2 className="text-xl font-bold">
+        <h2 className="text-lg sm:text-xl font-bold">
           Creative Journey
         </h2>
 
@@ -170,184 +156,125 @@ export default function EmotionDashboard() {
 
           <div className="space-y-4">
 
-            {data.posts.map(
-              (post: any) => {
+            {data.posts.map((post: any) => {
 
-                // ------------------------------------------------
-                // Find timeline entry
-                // ------------------------------------------------
+              // ------------------------------------------------
+              // Find timeline entry
+              // ------------------------------------------------
 
-                const timelineItem =
-                  data.timeline.find(
-                    (item: any) =>
-                      String(item.postId) ===
-                      String(post._id)
-                  );
+              const timelineItem = data.timeline.find(
+                (item: any) => String(item.postId) === String(post._id)
+              );
 
-                const cluster =
-                  timelineItem?.cluster ||
-                  post.semanticAnalysis?.cluster ||
-                  "Awaiting analysis";
+              const cluster =
+                timelineItem?.cluster ||
+                post.semanticAnalysis?.cluster ||
+                "Awaiting analysis";
 
-                const story =
-                  timelineItem?.story ||
-                  post.semanticAnalysis?.story ||
-                  null;
+              const story =
+                timelineItem?.story ||
+                post.semanticAnalysis?.story ||
+                null;
 
-                // ------------------------------------------------
-                // Render post
-                // ------------------------------------------------
+              // ------------------------------------------------
+              // Render post
+              // ------------------------------------------------
 
-                return (
-                  <div
-                    key={post._id}
-                    className="bg-gray-900
-                    rounded-xl
-                    p-4
-                    flex gap-4"
-                  >
+              return (
+                <div
+                  key={post._id}
+                  className="bg-gray-900 rounded-xl p-3 sm:p-4 flex gap-3 sm:gap-4"
+                >
 
-                    {/* =================================================
-                        MEDIA
-                    ================================================= */}
+                  {/* =================================================
+                      MEDIA
+                  ================================================= */}
 
-                    {post.type === "art" &&
-                    post.media?.url ? (
+                  {post.type === "art" && post.media?.url ? (
 
-                      <div
-                        className="
-                        w-24
-                        h-24
-                        relative
-                        flex-shrink-0
-                        "
-                      >
+                    <div className="w-16 h-16 sm:w-24 sm:h-24 relative flex-shrink-0">
 
-                        <Image
-                          src={
-                            post.media.url
-                          }
-                          alt={
-                            post.title
-                          }
-                          fill
-                          className="
-                          object-cover
-                          rounded-lg
-                          "
-                        />
-
-                      </div>
-
-                    ) : (
-
-                      <div
-                        className="
-                        w-24
-                        h-24
-                        flex-shrink-0
-                        rounded-lg
-                        bg-gray-800
-                        flex
-                        items-center
-                        justify-center
-                        text-gray-400
-                        "
-                      >
-
-                        <span className="text-sm">
-                          Poem
-                        </span>
-
-                      </div>
-
-                    )}
-
-
-                    {/* =================================================
-                        INFO
-                    ================================================= */}
-
-                    <div
-                      className="
-                      flex
-                      flex-col
-                      justify-center
-                      min-w-0
-                      "
-                    >
-
-                      {/* Title */}
-
-                      <h3
-                        className="
-                        font-semibold
-                        truncate
-                        "
-                      >
-                        {post.title}
-                      </h3>
-
-
-                      {/* Type + Date */}
-
-                      <p
-                        className="
-                        text-sm
-                        text-gray-400
-                        mt-1
-                        "
-                      >
-
-                        {post.type === "art"
-                          ? "Artwork"
-                          : "Poem"}
-
-                        {" · "}
-
-                        {new Date(
-                          post.createdAt
-                        ).toDateString()}
-
-                      </p>
-
-
-                      {/* Cluster */}
-
-                      <span
-                        className="
-                        mt-2
-                        text-blue-400
-                        text-sm
-                        "
-                      >
-                        {cluster}
-                      </span>
-
-
-                      {/* AI Story */}
-
-                      {story && (
-
-                        <p
-                          className="
-                          text-sm
-                          text-gray-400
-                          mt-2
-                          line-clamp-2
-                          "
-                        >
-                          {story}
-                        </p>
-
-                      )}
+                      <Image
+                        src={post.media.url}
+                        alt={post.title}
+                        fill
+                        className="object-cover rounded-lg"
+                      />
 
                     </div>
 
+                  ) : (
+
+                    <div
+                      className="
+                      w-16 h-16 sm:w-24 sm:h-24
+                      flex-shrink-0
+                      rounded-lg
+                      bg-gray-800
+                      flex
+                      items-center
+                      justify-center
+                      text-gray-400
+                      "
+                    >
+
+                      <span className="text-xs sm:text-sm">
+                        Poem
+                      </span>
+
+                    </div>
+
+                  )}
+
+
+                  {/* =================================================
+                      INFO
+                  ================================================= */}
+
+                  <div className="flex flex-col justify-center min-w-0 flex-1">
+
+                    {/* Title */}
+
+                    <h3 className="font-semibold truncate text-sm sm:text-base">
+                      {post.title}
+                    </h3>
+
+
+                    {/* Type + Date */}
+
+                    <p className="text-xs sm:text-sm text-gray-400 mt-1">
+
+                      {post.type === "art" ? "Artwork" : "Poem"}
+
+                      {" · "}
+
+                      {new Date(post.createdAt).toDateString()}
+
+                    </p>
+
+
+                    {/* Cluster */}
+
+                    <span className="mt-2 text-blue-400 text-xs sm:text-sm truncate">
+                      {cluster}
+                    </span>
+
+
+                    {/* AI Story */}
+
+                    {story && (
+
+                      <p className="text-xs sm:text-sm text-gray-400 mt-2 line-clamp-2">
+                        {story}
+                      </p>
+
+                    )}
+
                   </div>
-                );
-              }
-            )}
+
+                </div>
+              );
+            })}
 
           </div>
 
