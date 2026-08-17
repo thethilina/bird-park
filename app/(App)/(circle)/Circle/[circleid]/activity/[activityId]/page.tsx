@@ -397,7 +397,7 @@ export default function ActivityPage() {
 
       {/* Cover Image */}
       {activity.coverImage && (
-        <div className="w-full h-64 md:h-80 rounded-2xl overflow-hidden border border-(--border) dark:border-(--borderdark)">
+        <div className="w-full h-45 md:h-50 rounded-2xl overflow-hidden border border-(--border) dark:border-(--borderdark)">
           <img src={activity.coverImage} alt={activity.title} className="w-full h-full object-cover" />
         </div>
       )}
@@ -584,10 +584,10 @@ export default function ActivityPage() {
             No submissions yet. Be the first!
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-4">
             {activity.submissions.map((sub, i) => (
               <Link href={`/Art/${sub.post._id}`} key={i}>
-                <div className="group border border-(--border) dark:border-(--borderdark) rounded-xl overflow-hidden hover:border-gray-400 transition-colors cursor-pointer bg-(--colorbg) dark:bg-(--colorbgdark)">
+                <div className="group border border-(--border) dark:border-(--borderdark)  overflow-hidden hover:border-gray-400 transition-colors cursor-pointer bg-(--colorbg) dark:bg-(--colorbgdark)">
                   {sub.post.type === "art" && sub.post.media ? (
                     <div className="aspect-square bg-gray-100 dark:bg-neutral-800 relative">
                       <img src={sub.post.media.url} alt={sub.post.title} className="w-full h-full object-cover" />

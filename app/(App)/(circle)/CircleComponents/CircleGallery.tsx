@@ -106,7 +106,7 @@ export default function CircleGallery({
   }, [fetchPosts]);
 
   return (
-    <div className="px-10">
+    <div className="mx-4 sm:mx-6 lg:mx-10  ">
       <h1 className="text-2xl">
         Community works
       </h1>

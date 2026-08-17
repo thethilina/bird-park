@@ -184,7 +184,7 @@ export default function Page() {
       ) : (
 
         /* NON-MEMBER CONTENT */
-        <div className="flex flex-col items-center justify-center min-h-[400px] px-6 text-center">
+        <div className="mx-4 sm:mx-6 lg:mx-10   flex flex-col items-center justify-center min-h-[400px]  text-center">
 
           {circle.joinType === "approval" ? (
             <>

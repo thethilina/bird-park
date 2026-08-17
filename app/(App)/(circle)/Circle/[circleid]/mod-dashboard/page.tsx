@@ -113,7 +113,7 @@ export default function ModDashboard() {
   // ─── Loading ───────────────────────────────────────────────────────────────────
   if (loading) {
     return (
-      <div className="pl-0 lg:pl-72 pt-16 flex items-center justify-center min-h-screen bg-[#06060B]">
+      <div className="pl-0  pt-16 flex items-center justify-center min-h-screen bg-[#06060B]">
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 border-2 border-white/30 border-t-white rounded-full animate-spin" />
         </div>

@@ -254,13 +254,13 @@ function PostCreate({ circleId , postCreateOpen }: PostCreateProps) {
   };
 
   return (
-    <div className="mx-10 my-5">
+    <div className="mx-4 sm:mx-6 lg:mx-10  my-5">
       {/* Type switcher */}
       <div className="flex items-center justify-between gap-2 mb-5">
         <div className="flex gap-2 items-center">
         <button
           onClick={() => setPostType("art")}
-          className={`px-5 py-2 rounded-full text-lg font-bold transition-colors hover:cursor-pointer ${
+          className={`py-1 px-4 sm:px-5 sm:py-2 rounded-full text-lg font-bold transition-colors hover:cursor-pointer ${
             postType === "art"
               ? "bg-[#e6f0f0] text-[#141414]"
               : "border-2 border-dotted border-(--border) bg-(--colorbg) dark:bg-(--colorbgdark)"
@@ -270,7 +270,7 @@ function PostCreate({ circleId , postCreateOpen }: PostCreateProps) {
         </button>
         <button
           onClick={() => setPostType("poem")}
-          className={`px-5 py-2 rounded-full text-lg font-bold transition-colors hover:cursor-pointer ${
+          className={`py-1 px-4 sm:px-5 sm:py-2 rounded-full text-lg font-bold transition-colors hover:cursor-pointer ${
             postType === "poem"
               ? "bg-[#192942] text-white"
               : "border-2 border-dotted border-(--border) bg-(--colorbg) dark:bg-(--colorbgdark)"
@@ -401,7 +401,7 @@ function PostCreate({ circleId , postCreateOpen }: PostCreateProps) {
         </>
       )}
 
-      <div className="flex items-center justify-end w-full p-2 mt-4 text-right">
+      <div className="flex items-center   justify-end w-full p-2 mt-4 text-right">
         <button
           onClick={handleUpload}
           disabled={uploading}

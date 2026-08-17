@@ -58,7 +58,7 @@ export default function ActivitySection({
 
   if (loading) {
     return (
-      <div className="px-10 space-y-4">
+      <div className="space-y-4 mx-4 sm:mx-6 lg:mx-10 ">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl">Activities</h2>
         </div>
@@ -81,7 +81,7 @@ export default function ActivitySection({
 
   if (!loading && activities.length === 0) {
     return (
-      <div className="px-10 space-y-4">
+      <div className=" space-y-4 mx-4 sm:mx-6 lg:mx-10  ">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <h2 className="text-2xl">Activities</h2>
           {canCreateActivity && (
@@ -123,7 +123,7 @@ export default function ActivitySection({
 
   return (
     <>
-      <div className="px-10 space-y-4">
+      <div className=" space-y-4 mx-4 sm:mx-6 lg:mx-10  ">
         {/* Section header */}
         <div className="flex items-center justify-between flex-wrap gap-3">
           <h2 className="text-2xl">Activities</h2>

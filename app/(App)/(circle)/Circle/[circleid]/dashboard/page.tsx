@@ -340,9 +340,9 @@ export default function AdminDashboard() {
   ].filter(t => !t.hidden);
 
   return (
-    <div className="pl-0 lg:pl-72 min-h-screen bg-[#06060B] text-white">
+    <div className="pl-0 min-h-screen bg-[#06060B] text-white">
       {/* Header */}
-      <div className="px-4 lg:px-8 pt-8 pb-4 border-b border-white/10 bg-[#06060B]">
+      <div className="px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-4 border-b border-white/10 bg-[#06060B]">
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center gap-3 mb-4">
             <Link
@@ -353,34 +353,34 @@ export default function AdminDashboard() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl overflow-hidden bg-[#141414] border border-white/10 flex-shrink-0">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl overflow-hidden bg-[#141414] border border-white/10 flex-shrink-0">
               {circle.icon ? (
                 <img src={circle.icon} alt={circle.name} className="w-full h-full object-cover" />
               ) : circle.image ? (
                 <img src={circle.image} alt={circle.name} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-2xl font-bold text-white">
+                <div className="w-full h-full flex items-center justify-center text-xl sm:text-2xl font-bold text-white">
                   {circle.name[0]?.toUpperCase()}
                 </div>
               )}
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-white">{circle.name}</h1>
-                <span className="text-[10px] px-2 py-1 uppercase font-bold tracking-wider rounded-md bg-white/10 text-white">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-lg sm:text-2xl font-bold text-white truncate max-w-[60vw] sm:max-w-none">{circle.name}</h1>
+                <span className="text-[10px] px-2 py-1 uppercase font-bold tracking-wider rounded-md bg-white/10 text-white flex-shrink-0">
                   {isOwner ? "Owner" : "Admin"}
                 </span>
               </div>
-              <p className="text-sm text-gray-500 mt-0.5">Admin Dashboard · Manage your circle</p>
+              <p className="text-xs sm:text-sm text-gray-500 mt-0.5">Admin Dashboard · Manage your circle</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 lg:px-8 py-6">
+      <div className="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 py-6">
         {/* Tab Nav */}
-        <div className="flex gap-1 overflow-x-auto pb-1 border-b border-white/10 mb-6"
+        <div className="flex gap-1 overflow-x-auto pb-1 border-b border-white/10 mb-6 -mx-3 px-3 sm:mx-0 sm:px-0 scrollbar-none"
           onClick={(e) => {
             // Lazy-load emotions data when switching to emotions tab
             const btn = (e.target as HTMLElement).closest("button");
@@ -399,7 +399,7 @@ export default function AdminDashboard() {
                   fetchEmotions();
                 }
               }}
-              className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors cursor-pointer whitespace-nowrap -mb-px ${
+              className={`flex items-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-medium border-b-2 transition-colors cursor-pointer whitespace-nowrap -mb-px flex-shrink-0 ${
                 activeTab === tab.key
                   ? "border-white text-white"
                   : "border-transparent text-gray-500 hover:text-white"
@@ -422,7 +422,7 @@ export default function AdminDashboard() {
 
         {/* ── Overview Tab ── */}
         {activeTab === "overview" && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
             {[
               { label: "Members", value: circle.members.length, icon: <IoPeopleOutline size={20} /> },
               { label: "Admins", value: circle.admins.length, icon: <IoShieldCheckmarkOutline size={20} /> },
@@ -431,12 +431,12 @@ export default function AdminDashboard() {
               { label: "Total Posts", value: posts.length, icon: <IoGridOutline size={20} /> },
               { label: "Pending Reports", value: pendingReports.length, icon: <IoFlagOutline size={20} /> },
             ].map((stat) => (
-              <div key={stat.label} className="p-5 rounded-2xl border border-white/5 bg-[#141414]">
-                <div className={`w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white mb-3`}>
+              <div key={stat.label} className="p-4 sm:p-5 rounded-2xl border border-white/5 bg-[#141414]">
+                <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white mb-3`}>
                   {stat.icon}
                 </div>
-                <p className="text-2xl font-bold text-white">{stat.value}</p>
-                <p className="text-xs text-gray-500 mt-1 uppercase tracking-wider font-semibold">{stat.label}</p>
+                <p className="text-xl sm:text-2xl font-bold text-white">{stat.value}</p>
+                <p className="text-[10px] sm:text-xs text-gray-500 mt-1 uppercase tracking-wider font-semibold">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -455,85 +455,90 @@ export default function AdminDashboard() {
               return (
                 <div
                   key={memberId}
-                  className="flex items-center gap-4 p-4 rounded-xl border border-white/5 bg-[#141414]"
+                  className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 p-4 rounded-xl border border-white/5 bg-[#141414]"
                 >
-                  <div className="w-10 h-10 rounded-full overflow-hidden bg-[#2A2A2A] flex-shrink-0">
-                    {m.profileImage ? (
-                      <img src={m.profileImage} alt={m.fullName} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-sm font-bold text-white">
-                        {m.fullName?.[0] || "?"}
+                  <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-[#2A2A2A] flex-shrink-0">
+                      {m.profileImage ? (
+                        <img src={m.profileImage} alt={m.fullName} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-sm font-bold text-white">
+                          {m.fullName?.[0] || "?"}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <Link href={`/Profile/${memberId}`} className="text-sm font-semibold text-white hover:underline truncate">
+                          {m.fullName || m.username || "Unknown"}
+                        </Link>
+                        {m.username && <span className="text-xs text-gray-500">@{m.username}</span>}
                       </div>
-                    )}
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <Link href={`/Profile/${memberId}`} className="text-sm font-semibold text-white hover:underline truncate">
-                        {m.fullName || m.username || "Unknown"}
-                      </Link>
-                      {m.username && <span className="text-xs text-gray-500">@{m.username}</span>}
-                    </div>
-                    <div className="flex gap-1.5 mt-1 flex-wrap">
-                      {isOwnerId && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-yellow-500/20 text-yellow-500 font-bold">Owner</span>}
-                      {memberIsAdmin && !isOwnerId && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-white/20 text-white font-bold">Admin</span>}
-                      {memberIsMod && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 font-bold">Mod</span>}
+                      <div className="flex gap-1.5 mt-1 flex-wrap">
+                        {isOwnerId && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-yellow-500/20 text-yellow-500 font-bold">Owner</span>}
+                        {memberIsAdmin && !isOwnerId && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-white/20 text-white font-bold">Admin</span>}
+                        {memberIsMod && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 font-bold">Mod</span>}
+                      </div>
                     </div>
                   </div>
 
-                  {!isOwnerId && !isSelf && isOwner && (
-                    <div className="flex gap-2 flex-shrink-0">
-                      {!memberIsAdmin ? (
-                        <button
-                          onClick={() => handleMakeAdmin(memberId)}
-                          disabled={actionLoading !== null}
-                          title="Make Admin"
-                          className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white transition-colors cursor-pointer disabled:opacity-50"
-                        >
-                          <IoShieldCheckmarkOutline size={16} />
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleRemoveAdmin(memberId)}
-                          disabled={actionLoading !== null}
-                          title="Remove Admin"
-                          className="p-2 rounded-lg bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-500 transition-colors cursor-pointer disabled:opacity-50"
-                        >
-                          <IoShieldCheckmarkOutline size={16} />
-                        </button>
+                  {(!isOwnerId && !isSelf && (isOwner || true)) && (
+                    <div className="flex gap-2 flex-shrink-0 self-end sm:self-auto">
+                      {!isOwnerId && !isSelf && isOwner && (
+                        !memberIsAdmin ? (
+                          <button
+                            onClick={() => handleMakeAdmin(memberId)}
+                            disabled={actionLoading !== null}
+                            title="Make Admin"
+                            className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white transition-colors cursor-pointer disabled:opacity-50"
+                          >
+                            <IoShieldCheckmarkOutline size={16} />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleRemoveAdmin(memberId)}
+                            disabled={actionLoading !== null}
+                            title="Remove Admin"
+                            className="p-2 rounded-lg bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-500 transition-colors cursor-pointer disabled:opacity-50"
+                          >
+                            <IoShieldCheckmarkOutline size={16} />
+                          </button>
+                        )
                       )}
-                    </div>
-                  )}
 
-                  {!isOwnerId && !isSelf && (
-                    <div className="flex gap-2 flex-shrink-0">
-                      {!memberIsMod ? (
+                      {!isOwnerId && !isSelf && (
+                        !memberIsMod ? (
+                          <button
+                            onClick={() => handleMakeMod(memberId)}
+                            disabled={actionLoading !== null}
+                            title="Make Moderator"
+                            className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white transition-colors cursor-pointer disabled:opacity-50"
+                          >
+                            <IoShieldOutline size={16} />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleRemoveMod(memberId)}
+                            disabled={actionLoading !== null}
+                            title="Remove Moderator"
+                            className="p-2 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 transition-colors cursor-pointer disabled:opacity-50"
+                          >
+                            <IoShieldOutline size={16} />
+                          </button>
+                        )
+                      )}
+
+                      {!isOwnerId && !isSelf && (
                         <button
-                          onClick={() => handleMakeMod(memberId)}
+                          onClick={() => handleKick(memberId)}
                           disabled={actionLoading !== null}
-                          title="Make Moderator"
-                          className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white transition-colors cursor-pointer disabled:opacity-50"
+                          title="Remove Member"
+                          className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-colors cursor-pointer disabled:opacity-50"
                         >
-                          <IoShieldOutline size={16} />
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleRemoveMod(memberId)}
-                          disabled={actionLoading !== null}
-                          title="Remove Moderator"
-                          className="p-2 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 transition-colors cursor-pointer disabled:opacity-50"
-                        >
-                          <IoShieldOutline size={16} />
+                          <IoPersonRemoveOutline size={16} />
                         </button>
                       )}
-                      <button
-                        onClick={() => handleKick(memberId)}
-                        disabled={actionLoading !== null}
-                        title="Remove Member"
-                        className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-colors cursor-pointer disabled:opacity-50"
-                      >
-                        <IoPersonRemoveOutline size={16} />
-                      </button>
                     </div>
                   )}
                 </div>
@@ -555,38 +560,40 @@ export default function AdminDashboard() {
                 const reqUser = req.user;
                 const userId = (reqUser?._id || reqUser)?.toString();
                 return (
-                  <div key={i} className="flex items-center gap-4 p-4 rounded-xl border border-white/5 bg-[#141414]">
-                    <div className="w-10 h-10 rounded-full overflow-hidden bg-[#2A2A2A] flex-shrink-0">
-                      {reqUser?.profileImage ? (
-                        <img src={reqUser.profileImage} alt={reqUser.fullName} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-sm font-bold text-white">
-                          {reqUser?.fullName?.[0] || "?"}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold text-white">
-                        {reqUser?.fullName || reqUser?.username || "Unknown User"}
-                      </p>
-                      {req.createdAt && (
-                        <p className="text-[10px] uppercase tracking-wider font-semibold text-gray-500 mt-1">
-                          Requested {new Date(req.createdAt).toLocaleDateString()}
+                  <div key={i} className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 p-4 rounded-xl border border-white/5 bg-[#141414]">
+                    <div className="flex items-center gap-4 min-w-0 flex-1">
+                      <div className="w-10 h-10 rounded-full overflow-hidden bg-[#2A2A2A] flex-shrink-0">
+                        {reqUser?.profileImage ? (
+                          <img src={reqUser.profileImage} alt={reqUser.fullName} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-sm font-bold text-white">
+                            {reqUser?.fullName?.[0] || "?"}
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-white truncate">
+                          {reqUser?.fullName || reqUser?.username || "Unknown User"}
                         </p>
-                      )}
+                        {req.createdAt && (
+                          <p className="text-[10px] uppercase tracking-wider font-semibold text-gray-500 mt-1">
+                            Requested {new Date(req.createdAt).toLocaleDateString()}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-shrink-0">
                       <button
                         onClick={() => handleApprove(userId)}
                         disabled={actionLoading !== null}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer disabled:opacity-50"
+                        className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer disabled:opacity-50"
                       >
                         <IoCheckmarkCircle size={14} /> Approve
                       </button>
                       <button
                         onClick={() => handleReject(userId)}
                         disabled={actionLoading !== null}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer disabled:opacity-50"
+                        className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer disabled:opacity-50"
                       >
                         <IoClose size={14} /> Reject
                       </button>
@@ -616,9 +623,9 @@ export default function AdminDashboard() {
                       : "border-white/5"
                   }`}
                 >
-                  <div className="flex items-start justify-between gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2">
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
                         <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded font-bold ${
                           report.status === "resolved"
                             ? "bg-green-500/20 text-green-500"
@@ -634,7 +641,7 @@ export default function AdminDashboard() {
                         <span className="font-semibold text-white">Reason: </span>{report.reason || "No reason provided"}
                       </p>
                       {report.post?.title && (
-                        <p className="text-xs text-gray-500 mt-2 p-2 bg-white/5 rounded-md">
+                        <p className="text-xs text-gray-500 mt-2 p-2 bg-white/5 rounded-md break-words">
                           Post: "{report.post.title}"
                         </p>
                       )}
@@ -643,7 +650,7 @@ export default function AdminDashboard() {
                       <button
                         onClick={() => handleResolveReport(report._id)}
                         disabled={actionLoading === `report-${report._id}`}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer flex-shrink-0 disabled:opacity-50"
+                        className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer flex-shrink-0 disabled:opacity-50 w-full sm:w-auto"
                       >
                         <IoCheckmarkCircle size={14} />
                         {actionLoading === `report-${report._id}` ? "…" : "Resolve"}
@@ -668,9 +675,9 @@ export default function AdminDashboard() {
               posts.map((post) => (
                 <div
                   key={post._id}
-                  className="flex items-center gap-4 p-4 rounded-xl border border-white/5 bg-[#141414]"
+                  className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl border border-white/5 bg-[#141414]"
                 >
-                  <div className="w-12 h-12 rounded-lg overflow-hidden bg-[#2A2A2A] border border-white/5 flex-shrink-0 flex items-center justify-center">
+                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-lg overflow-hidden bg-[#2A2A2A] border border-white/5 flex-shrink-0 flex items-center justify-center">
                     {post.type === "art" && post.media?.url ? (
                       <img src={post.media.url} alt={post.title} className="w-full h-full object-cover" />
                     ) : (
@@ -680,7 +687,7 @@ export default function AdminDashboard() {
 
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-white truncate">{post.title}</p>
-                    <div className="flex items-center gap-2 mt-1">
+                    <div className="flex items-center gap-2 mt-1 flex-wrap">
                       <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded font-bold ${
                         post.type === "art" ? "bg-white/10 text-white" : "bg-white/10 text-white"
                       }`}>
@@ -692,7 +699,7 @@ export default function AdminDashboard() {
                       >
                         by {post.author.fullName}
                       </Link>
-                      <span className="text-[10px] uppercase tracking-wider font-semibold text-gray-600">
+                      <span className="text-[10px] uppercase tracking-wider font-semibold text-gray-600 hidden sm:inline">
                         · {new Date(post.createdAt).toLocaleDateString()}
                       </span>
                     </div>
@@ -701,7 +708,7 @@ export default function AdminDashboard() {
                   <button
                     onClick={() => handleDeletePost(post._id)}
                     disabled={actionLoading === `post-${post._id}`}
-                    className="p-2.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-colors cursor-pointer flex-shrink-0 disabled:opacity-50"
+                    className="p-2 sm:p-2.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-colors cursor-pointer flex-shrink-0 disabled:opacity-50"
                     title="Delete post"
                   >
                     {actionLoading === `post-${post._id}` ? (
@@ -718,7 +725,7 @@ export default function AdminDashboard() {
 
         {/* ── Emotions Tab ── */}
         {activeTab === "emotions" && (
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             {emotionLoading ? (
               <div className="flex items-center justify-center py-20">
                 <div className="w-8 h-8 border-2 border-white/20 border-t-white/80 rounded-full animate-spin" />
@@ -737,25 +744,25 @@ export default function AdminDashboard() {
             ) : (
               <>
                 {/* Summary cards */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
                   {[
                     { label: "Total Posts", value: emotionData.summary.totalPosts, color: "text-white" },
                     { label: "Analyzed", value: emotionData.summary.totalAnalyzed, color: "text-emerald-400" },
                     { label: "Pending", value: emotionData.summary.totalPending, color: "text-yellow-400" },
                     { label: "Failed", value: emotionData.summary.totalFailed, color: "text-red-400" },
                   ].map((s) => (
-                    <div key={s.label} className="p-5 rounded-2xl border border-white/5 bg-[#141414]">
-                      <p className={`text-3xl font-bold ${s.color}`}>{s.value}</p>
-                      <p className="text-xs uppercase tracking-wider font-semibold text-gray-500 mt-1">{s.label}</p>
+                    <div key={s.label} className="p-4 sm:p-5 rounded-2xl border border-white/5 bg-[#141414]">
+                      <p className={`text-2xl sm:text-3xl font-bold ${s.color}`}>{s.value}</p>
+                      <p className="text-[10px] sm:text-xs uppercase tracking-wider font-semibold text-gray-500 mt-1">{s.label}</p>
                     </div>
                   ))}
                 </div>
 
                 {/* Top Emotions */}
-                <div className="p-6 rounded-2xl border border-white/5 bg-[#141414]">
-                  <div className="flex items-center gap-2 mb-6">
+                <div className="p-4 sm:p-6 rounded-2xl border border-white/5 bg-[#141414]">
+                  <div className="flex items-center gap-2 mb-6 flex-wrap">
                     <IoAnalyticsOutline size={18} className="text-gray-400" />
-                    <h2 className="text-lg font-bold text-white">Top Themes</h2>
+                    <h2 className="text-base sm:text-lg font-bold text-white">Top Themes</h2>
                     <span className="text-xs text-gray-500 ml-1">(AI semantic clusters from analyzed posts)</span>
                   </div>
 
@@ -791,10 +798,10 @@ export default function AdminDashboard() {
 
                 {/* Emotion History */}
                 {emotionData.emotionHistory.length > 0 && (
-                  <div className="p-6 rounded-2xl border border-white/5 bg-[#141414]">
-                    <div className="flex items-center gap-2 mb-5">
+                  <div className="p-4 sm:p-6 rounded-2xl border border-white/5 bg-[#141414]">
+                    <div className="flex items-center gap-2 mb-5 flex-wrap">
                       <IoTimeOutline size={18} className="text-gray-400" />
-                      <h2 className="text-lg font-bold text-white">Emotion History</h2>
+                      <h2 className="text-base sm:text-lg font-bold text-white">Emotion History</h2>
                       <span className="text-xs text-gray-500 ml-1">(latest {emotionData.emotionHistory.length} snapshots)</span>
                     </div>
 
@@ -804,9 +811,9 @@ export default function AdminDashboard() {
                         return (
                           <div
                             key={si}
-                            className="flex items-start gap-4 p-4 rounded-xl bg-white/[0.03] border border-white/5"
+                            className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-white/[0.03] border border-white/5"
                           >
-                            <div className="flex-shrink-0 text-right min-w-[60px]">
+                            <div className="flex-shrink-0 text-right min-w-[48px] sm:min-w-[60px]">
                               <p className="text-[10px] text-gray-600 uppercase tracking-wider font-semibold">
                                 {new Date(snapshot.date).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
                               </p>
@@ -833,10 +840,10 @@ export default function AdminDashboard() {
                 )}
 
                 {/* Member Stats */}
-                <div className="p-6 rounded-2xl border border-white/5 bg-[#141414]">
+                <div className="p-4 sm:p-6 rounded-2xl border border-white/5 bg-[#141414]">
                   <div className="flex items-center gap-2 mb-5">
                     <IoPeopleOutline size={18} className="text-gray-400" />
-                    <h2 className="text-lg font-bold text-white">Member Contributions</h2>
+                    <h2 className="text-base sm:text-lg font-bold text-white">Member Contributions</h2>
                   </div>
 
                   {emotionData.memberStats.length === 0 ? (
@@ -846,30 +853,32 @@ export default function AdminDashboard() {
                       {emotionData.memberStats.map((m) => (
                         <div
                           key={m._id}
-                          className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.03] transition-colors"
+                          className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 p-3 rounded-xl hover:bg-white/[0.03] transition-colors"
                         >
-                          <div className="w-9 h-9 rounded-full overflow-hidden bg-[#2A2A2A] flex-shrink-0 flex items-center justify-center text-sm font-bold text-white">
-                            {m.profileImage ? (
-                              <img src={m.profileImage} alt={m.fullName} className="w-full h-full object-cover" />
-                            ) : (
-                              m.fullName?.[0]?.toUpperCase() || "?"
-                            )}
+                          <div className="flex items-center gap-3 min-w-0 flex-1">
+                            <div className="w-9 h-9 rounded-full overflow-hidden bg-[#2A2A2A] flex-shrink-0 flex items-center justify-center text-sm font-bold text-white">
+                              {m.profileImage ? (
+                                <img src={m.profileImage} alt={m.fullName} className="w-full h-full object-cover" />
+                              ) : (
+                                m.fullName?.[0]?.toUpperCase() || "?"
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-semibold text-white truncate">{m.fullName}</p>
+                              {m.username && <p className="text-xs text-gray-500">@{m.username}</p>}
+                              {m.topCluster && (
+                                <span className="mt-1 inline-block text-[10px] px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-gray-400 truncate max-w-[160px]">
+                                  {m.topCluster}
+                                </span>
+                              )}
+                            </div>
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold text-white truncate">{m.fullName}</p>
-                            {m.username && <p className="text-xs text-gray-500">@{m.username}</p>}
-                            {m.topCluster && (
-                              <span className="mt-1 inline-block text-[10px] px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-gray-400 truncate max-w-[160px]">
-                                {m.topCluster}
-                              </span>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-3 text-right flex-shrink-0">
+                          <div className="flex items-center gap-3 sm:text-right flex-shrink-0 pl-12 sm:pl-0">
                             <div>
                               <p className="text-sm font-bold text-white">{m.totalPosts}</p>
                               <p className="text-[10px] uppercase tracking-wider text-gray-500">posts</p>
                             </div>
-                            <div className="flex gap-1">
+                            <div className="flex gap-1 flex-wrap">
                               {m.analyzed > 0 && (
                                 <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400">
                                   {m.analyzed} ✓
@@ -899,10 +908,10 @@ export default function AdminDashboard() {
 
         {/* ── Settings Tab ── */}
         {activeTab === "settings" && (
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             {/* General Settings */}
-            <div className="p-6 rounded-xl border border-white/5 bg-[#141414]">
-              <h2 className="text-xl font-bold mb-4">General Settings</h2>
+            <div className="p-4 sm:p-6 rounded-xl border border-white/5 bg-[#141414]">
+              <h2 className="text-lg sm:text-xl font-bold mb-4">General Settings</h2>
               <form onSubmit={handleSaveSettings} className="space-y-4">
                 <div>
                   <label className="block text-sm font-semibold mb-1 text-gray-300">Circle Name</label>
@@ -934,11 +943,11 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="pt-4">
-                  <h3 className="text-lg font-semibold mb-2">Circle Rules</h3>
+                  <h3 className="text-base sm:text-lg font-semibold mb-2">Circle Rules</h3>
                   <div className="space-y-3">
                     {editRules.map((rule, idx) => (
                       <div key={idx} className="flex gap-2">
-                        <div className="flex-1 space-y-2">
+                        <div className="flex-1 space-y-2 min-w-0">
                           <input
                             type="text"
                             placeholder="Rule Title"
@@ -965,7 +974,7 @@ export default function AdminDashboard() {
                         <button
                           type="button"
                           onClick={() => setEditRules(editRules.filter((_, i) => i !== idx))}
-                          className="px-3 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20"
+                          className="px-3 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 flex-shrink-0"
                         >
                           <IoClose size={20} />
                         </button>
@@ -974,18 +983,18 @@ export default function AdminDashboard() {
                     <button
                       type="button"
                       onClick={() => setEditRules([...editRules, { title: "", description: "" }])}
-                      className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-sm font-semibold text-white"
+                      className="w-full sm:w-auto px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-sm font-semibold text-white"
                     >
                       + Add Rule
                     </button>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-white/10 flex justify-end">
+                <div className="pt-4 border-t border-white/10 flex justify-stretch sm:justify-end">
                   <button
                     type="submit"
                     disabled={actionLoading === "settings"}
-                    className="px-6 py-2.5 rounded-lg bg-[#3B5D95] text-white font-bold hover:bg-[#2d4a78] disabled:opacity-50"
+                    className="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-[#3B5D95] text-white font-bold hover:bg-[#2d4a78] disabled:opacity-50"
                   >
                     {actionLoading === "settings" ? "Saving..." : "Save Settings"}
                   </button>
@@ -995,8 +1004,8 @@ export default function AdminDashboard() {
 
             {/* Danger Zone (Owner Only) */}
             {isOwner && (
-              <div className="p-6 rounded-xl border border-red-500/20 bg-red-500/5">
-                <h2 className="text-xl font-bold mb-4 text-red-500">Danger Zone</h2>
+              <div className="p-4 sm:p-6 rounded-xl border border-red-500/20 bg-red-500/5">
+                <h2 className="text-lg sm:text-xl font-bold mb-4 text-red-500">Danger Zone</h2>
                 
                 <div className="space-y-6">
                   {/* Transfer Ownership */}
@@ -1005,11 +1014,11 @@ export default function AdminDashboard() {
                     <p className="text-sm text-red-400 mb-3">
                       Transfer full control of this circle to another member. You will be demoted to an Admin.
                     </p>
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       <select
                         value={transferTargetId}
                         onChange={(e) => setTransferTargetId(e.target.value)}
-                        className="flex-1 bg-black/30 border border-red-500/20 rounded-lg p-2.5 text-white"
+                        className="flex-1 bg-black/30 border border-red-500/20 rounded-lg p-2.5 text-white min-w-0"
                       >
                         <option value="">Select a member...</option>
                         {circle.members.map((m: any) => {
@@ -1025,7 +1034,7 @@ export default function AdminDashboard() {
                       <button
                         onClick={handleTransferOwnership}
                         disabled={actionLoading === "transfer" || !transferTargetId}
-                        className="px-4 py-2.5 rounded-lg bg-red-500 hover:bg-red-600 text-white font-bold disabled:opacity-50"
+                        className="px-4 py-2.5 rounded-lg bg-red-500 hover:bg-red-600 text-white font-bold disabled:opacity-50 w-full sm:w-auto"
                       >
                         Transfer
                       </button>
@@ -1041,7 +1050,7 @@ export default function AdminDashboard() {
                     <button
                       onClick={handleDeleteCircle}
                       disabled={actionLoading === "delete-circle"}
-                      className="px-6 py-2.5 rounded-lg border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white font-bold transition-colors disabled:opacity-50"
+                      className="w-full sm:w-auto px-6 py-2.5 rounded-lg border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white font-bold transition-colors disabled:opacity-50"
                     >
                       Delete Circle
                     </button>
