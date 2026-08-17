@@ -8,7 +8,7 @@ export default function ConnectionCardSkeleton({ buttonCount = 1 }: ConnectionCa
   return (
     <div className="border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden bg-white dark:bg-neutral-900/20 animate-pulse shadow-sm">
       {/* Profile Image Skeleton */}
-      <div className="w-full h-50 bg-neutral-200 dark:bg-neutral-800" />
+      <div className="w-full h-36 sm:h-44 md:h-50 bg-neutral-200 dark:bg-neutral-800" />
       
       {/* Content Skeleton */}
       <div className="space-y-4 px-4 py-4">

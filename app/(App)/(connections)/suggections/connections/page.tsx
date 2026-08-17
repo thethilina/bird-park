@@ -37,9 +37,19 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="pt-5  px-3 md:px-5 pb-15">
+    <div className="pt-5 px-3 md:px-5  pb-20">
+      {/* Header section */}
+      <div className="mb-8">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-neutral-900 dark:text-white">
+          Your Connections
+        </h1>
+        <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+          People you have successfully connected with on Bird Park.
+        </p>
+      </div>
+
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {Array.from({ length: 5 }).map((_, idx) => (
             <ConnectionCardSkeleton key={idx} />
           ))}
@@ -60,7 +70,7 @@ export default function Page() {
           <p className="text-neutral-500 dark:text-neutral-400">No connections yet. Go to Suggestions to connect with others!</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {connections.map((con: any) => (
             <ConnectionCard 
               connection={con} 

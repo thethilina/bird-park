@@ -90,12 +90,12 @@ return(
 
 <div className="border rounded-xl">
 
-<Image src={observing?.user.profileImage} alt={observing?.user.username} width={200} height={200}  className="w-full rounded-t-xl h-50 object-cover "/> 
+<Image src={observing?.user.profileImage} alt={observing?.user.username} width={200} height={200}  className="w-full rounded-t-xl h-36 sm:h-44 md:h-50 object-cover "/> 
 
-<div className="space-y-3  px-4 py-4">
- <h1 className="text-2xl font-semibold" > <Link href={`/Profile/${observing?.user._id}`} > {observing?.user.username} </Link> </h1> 
+<div className="space-y-3 px-3 py-3 sm:px-4 sm:py-4">
+ <h1 className="text-base sm:text-lg md:text-xl font-semibold truncate" > <Link href={`/Profile/${observing?.user._id}`} title={observing?.user.username} > {observing?.user.username} </Link> </h1> 
 
-            <button onClick={cancelsentreq} className='text-xl px-2 py-1  bg-[#192942] hover:bg-[#2c456e] rounded-xl  w-full hover:font-medium  hover:cursor-pointer  flex gap-x-2 items-center'> <PiEyeClosedFill /> Stop observing </button>
+            <button onClick={cancelsentreq} className='text-xs sm:text-sm md:text-base px-2 py-1.5 sm:px-3 sm:py-2 bg-[#192942] hover:bg-[#2c456e] rounded-xl  w-full hover:font-medium  hover:cursor-pointer  flex gap-x-2 items-center justify-center'> <PiEyeClosedFill className="shrink-0" /> <span>Stop observing</span> </button>
 
 </div>
 </div>
