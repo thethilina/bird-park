@@ -37,7 +37,7 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="pl-0 lg:pl-75 pt-4 lg:pt-10 px-4 lg:pr-8 pb-24 lg:pb-10">
+    <div className="pt-5  px-3 md:px-5 pb-15">
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5">
           {Array.from({ length: 6 }).map((_, idx) => (
