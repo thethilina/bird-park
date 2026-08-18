@@ -238,7 +238,7 @@ function ProfileBar({ User }: any) {
   const isCollectionsActive = pathname === `/Profile/${User?._id}/collections`;
 
   return (
-    <div className='space-y-2 border-b-2 border-(--border) dark:border-(--borderdark) py-6 w-full bg-(--color-background) dark:bg-(--background) relative'>
+    <div className='space-y-2 border-b-2 border-(--border) dark:border-(--borderdark) sm:py-6 w-full bg-(--color-background) dark:bg-(--background) relative'>
       
       {/* Profile info row */}
       <div className="w-full flex flex-row items-center justify-between gap-y-4">

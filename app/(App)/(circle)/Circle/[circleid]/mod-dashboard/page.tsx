@@ -113,7 +113,7 @@ export default function ModDashboard() {
   // ─── Loading ───────────────────────────────────────────────────────────────────
   if (loading) {
     return (
-      <div className="pl-0  pt-16 flex items-center justify-center min-h-screen bg-[#06060B]">
+      <div className="pl-0 pt-16 flex items-center justify-center min-h-screen bg-[#06060B]">
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 border-2 border-white/30 border-t-white rounded-full animate-spin" />
         </div>
@@ -132,9 +132,9 @@ export default function ModDashboard() {
   ];
 
   return (
-    <div className="pl-0 lg:pl-72 min-h-screen bg-[#06060B] text-white">
+    <div className="pl-0 lg:pl-72 min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-[#06060B] text-white">
       {/* Header */}
-      <div className="px-4 lg:px-8 pt-8 pb-4 border-b border-white/10 bg-[#06060B]">
+      <div className="px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-4 border-b border-white/10 bg-[#06060B]">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-4">
             <Link
@@ -145,45 +145,45 @@ export default function ModDashboard() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl overflow-hidden bg-[#141414] border border-white/10 flex-shrink-0">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl overflow-hidden bg-[#141414] border border-white/10 flex-shrink-0">
               {circle.icon ? (
                 <img src={circle.icon} alt={circle.name} className="w-full h-full object-cover" />
               ) : circle.image ? (
                 <img src={circle.image} alt={circle.name} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-2xl font-bold text-white">
+                <div className="w-full h-full flex items-center justify-center text-xl sm:text-2xl font-bold text-white">
                   {circle.name[0]?.toUpperCase()}
                 </div>
               )}
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-white">{circle.name}</h1>
-                <span className="text-[10px] px-2 py-1 rounded bg-blue-500/20 text-blue-400 font-bold uppercase tracking-wider flex items-center gap-1">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-lg sm:text-2xl font-bold text-white truncate max-w-[50vw] sm:max-w-none">{circle.name}</h1>
+                <span className="text-[10px] px-2 py-1 rounded bg-blue-500/20 text-blue-400 font-bold uppercase tracking-wider flex items-center gap-1 flex-shrink-0">
                   <IoShieldOutline size={11} /> Mod
                 </span>
               </div>
-              <p className="text-sm text-gray-500 mt-0.5">Mod Dashboard · Review reports and manage posts</p>
+              <p className="text-xs sm:text-sm text-gray-500 mt-0.5">Mod Dashboard · Review reports and manage posts</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 lg:px-8 py-6">
+      <div className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-8 py-6 w-full">
         {/* Notice */}
         <div className="mb-6 p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 text-sm text-blue-300">
-          <IoShieldOutline size={16} className="inline mr-2" />
+          <IoShieldOutline size={16} className="inline mr-2 flex-shrink-0" />
           You have <strong>moderator</strong> access. You can review reports, delete posts, and view members. Role management requires admin access.
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 overflow-x-auto pb-1 border-b border-white/10 mb-6">
+        <div className="flex gap-1 overflow-x-auto overflow-y-hidden pb-1 border-b border-white/10 mb-6 -mx-3 px-3 sm:mx-0 sm:px-0 scrollbar-none">
           {TABS.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors cursor-pointer whitespace-nowrap -mb-px ${
+              className={`flex items-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-medium border-b-2 transition-colors cursor-pointer whitespace-nowrap -mb-px flex-shrink-0 ${
                 activeTab === tab.key
                   ? "border-white text-white"
                   : "border-transparent text-gray-500 hover:text-white"
@@ -222,9 +222,9 @@ export default function ModDashboard() {
                       : "border-white/5"
                   }`}
                 >
-                  <div className="flex items-start justify-between gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2">
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
                         <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded font-bold ${
                           report.status === "resolved"
                             ? "bg-green-500/20 text-green-500"
@@ -236,12 +236,12 @@ export default function ModDashboard() {
                           by {report.reporter?.fullName || report.reporter?.username || "Unknown"}
                         </span>
                       </div>
-                      <p className="text-sm text-gray-300">
+                      <p className="text-sm text-gray-300 break-words">
                         <span className="font-semibold text-white">Reason: </span>
                         {report.reason || "No reason provided"}
                       </p>
                       {report.post?.title && (
-                        <p className="text-xs text-gray-500 mt-2 p-2 bg-white/5 rounded-md">
+                        <p className="text-xs text-gray-500 mt-2 p-2 bg-white/5 rounded-md break-words">
                           Post: "{report.post.title}"
                         </p>
                       )}
@@ -250,7 +250,7 @@ export default function ModDashboard() {
                       <button
                         onClick={() => handleResolveReport(report._id)}
                         disabled={actionLoading === `report-${report._id}`}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer flex-shrink-0 disabled:opacity-50"
+                        className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer flex-shrink-0 disabled:opacity-50 w-full sm:w-auto"
                       >
                         <IoCheckmarkCircle size={14} />
                         {actionLoading === `report-${report._id}` ? "…" : "Resolve"}
@@ -275,9 +275,9 @@ export default function ModDashboard() {
               posts.map((post) => (
                 <div
                   key={post._id}
-                  className="flex items-center gap-4 p-4 rounded-xl border border-white/5 bg-[#141414]"
+                  className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl border border-white/5 bg-[#141414]"
                 >
-                  <div className="w-12 h-12 rounded-lg overflow-hidden bg-[#2A2A2A] border border-white/5 flex-shrink-0 flex items-center justify-center">
+                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-lg overflow-hidden bg-[#2A2A2A] border border-white/5 flex-shrink-0 flex items-center justify-center">
                     {post.type === "art" && post.media?.url ? (
                       <img src={post.media.url} alt={post.title} className="w-full h-full object-cover" />
                     ) : (
@@ -287,16 +287,16 @@ export default function ModDashboard() {
 
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-white truncate">{post.title}</p>
-                    <div className="flex items-center gap-2 mt-1">
+                    <div className="flex items-center gap-2 mt-1 flex-wrap">
                       <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded font-bold ${
                         post.type === "art" ? "bg-white/10 text-white" : "bg-white/10 text-white"
                       }`}>
                         {post.type === "art" ? "Art" : "Poem"}
                       </span>
-                      <span className="text-xs text-gray-500 truncate hover:text-white transition-colors cursor-pointer">
+                      <span className="text-xs text-gray-500 truncate max-w-[40vw] sm:max-w-none hover:text-white transition-colors cursor-pointer">
                         by {post.author?.fullName || "Unknown"}
                       </span>
-                      <span className="text-[10px] uppercase tracking-wider font-semibold text-gray-600">
+                      <span className="text-[10px] uppercase tracking-wider font-semibold text-gray-600 hidden sm:inline">
                         · {new Date(post.createdAt).toLocaleDateString()}
                       </span>
                     </div>
@@ -305,7 +305,7 @@ export default function ModDashboard() {
                   <button
                     onClick={() => handleDeletePost(post._id)}
                     disabled={actionLoading === `post-${post._id}`}
-                    className="p-2.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-colors cursor-pointer flex-shrink-0 disabled:opacity-50"
+                    className="p-2 sm:p-2.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-colors cursor-pointer flex-shrink-0 disabled:opacity-50"
                     title="Delete post"
                   >
                     {actionLoading === `post-${post._id}` ? (
@@ -333,7 +333,7 @@ export default function ModDashboard() {
               const memberIsMod = circle.moderators.some((mod: any) => (mod._id || mod).toString() === memberId);
 
               return (
-                <div key={memberId} className="flex items-center gap-4 p-4 rounded-xl border border-white/5 bg-[#141414]">
+                <div key={memberId} className="flex items-center gap-3 sm:gap-4 p-4 rounded-xl border border-white/5 bg-[#141414]">
                   <div className="w-10 h-10 rounded-full overflow-hidden bg-[#2A2A2A] flex-shrink-0">
                     {m.profileImage ? (
                       <img src={m.profileImage} alt={m.fullName} className="w-full h-full object-cover" />
@@ -343,11 +343,11 @@ export default function ModDashboard() {
                       </div>
                     )}
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-white">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-white truncate">
                       {m.fullName || m.username || "Unknown"}
                     </p>
-                    <div className="flex gap-1.5 mt-1">
+                    <div className="flex gap-1.5 mt-1 flex-wrap">
                       {isOwnerId && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-yellow-500/20 text-yellow-500 font-bold">Owner</span>}
                       {memberIsAdmin && !isOwnerId && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-white/20 text-white font-bold">Admin</span>}
                       {memberIsMod && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 font-bold">Mod</span>}

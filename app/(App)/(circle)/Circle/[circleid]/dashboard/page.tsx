@@ -150,7 +150,7 @@ export default function AdminDashboard() {
     const isOwner = (circle.owner?._id || circle.owner)?.toString() === user._id;
     const isAdmin = circle.admins.some((a: any) => (a._id || a).toString() === user._id);
     const isMod = circle.moderators.some((m: any) => (m._id || m).toString() === user._id);
-    
+
     if (!isOwner && !isAdmin && !isMod) {
       toast.error("Dashboard access required");
       router.push(`/Circle/${circleid}`);
@@ -268,7 +268,7 @@ export default function AdminDashboard() {
   const handleTransferOwnership = async () => {
     if (!transferTargetId) return toast.error("Select a member");
     if (!confirm("Are you sure you want to transfer ownership? You will lose Owner privileges.")) return;
-    
+
     setActionLoading("transfer");
     try {
       const res = await fetch(`/api/circles/${circleid}/transfer`, {
@@ -293,7 +293,7 @@ export default function AdminDashboard() {
   const handleDeleteCircle = async () => {
     if (!confirm("Delete this circle forever? This cannot be undone!")) return;
     if (!confirm("Are you REALLY sure?")) return;
-    
+
     setActionLoading("delete-circle");
     try {
       const res = await fetch(`/api/circles/${circleid}`, { method: "DELETE" });
@@ -340,7 +340,7 @@ export default function AdminDashboard() {
   ].filter(t => !t.hidden);
 
   return (
-    <div className="pl-0 min-h-screen bg-[#06060B] text-white">
+    <div className="pl-0 min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-[#06060B] text-white">
       {/* Header */}
       <div className="px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-4 border-b border-white/10 bg-[#06060B]">
         <div className="max-w-5xl mx-auto">
@@ -365,9 +365,9 @@ export default function AdminDashboard() {
                 </div>
               )}
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-lg sm:text-2xl font-bold text-white truncate max-w-[60vw] sm:max-w-none">{circle.name}</h1>
+                <h1 className="text-lg sm:text-2xl font-bold text-white truncate max-w-[50vw] sm:max-w-none">{circle.name}</h1>
                 <span className="text-[10px] px-2 py-1 uppercase font-bold tracking-wider rounded-md bg-white/10 text-white flex-shrink-0">
                   {isOwner ? "Owner" : "Admin"}
                 </span>
@@ -378,9 +378,9 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 py-6 w-full">
         {/* Tab Nav */}
-        <div className="flex gap-1 overflow-x-auto pb-1 border-b border-white/10 mb-6 -mx-3 px-3 sm:mx-0 sm:px-0 scrollbar-none"
+        <div className="flex gap-1 overflow-x-auto overflow-y-hidden pb-1 border-b border-white/10 mb-6 -mx-3 px-3 sm:mx-0 sm:px-0 scrollbar-none"
           onClick={(e) => {
             // Lazy-load emotions data when switching to emotions tab
             const btn = (e.target as HTMLElement).closest("button");
@@ -431,7 +431,7 @@ export default function AdminDashboard() {
               { label: "Total Posts", value: posts.length, icon: <IoGridOutline size={20} /> },
               { label: "Pending Reports", value: pendingReports.length, icon: <IoFlagOutline size={20} /> },
             ].map((stat) => (
-              <div key={stat.label} className="p-4 sm:p-5 rounded-2xl border border-white/5 bg-[#141414]">
+              <div key={stat.label} className="p-4 sm:p-5 rounded-2xl border border-white/5 bg-[#141414] min-w-0">
                 <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white mb-3`}>
                   {stat.icon}
                 </div>
@@ -470,10 +470,10 @@ export default function AdminDashboard() {
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <Link href={`/Profile/${memberId}`} className="text-sm font-semibold text-white hover:underline truncate">
+                        <Link href={`/Profile/${memberId}`} className="text-sm font-semibold text-white hover:underline truncate max-w-full">
                           {m.fullName || m.username || "Unknown"}
                         </Link>
-                        {m.username && <span className="text-xs text-gray-500">@{m.username}</span>}
+                        {m.username && <span className="text-xs text-gray-500 truncate">@{m.username}</span>}
                       </div>
                       <div className="flex gap-1.5 mt-1 flex-wrap">
                         {isOwnerId && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-yellow-500/20 text-yellow-500 font-bold">Owner</span>}
@@ -484,7 +484,7 @@ export default function AdminDashboard() {
                   </div>
 
                   {(!isOwnerId && !isSelf && (isOwner || true)) && (
-                    <div className="flex gap-2 flex-shrink-0 self-end sm:self-auto">
+                    <div className="flex gap-2 flex-shrink-0 flex-wrap self-end sm:self-auto">
                       {!isOwnerId && !isSelf && isOwner && (
                         !memberIsAdmin ? (
                           <button
@@ -637,7 +637,7 @@ export default function AdminDashboard() {
                           by {report.reporter?.fullName || report.reporter?.username || "Unknown"}
                         </span>
                       </div>
-                      <p className="text-sm text-gray-300">
+                      <p className="text-sm text-gray-300 break-words">
                         <span className="font-semibold text-white">Reason: </span>{report.reason || "No reason provided"}
                       </p>
                       {report.post?.title && (
@@ -695,7 +695,7 @@ export default function AdminDashboard() {
                       </span>
                       <Link
                         href={`/Profile/${post.author._id}`}
-                        className="text-xs text-gray-500 hover:text-white transition-colors truncate"
+                        className="text-xs text-gray-500 hover:text-white transition-colors truncate max-w-[40vw] sm:max-w-none"
                       >
                         by {post.author.fullName}
                       </Link>
@@ -751,7 +751,7 @@ export default function AdminDashboard() {
                     { label: "Pending", value: emotionData.summary.totalPending, color: "text-yellow-400" },
                     { label: "Failed", value: emotionData.summary.totalFailed, color: "text-red-400" },
                   ].map((s) => (
-                    <div key={s.label} className="p-4 sm:p-5 rounded-2xl border border-white/5 bg-[#141414]">
+                    <div key={s.label} className="p-4 sm:p-5 rounded-2xl border border-white/5 bg-[#141414] min-w-0">
                       <p className={`text-2xl sm:text-3xl font-bold ${s.color}`}>{s.value}</p>
                       <p className="text-[10px] sm:text-xs uppercase tracking-wider font-semibold text-gray-500 mt-1">{s.label}</p>
                     </div>
@@ -776,9 +776,9 @@ export default function AdminDashboard() {
                         const hue = (i * 47 + 200) % 360;
                         return (
                           <div key={e.emotion}>
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="text-sm font-medium text-white capitalize">{e.emotion}</span>
-                              <span className="text-xs text-gray-400 font-mono">{e.score.toFixed(2)}</span>
+                            <div className="flex items-center justify-between mb-1 gap-2">
+                              <span className="text-sm font-medium text-white capitalize truncate">{e.emotion}</span>
+                              <span className="text-xs text-gray-400 font-mono flex-shrink-0">{e.score.toFixed(2)}</span>
                             </div>
                             <div className="h-2 w-full rounded-full bg-white/5 overflow-hidden">
                               <div
@@ -805,7 +805,7 @@ export default function AdminDashboard() {
                       <span className="text-xs text-gray-500 ml-1">(latest {emotionData.emotionHistory.length} snapshots)</span>
                     </div>
 
-                    <div className="space-y-4 max-h-[420px] overflow-y-auto pr-1">
+                    <div className="space-y-4 max-h-[420px] overflow-y-auto overflow-x-hidden pr-1">
                       {emotionData.emotionHistory.map((snapshot, si) => {
                         const topInSnapshot = snapshot.emotions?.slice(0, 3) ?? [];
                         return (
@@ -821,7 +821,7 @@ export default function AdminDashboard() {
                                 {new Date(snapshot.date).getFullYear()}
                               </p>
                             </div>
-                            <div className="flex-1 flex flex-wrap gap-2">
+                            <div className="flex-1 min-w-0 flex flex-wrap gap-2">
                               {topInSnapshot.map((em) => (
                                 <span
                                   key={em.emotion}
@@ -865,7 +865,7 @@ export default function AdminDashboard() {
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-semibold text-white truncate">{m.fullName}</p>
-                              {m.username && <p className="text-xs text-gray-500">@{m.username}</p>}
+                              {m.username && <p className="text-xs text-gray-500 truncate">@{m.username}</p>}
                               {m.topCluster && (
                                 <span className="mt-1 inline-block text-[10px] px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-gray-400 truncate max-w-[160px]">
                                   {m.topCluster}
@@ -873,12 +873,16 @@ export default function AdminDashboard() {
                               )}
                             </div>
                           </div>
-                          <div className="flex items-center gap-3 sm:text-right flex-shrink-0 pl-12 sm:pl-0">
-                            <div>
+
+                          {/* Fixed: replaced the pl-12 offset (which pushed this block
+                              partly off-screen on narrow phones) with a self-contained
+                              row that spreads with justify-between and wraps its badges. */}
+                          <div className="flex items-center justify-between sm:justify-end gap-3 flex-shrink-0 w-full sm:w-auto">
+                            <div className="flex-shrink-0">
                               <p className="text-sm font-bold text-white">{m.totalPosts}</p>
                               <p className="text-[10px] uppercase tracking-wider text-gray-500">posts</p>
                             </div>
-                            <div className="flex gap-1 flex-wrap">
+                            <div className="flex gap-1 flex-wrap justify-end min-w-0">
                               {m.analyzed > 0 && (
                                 <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400">
                                   {m.analyzed} ✓
@@ -1006,7 +1010,7 @@ export default function AdminDashboard() {
             {isOwner && (
               <div className="p-4 sm:p-6 rounded-xl border border-red-500/20 bg-red-500/5">
                 <h2 className="text-lg sm:text-xl font-bold mb-4 text-red-500">Danger Zone</h2>
-                
+
                 <div className="space-y-6">
                   {/* Transfer Ownership */}
                   <div className="pb-6 border-b border-red-500/20">
@@ -1018,7 +1022,7 @@ export default function AdminDashboard() {
                       <select
                         value={transferTargetId}
                         onChange={(e) => setTransferTargetId(e.target.value)}
-                        className="flex-1 bg-black/30 border border-red-500/20 rounded-lg p-2.5 text-white min-w-0"
+                        className="flex-1 min-w-0 w-full bg-black/30 border border-red-500/20 rounded-lg p-2.5 text-white"
                       >
                         <option value="">Select a member...</option>
                         {circle.members.map((m: any) => {
@@ -1034,7 +1038,7 @@ export default function AdminDashboard() {
                       <button
                         onClick={handleTransferOwnership}
                         disabled={actionLoading === "transfer" || !transferTargetId}
-                        className="px-4 py-2.5 rounded-lg bg-red-500 hover:bg-red-600 text-white font-bold disabled:opacity-50 w-full sm:w-auto"
+                        className="px-4 py-2.5 rounded-lg bg-red-500 hover:bg-red-600 text-white font-bold disabled:opacity-50 w-full sm:w-auto flex-shrink-0"
                       >
                         Transfer
                       </button>
