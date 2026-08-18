@@ -154,14 +154,14 @@ function Page() {
         ) : (
           <>
      {isOwnProfile && (
-  <div 
-    onClick={() => setShowModal(true)}
-    className="items-center flex border-(--border) bg-[#0e0e14] hover:cursor-pointer text-center gap-y-3 p-4 flex-col justify-center w-full h-full min-h-[180px] border rounded-xl hover:bg-[#1a1a24] transition-all hover:scale-105 active:scale-95 duration-200"
-  >
-    <MdOutlineCreateNewFolder size={40} />
-    <h1 className="text-sm sm:text-base font-medium">Create new collection</h1>
-  </div>
-)}
+   <div 
+     onClick={() => setShowModal(true)}
+     className="items-center flex border-(--border) bg-(--colorbg) hover:cursor-pointer text-center gap-y-3 p-4 flex-col justify-center w-full h-full min-h-[180px] border rounded-xl hover:bg-(--hover) transition-all hover:scale-105 active:scale-95 duration-200 text-(--foreground)"
+   >
+     <MdOutlineCreateNewFolder size={40} />
+     <h1 className="text-sm sm:text-base font-medium">Create new collection</h1>
+   </div>
+ )}
             
             {collections.length === 0 && !isOwnProfile ? (
               <div className="col-span-full py-16 px-4 text-center border border-dashed border-neutral-300 dark:border-neutral-700 rounded-xl bg-white/5 w-full">
@@ -179,15 +179,15 @@ function Page() {
 
       {/* Create Collection Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 text-(--foreground)">
           <div
             ref={modalRef}
-            className="bg-[#0e0e14]  border border-(--border) dark:border-(--borderdark) rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-5 relative"
+            className="bg-(--colorbg)  border border-(--border) rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-5 relative"
           >
             {/* Close button */}
             <button
               onClick={() => setShowModal(false)}
-              className="absolute top-4 hover:cursor-pointer right-4 text-(--text-muted) hover:text-white transition-colors"
+              className="absolute top-4 hover:cursor-pointer right-4 text-(--text-muted) hover:text-(--foreground) transition-colors"
             >
               <IoClose size={22} />
             </button>
@@ -202,7 +202,7 @@ function Page() {
                 </label>
                 <div 
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full h-40 rounded-xl border-2 border-dashed border-(--border) bg-(--colorbg) dark:bg-[#131e2e] flex flex-col items-center justify-center cursor-pointer hover:bg-(--hover) dark:hover:bg-[#1c2b42] transition-colors overflow-hidden relative"
+                  className="w-full h-40 rounded-xl border-2 border-dashed border-(--border) bg-(--colorbg) flex flex-col items-center justify-center cursor-pointer hover:bg-(--hover) transition-colors overflow-hidden relative"
                 >
                   {coverImagePreview ? (
                     <img src={coverImagePreview} alt="Cover Preview" className="w-full h-full object-cover" />
@@ -231,7 +231,7 @@ function Page() {
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                   placeholder="e.g. Autumn Studies"
-                  className="w-full px-4 py-2.5 rounded-xl border border-(--border) bg-(--colorbg) dark:bg-[#131e2e] outline-none focus:ring-2 focus:ring-blue-500/40 transition-all"
+                  className="w-full px-4 py-2.5 rounded-xl border border-(--border) bg-(--colorbg) outline-none focus:ring-2 focus:ring-blue-500/40 transition-all text-(--foreground)"
                 />
               </div>
 
@@ -244,7 +244,7 @@ function Page() {
                   onChange={(e) => setNewDesc(e.target.value)}
                   placeholder="What is this collection about?"
                   rows={3}
-                  className="w-full px-4 py-2.5 rounded-xl border border-(--border) bg-(--colorbg) dark:bg-[#131e2e] outline-none focus:ring-2 focus:ring-blue-500/40 transition-all resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-(--border) bg-(--colorbg) outline-none focus:ring-2 focus:ring-blue-500/40 transition-all resize-none text-(--foreground)"
                 />
               </div>
             </div>
@@ -252,7 +252,7 @@ function Page() {
             <div className="flex gap-3 justify-end pt-2">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-5 py-2 rounded-xl border border-(--border) hover:bg-(--colorbg) dark:hover:bg-(--colorbgdark) transition-colors text-sm"
+                className="px-5 py-2 rounded-xl border border-(--border) hover:bg-(--hover) transition-colors text-sm"
               >
                 Cancel
               </button>

@@ -53,7 +53,7 @@ export default function EmotionDashboard() {
 
   if (loading) {
     return (
-      <div className="p-6 sm:p-10 text-white">
+      <div className="p-6 sm:p-10 text-(--foreground)">
         Loading creative profile...
       </div>
     );
@@ -64,7 +64,7 @@ export default function EmotionDashboard() {
   // ----------------------------------------------------------
 
   return (
-    <div className="p-4 sm:p-6 flex flex-col md:flex-row gap-6 text-white">
+    <div className="p-4 sm:p-6 flex flex-col md:flex-row gap-6 text-(--foreground)">
 
       {/* =====================================================
           LEFT PANEL
@@ -78,9 +78,9 @@ export default function EmotionDashboard() {
 
         {/* Total Posts */}
 
-        <div className="bg-gray-900 p-4 rounded-xl">
+        <div className="bg-(--colorbg) border border-(--border) p-4 rounded-xl">
 
-          <p className="text-gray-400 text-sm">
+          <p className="text-(--text-muted) text-sm">
             Total Creations
           </p>
 
@@ -92,7 +92,7 @@ export default function EmotionDashboard() {
 
         {/* Top Clusters */}
 
-        <div className="bg-gray-900 p-4 rounded-xl">
+        <div className="bg-(--colorbg) border border-(--border) p-4 rounded-xl">
 
           <h2 className="font-semibold mb-3">
             Recurring Human Experiences
@@ -100,7 +100,7 @@ export default function EmotionDashboard() {
 
           {data.topClusters.length === 0 ? (
 
-            <p className="text-gray-400">
+            <p className="text-(--text-muted)">
               No semantic analysis yet
             </p>
 
@@ -112,14 +112,14 @@ export default function EmotionDashboard() {
 
                 <div
                   key={item.cluster}
-                  className="flex justify-between border-b border-gray-700 py-2 gap-2"
+                  className="flex justify-between border-b border-(--border) py-2 gap-2"
                 >
 
                   <span className="truncate">
                     {item.cluster}
                   </span>
 
-                  <span className="text-gray-400 flex-shrink-0">
+                  <span className="text-(--text-muted) flex-shrink-0">
                     {item.count}
                   </span>
 
@@ -148,7 +148,7 @@ export default function EmotionDashboard() {
 
         {data.posts.length === 0 ? (
 
-          <p className="text-gray-400">
+          <p className="text-(--text-muted)">
             No creations yet
           </p>
 
@@ -183,7 +183,7 @@ export default function EmotionDashboard() {
               return (
                 <div
                   key={post._id}
-                  className="bg-gray-900 rounded-xl p-3 sm:p-4 flex gap-3 sm:gap-4"
+                  className="bg-(--colorbg) border border-(--border) rounded-xl p-3 sm:p-4 flex gap-3 sm:gap-4"
                 >
 
                   {/* =================================================
@@ -210,11 +210,11 @@ export default function EmotionDashboard() {
                       w-16 h-16 sm:w-24 sm:h-24
                       flex-shrink-0
                       rounded-lg
-                      bg-gray-800
+                      bg-(--colorbgdark1)
                       flex
                       items-center
                       justify-center
-                      text-gray-400
+                      text-(--text-muted)
                       "
                     >
 
@@ -242,7 +242,7 @@ export default function EmotionDashboard() {
 
                     {/* Type + Date */}
 
-                    <p className="text-xs sm:text-sm text-gray-400 mt-1">
+                    <p className="text-xs sm:text-sm text-(--text-muted) mt-1">
 
                       {post.type === "art" ? "Artwork" : "Poem"}
 
@@ -264,7 +264,7 @@ export default function EmotionDashboard() {
 
                     {story && (
 
-                      <p className="text-xs sm:text-sm text-gray-400 mt-2 line-clamp-2">
+                      <p className="text-xs sm:text-sm text-(--text-muted) mt-2 line-clamp-2">
                         {story}
                       </p>
 

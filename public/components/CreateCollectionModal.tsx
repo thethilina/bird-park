@@ -82,12 +82,12 @@ export default function CreateCollectionModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 text-white text-left">
-      <div className="bg-[#0e0e14] border border-(--border) dark:border-(--borderdark) rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-5 relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 text-(--foreground) text-left">
+      <div className="bg-(--colorbg) border border-(--border) rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-5 relative">
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 hover:cursor-pointer right-4 text-(--text-muted) hover:text-white transition-colors"
+          className="absolute top-4 hover:cursor-pointer right-4 text-(--text-muted) hover:text-(--foreground) transition-colors"
         >
           <IoClose size={22} />
         </button>
@@ -102,7 +102,7 @@ export default function CreateCollectionModal({
             </label>
             <div 
               onClick={() => fileInputRef.current?.click()}
-              className="w-full h-40 rounded-xl border-2 border-dashed border-(--border) bg-(--colorbg) dark:bg-[#131e2e] flex flex-col items-center justify-center cursor-pointer hover:bg-(--hover) dark:hover:bg-[#1c2b42] transition-colors overflow-hidden relative"
+              className="w-full h-40 rounded-xl border-2 border-dashed border-(--border) bg-(--colorbg) flex flex-col items-center justify-center cursor-pointer hover:bg-(--hover) transition-colors overflow-hidden relative"
             >
               {coverImagePreview ? (
                 <img src={coverImagePreview} alt="Cover Preview" className="w-full h-full object-cover" />
@@ -131,7 +131,7 @@ export default function CreateCollectionModal({
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
               placeholder="e.g. Autumn Studies"
-              className="w-full px-4 py-2.5 rounded-xl border border-(--border) bg-(--colorbg) dark:bg-[#131e2e] outline-none focus:ring-2 focus:ring-blue-500/40 transition-all text-white"
+              className="w-full px-4 py-2.5 rounded-xl border border-(--border) bg-(--colorbg) outline-none focus:ring-2 focus:ring-blue-500/40 transition-all text-(--foreground)"
             />
           </div>
 
@@ -144,7 +144,7 @@ export default function CreateCollectionModal({
               onChange={(e) => setNewDesc(e.target.value)}
               placeholder="What is this collection about?"
               rows={3}
-              className="w-full px-4 py-2.5 rounded-xl border border-(--border) bg-(--colorbg) dark:bg-[#131e2e] outline-none focus:ring-2 focus:ring-blue-500/40 transition-all resize-none text-white"
+              className="w-full px-4 py-2.5 rounded-xl border border-(--border) bg-(--colorbg) outline-none focus:ring-2 focus:ring-blue-500/40 transition-all resize-none text-(--foreground)"
             />
           </div>
         </div>
@@ -152,7 +152,7 @@ export default function CreateCollectionModal({
         <div className="flex gap-3 justify-end pt-2">
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-xl border border-(--border) hover:bg-(--colorbg) dark:hover:bg-(--colorbgdark) transition-colors text-sm"
+            className="px-5 py-2 rounded-xl border border-(--border) hover:bg-(--hover) transition-colors text-sm"
           >
             Cancel
           </button>

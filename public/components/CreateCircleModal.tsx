@@ -144,12 +144,12 @@ export default function CreateCircleModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 text-white text-left overflow-y-auto">
-      <div className="bg-[#0e0e14] border border-(--border) dark:border-(--borderdark) rounded-2xl shadow-2xl w-full max-w-lg p-6 space-y-5 relative max-h-[90vh] overflow-y-auto my-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 text-(--foreground) text-left overflow-y-auto">
+      <div className="bg-(--colorbg) border border-(--border) rounded-2xl shadow-2xl w-full max-w-lg p-6 space-y-5 relative max-h-[90vh] overflow-y-auto my-auto">
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-(--text-muted) hover:text-white transition-colors cursor-pointer"
+          className="absolute top-4 right-4 text-(--text-muted) hover:text-(--foreground) transition-colors cursor-pointer"
         >
           <IoClose size={22} />
         </button>
@@ -159,12 +159,12 @@ export default function CreateCircleModal({
         <div className="space-y-4">
           {/* Cover Image Picker */}
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-300">
+            <label className="block text-sm font-medium mb-2 text-(--foreground)">
               Circle Image / Cover
             </label>
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="w-full h-36 rounded-xl border-2 border-dashed border-gray-700 bg-[#131e2e] flex flex-col items-center justify-center cursor-pointer hover:bg-[#1c2b42] transition-colors overflow-hidden relative"
+              className="w-full h-36 rounded-xl border-2 border-dashed border-(--border) bg-(--colorbg) flex flex-col items-center justify-center cursor-pointer hover:bg-(--hover) transition-colors overflow-hidden relative"
             >
               {imagePreview ? (
                 <img
@@ -173,7 +173,7 @@ export default function CreateCircleModal({
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="flex flex-col items-center text-gray-400">
+                <div className="flex flex-col items-center text-(--text-muted)">
                   <IoImageOutline size={32} className="mb-2" />
                   <span className="text-sm">Click to upload circle image</span>
                 </div>
@@ -190,7 +190,7 @@ export default function CreateCircleModal({
 
           {/* Circle Name */}
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-300">
+            <label className="block text-sm font-medium mb-1 text-(--foreground)">
               Circle Name <span className="text-red-400">*</span>
             </label>
             <input
@@ -198,22 +198,22 @@ export default function CreateCircleModal({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Surrealist Painters Club"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-700 bg-[#131e2e] outline-none focus:ring-2 focus:ring-blue-500/40 transition-all text-white"
+              className="w-full px-4 py-2.5 rounded-xl border border-(--border) bg-(--colorbg) outline-none focus:ring-2 focus:ring-blue-500/40 transition-all text-(--foreground)"
             />
           </div>
 
           {/* Category */}
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-300">
+            <label className="block text-sm font-medium mb-1 text-(--foreground)">
               Category
             </label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-700 bg-[#131e2e] outline-none focus:ring-2 focus:ring-blue-500/40 transition-all text-white"
+              className="w-full px-4 py-2.5 rounded-xl border border-(--border) bg-(--colorbg) outline-none focus:ring-2 focus:ring-blue-500/40 transition-all text-(--foreground)"
             >
               {CATEGORIES.map((cat) => (
-                <option key={cat} value={cat} className="bg-[#0e0e14]">
+                <option key={cat} value={cat} className="bg-(--colorbg) text-(--foreground)">
                   {cat}
                 </option>
               ))}
@@ -222,7 +222,7 @@ export default function CreateCircleModal({
 
           {/* Join Type */}
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-300">
+            <label className="block text-sm font-medium mb-1 text-(--foreground)">
               Privacy / Access
             </label>
             <div className="flex gap-4 pt-1">
@@ -235,7 +235,7 @@ export default function CreateCircleModal({
                   onChange={() => setJoinType("open")}
                   className="accent-blue-500"
                 />
-                <span className="text-sm text-gray-200">Open (Anyone can join)</span>
+                <span className="text-sm text-(--foreground)">Open (Anyone can join)</span>
               </label>
 
               <label className="flex items-center gap-2 cursor-pointer">
@@ -247,14 +247,14 @@ export default function CreateCircleModal({
                   onChange={() => setJoinType("approval")}
                   className="accent-blue-500"
                 />
-                <span className="text-sm text-gray-200">Approval Required</span>
+                <span className="text-sm text-(--foreground)">Approval Required</span>
               </label>
             </div>
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-300">
+            <label className="block text-sm font-medium mb-1 text-(--foreground)">
               Description
             </label>
             <textarea
@@ -262,13 +262,13 @@ export default function CreateCircleModal({
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe the purpose, themes, or vibe of this circle..."
               rows={3}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-700 bg-[#131e2e] outline-none focus:ring-2 focus:ring-blue-500/40 transition-all resize-none text-white text-sm"
+              className="w-full px-4 py-2.5 rounded-xl border border-(--border) bg-(--colorbg) outline-none focus:ring-2 focus:ring-blue-500/40 transition-all resize-none text-(--foreground) text-sm"
             />
           </div>
 
           {/* Circle Rules */}
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-300">
+            <label className="block text-sm font-medium mb-2 text-(--foreground)">
               Community Rules (Optional)
             </label>
             {rules.length > 0 && (
@@ -276,20 +276,20 @@ export default function CreateCircleModal({
                 {rules.map((rule, idx) => (
                   <div
                     key={idx}
-                    className="flex items-start justify-between bg-[#131e2e] p-2.5 rounded-lg border border-gray-800"
+                    className="flex items-start justify-between bg-(--colorbg) p-2.5 rounded-lg border border-(--border)"
                   >
                     <div>
                       <h4 className="font-semibold text-sm text-blue-400">
                         {idx + 1}. {rule.title}
                       </h4>
                       {rule.description && (
-                        <p className="text-xs text-gray-400 mt-0.5">{rule.description}</p>
+                        <p className="text-xs text-(--text-muted) mt-0.5">{rule.description}</p>
                       )}
                     </div>
                     <button
                       type="button"
                       onClick={() => handleRemoveRule(idx)}
-                      className="text-gray-400 hover:text-red-400 transition-colors p-1"
+                      className="text-(--text-muted) hover:text-red-400 transition-colors p-1"
                     >
                       <IoTrashOutline size={16} />
                     </button>
@@ -298,20 +298,20 @@ export default function CreateCircleModal({
               </div>
             )}
 
-            <div className="flex flex-col gap-2 bg-[#131e2e]/50 p-3 rounded-xl border border-gray-800">
+            <div className="flex flex-col gap-2 bg-(--colorbg)/50 p-3 rounded-xl border border-(--border)">
               <input
                 type="text"
                 value={ruleTitle}
                 onChange={(e) => setRuleTitle(e.target.value)}
                 placeholder="Rule title (e.g. Be respectful)"
-                className="w-full px-3 py-1.5 rounded-lg border border-gray-700 bg-[#131e2e] text-xs outline-none text-white"
+                className="w-full px-3 py-1.5 rounded-lg border border-(--border) bg-(--colorbg) text-xs outline-none text-(--foreground)"
               />
               <input
                 type="text"
                 value={ruleDesc}
                 onChange={(e) => setRuleDesc(e.target.value)}
                 placeholder="Optional rule description"
-                className="w-full px-3 py-1.5 rounded-lg border border-gray-700 bg-[#131e2e] text-xs outline-none text-white"
+                className="w-full px-3 py-1.5 rounded-lg border border-(--border) bg-(--colorbg) text-xs outline-none text-(--foreground)"
               />
               <button
                 type="button"
@@ -329,7 +329,7 @@ export default function CreateCircleModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-5 py-2 rounded-xl border border-gray-700 hover:bg-gray-800 transition-colors text-sm cursor-pointer"
+            className="px-5 py-2 rounded-xl border border-(--border) hover:bg-(--hover) text-(--foreground) transition-colors text-sm cursor-pointer"
           >
             Cancel
           </button>

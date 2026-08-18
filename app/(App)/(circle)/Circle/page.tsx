@@ -79,11 +79,11 @@ export default function Page() {
       ===================================================== */}
 
       <div className="mb-10">
-        <h1 className="text-2xl sm:text-3xl font-semibold text-white">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-(--foreground)">
           Discover Circles
         </h1>
 
-        <p className="mt-2 text-gray-400">
+        <p className="mt-2 text-(--text-muted)">
           Find creative spaces where your interests,
           emotions and people intersect.
         </p>
@@ -97,11 +97,11 @@ export default function Page() {
       <section className="mb-12">
 
         <div className="mb-5">
-          <h2 className="text-xl font-semibold text-white">
+          <h2 className="text-xl font-semibold text-(--foreground)">
             Circles for You
           </h2>
 
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-sm text-(--text-muted) mt-1">
             Communities that resonate with your creative
             interests and emotional profile.
           </p>
@@ -140,11 +140,11 @@ export default function Page() {
       <section>
 
         <div className="mb-5">
-          <h2 className="text-xl font-semibold text-white">
+          <h2 className="text-xl font-semibold text-(--foreground)">
             More Circles to Explore
           </h2>
 
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-sm text-(--text-muted) mt-1">
             Discover communities connected to people
             around you.
           </p>
@@ -199,19 +199,18 @@ function CircleCard({
         cursor-pointer
         overflow-hidden
         rounded-2xl
-        border border-white/10
-        bg-[#111111]
+        border border-(--border)
+        bg-(--colorbg)
         transition-all
         duration-300
-        hover:border-white/20
-        hover:bg-[#161616]
+        hover:bg-(--hover)
         hover:-translate-y-1
       "
     >
 
       {/* COVER */}
 
-      <div className="relative h-36 w-full overflow-hidden bg-[#1c1c1c]">
+      <div className="relative h-36 w-full overflow-hidden bg-(--colorbgdark1)">
 
         {circle.image ? (
           <img
@@ -235,8 +234,8 @@ function CircleCard({
               items-center
               justify-center
               bg-gradient-to-br
-              from-[#242424]
-              to-[#101010]
+              from-(--colorbg)
+              to-(--colorbgdark1)
             "
           >
             <span className="text-4xl">
@@ -258,8 +257,8 @@ function CircleCard({
               overflow-hidden
               rounded-xl
               border-4
-              border-[#111111]
-              bg-[#222]
+              border-(--colorbg)
+              bg-(--colorbgdark1)
             "
           >
             <img
@@ -279,7 +278,7 @@ function CircleCard({
 
         <div className={circle.icon ? "mt-3" : ""}>
 
-          <h3 className="text-lg font-semibold text-white">
+          <h3 className="text-lg font-semibold text-(--foreground)">
             {circle.name}
           </h3>
 
@@ -293,7 +292,7 @@ function CircleCard({
 
 
         {circle.description && (
-          <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-gray-400">
+          <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-(--text-muted)">
             {circle.description}
           </p>
         )}
@@ -312,11 +311,11 @@ function CircleCard({
                     key={emotion.emotion}
                     className="
                       rounded-full
-                      bg-white/5
+                      bg-(--colorbgdark1)
                       px-3
                       py-1
                       text-xs
-                      text-gray-400
+                      text-(--text-muted)
                     "
                   >
                     {emotion.emotion}
@@ -342,14 +341,14 @@ function CircleCard({
             }}
             className="
               rounded-lg
-              bg-white
+              bg-(--primary)
               px-4
               py-2
               text-sm
               font-medium
-              text-black
+              text-(--background)
               transition
-              hover:bg-gray-200
+              hover:opacity-90
             "
           >
             Explore

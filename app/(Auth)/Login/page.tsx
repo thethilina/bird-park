@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import React from 'react'
 import Logo from "@/public/images/birdparklogo.png"
+import LightLogo from "@/public/images/birdparklogodark.png"
 import Image from 'next/image'
 import Photoslide from '@/public/components/Loginpage/Photoslide'
 import { collectionsDatabase } from '@/TestDataBase/collectionData'
@@ -18,7 +19,7 @@ function Page() {
   const loader = useTopLoader();
   const { setUser } = useAuth();
 
-  const inputClass = "w-full bg-[#2D2D44] border-none rounded-full py-4 px-6 text-sm placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-white/20 transition-all";
+  const inputClass = "w-full dark:bg-[#2D2D44] bg-[#8989A9] border-none rounded-full py-4 px-6 text-sm dark:placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-white/20 transition-all";
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -65,7 +66,9 @@ function Page() {
       <div className='flex-1 hidden md:flex flex-col items-center justify-center px-10 pt-10 md:pt-0 md:border-r-2 border-[var(--border)]'>
         <div className='max-w-md w-full'>
           <div className='flex items-center gap-3 mb-10'>
-            <Image src={Logo} alt='logo' className='w-10 h-10 object-contain' />
+            <Image src={Logo} alt='logo' className='w-10 h-10 hidden dark:block object-contain' />
+                        <Image src={LightLogo} alt='logo' className='w-10 h-10 dark:hidden  object-contain' />
+
             <h1 className='text-3xl font-light tracking-wide'>Bird Park</h1>
           </div>
           <div className='w-full'>
@@ -80,14 +83,16 @@ function Page() {
 
           {/* Mobile Logo */}
           <div className='flex md:hidden items-center justify-center gap-3'>
-            <Image src={Logo} alt='logo' className='w-10 h-10 object-contain' />
+            <Image src={Logo} alt='logo' className='w-10 h-10 object-contain hidden dark:block' />
+                        <Image src={LightLogo} alt='logo' className='w-10 h-10 object-contain dark:hidden' />
+
             <h1 className='text-xl font-light tracking-wide'>Bird Park</h1>
           </div>
 
           {/* Header */}
           <div className='space-y-2'>
-            <h1 className='text-4xl md:text-5xl text-[#DEBE83] font-light'>Log In</h1>
-            <Link href='/Register' className='text-base underline underline-offset-4 text-gray-300 hover:text-white transition-colors'>
+            <h1 className='text-3xl md:text-5xl dark:text-[#DEBE83] text-[#161616] font-light'>Log In</h1>
+            <Link href='/Register' className='text-lg underline underline-offset-4 dark:text-gray-300 dark:hover:text-white transition-colors'>
               Create an account
             </Link>
           </div>
@@ -115,15 +120,15 @@ function Page() {
           {/* Enter Button */}
           <button
             onClick={handleLogin}
-            className='bg-white w-full font-serif text-black py-2.5 rounded-full text-lg font-medium hover:bg-gray-200 active:scale-95 transition-all'
+            className='dark:bg-white    bg-[#0B111A]  text-white    w-full font-serif dark:text-black py-2.5 rounded-full text-lg font-medium hover:cursor-pointer dark:hover:bg-gray-200 active:scale-95 transition-all'
           >
             Enter
           </button>
 
           {/* Footer Links */}
-          <div className='flex flex-wrap justify-center gap-4 sm:gap-8 text-sm text-gray-500'>
-            <Link href='/terms-of-service' className='hover:text-white transition-colors whitespace-nowrap'>Terms of Service</Link>
-            <Link href='/privacy-policy' className='hover:text-white transition-colors whitespace-nowrap'>Privacy Policy</Link>
+          <div className='flex flex-wrap justify-center gap-4 sm:gap-8 text-md text-gray-500'>
+            <Link href='/terms-of-service' className='dark:hover:text-white transition-colors whitespace-nowrap'>Terms of Service</Link>
+            <Link href='/privacy-policy' className='dark:hover:text-white transition-colors whitespace-nowrap'>Privacy Policy</Link>
           </div>
 
         </div>

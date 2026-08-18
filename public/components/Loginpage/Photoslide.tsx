@@ -91,7 +91,7 @@ function Photoslide({ artdata }: any) {
       </AnimatePresence>
 
       {/* EMOTION LAYERS */}
-      <div className="w-full max-w-[700px] mx-auto overflow-hidden text-sm sm:text-base">
+      <div className="w-full max-w-[700px] mx-auto overflow-hidden  text-sm sm:text-base">
         {[0, 1, 2].map((row) => (
           <div key={row} className="whitespace-nowrap flex gap-4 sm:gap-6 py-1">
             <motion.div
@@ -106,7 +106,7 @@ function Photoslide({ artdata }: any) {
               }}
             >
               {[...emotions, ...emotions, ...emotions].map((e, i) => (
-                <span key={i} className="opacity-70">
+                <span key={i} className="dark:opacity-70">
                   {e}
                 </span>
               ))}

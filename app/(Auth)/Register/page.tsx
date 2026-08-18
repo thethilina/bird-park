@@ -10,6 +10,8 @@ import { useTopLoader } from "nextjs-toploader"
 import { toast } from 'react-toastify'
 import { useAuth } from "@/contexts/AuthContext"
 import { evaluatePasswordStrength } from '@/lib/passwordStrength'
+import LightLogo from "@/public/images/birdparklogodark.png"
+
 import Link from 'next/link'
 
 function Page() {
@@ -144,16 +146,16 @@ function Page() {
 
     const UsernameIndicator = () => {
         if (usernameStatus === 'idle') return null;
-        if (usernameStatus === 'checking') return <FiLoader className="animate-spin text-gray-400" size={16} />;
-        if (usernameStatus === 'available') return <FiCheck className="text-green-400" size={16} />;
-        if (usernameStatus === 'taken') return <FiX className="text-red-400" size={16} />;
-        if (usernameStatus === 'invalid') return <FiX className="text-amber-400" size={16} />;
+        if (usernameStatus === 'checking') return <FiLoader className="animate-spin text-gray-800 dark:text-gray-400" size={20} />;
+        if (usernameStatus === 'available') return <FiCheck className=" text-green-800 dark:text-green-400" size={20    } />;
+        if (usernameStatus === 'taken') return <FiX className="text-red-700 dark:text-red-400" size={20} />;
+        if (usernameStatus === 'invalid') return <FiX className="text-amber-800 dark:text-amber-400" size={20} />;
         return null;
     };
 
     const usernameStatusColor = usernameStatus === 'available' ? '#4ade80' : usernameStatus === 'taken' ? '#f87171' : usernameStatus === 'invalid' ? '#fbbf24' : '#9ca3af';
 
-    const fieldClass = 'bg-(--colorbg) dark:bg-(--colorbgdark1) text-base py-2.5 px-5 rounded-full w-full outline-none focus:ring-2 focus:ring-white/20 transition-all';
+    const fieldClass = 'bg-[#8989A9] dark:bg-(--colorbgdark1) text-base py-2.5 px-5 rounded-full w-full outline-none focus:ring-2 focus:ring-white/20 transition-all';
 
     return (
         <div className='flex flex-col items-center justify-center min-h-screen px-5 py-12 sm:px-8'>
@@ -161,14 +163,14 @@ function Page() {
 
                 {/* Logo */}
                 <div className='flex items-center gap-3'>
-                    <Image src={Logo} alt='logo' className='w-9 h-9 object-contain' />
+                       <Image src={Logo} alt='logo' className='w-10 h-10 hidden dark:block object-contain' />
+                        <Image src={LightLogo} alt='logo' className='w-10 h-10 dark:hidden  object-contain' />
                     <h1 className='text-2xl sm:text-3xl font-light tracking-wide'>Welcome to Bird Park</h1>
                 </div>
 
                 {/* Subtitle */}
                 <div className='space-y-1'>
-                    <h2 className='text-3xl sm:text-4xl text-[#DEBE83] font-light'>Create Account</h2>
-                    <Link href='/Login' className='text-sm text-gray-400 hover:text-white underline underline-offset-4 transition-colors'>
+                    <Link href='/Login' className='text-lg dark:text-gray-400 dark:hover:text-white underline underline-offset-4 transition-colors'>
                         Already have an account? Log in
                     </Link>
                 </div>
@@ -180,7 +182,7 @@ function Page() {
                         alt="Avatar"
                         width={60}
                         height={60}
-                        className="rounded-full border border-white/20 w-14 h-14 sm:w-16 sm:h-16 object-cover cursor-pointer shrink-0"
+                        className="rounded-full border border-black/60 dark:border-white/20 w-14 h-14 sm:w-16 sm:h-16 object-cover cursor-pointer shrink-0"
                     />
                     <input
                         type="file"
@@ -191,7 +193,7 @@ function Page() {
                     />
                     <span
                         onClick={handleIconClick}
-                        className='flex items-center gap-x-2 text-gray-400 cursor-pointer hover:text-gray-200 transition-colors text-sm'
+                        className='flex items-center gap-x-2 dark:text-gray-400 cursor-pointer dark:hover:text-gray-200 transition-colors text-md sm:text-lg font-medium'
                     >
                         <FaFileUpload size={15} />
                         Upload a profile photo
@@ -202,8 +204,8 @@ function Page() {
                 <form onSubmit={handleSubmit} className='grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6'>
 
                     {/* Username */}
-                    <div className='flex flex-col gap-y-2'>
-                        <label className="text-sm font-medium text-gray-300">Username</label>
+                    <div className='flex flex-col  gap-y-2'>
+                        <label className="text-md font-medium dark:text-gray-300">Username</label>
                         <div className="relative">
                             <input
                                 type="text"
@@ -217,13 +219,13 @@ function Page() {
                             </div>
                         </div>
                         {usernameMessage && username && (
-                            <p style={{ fontSize: '0.72rem', color: usernameStatusColor }}>{usernameMessage}</p>
+                            <p style={{  color: usernameStatusColor }} className="text-md">{usernameMessage}</p>
                         )}
                     </div>
 
                     {/* Full Name */}
                     <div className='flex flex-col gap-y-2'>
-                        <label className="text-sm font-medium text-gray-300">Full Name</label>
+                        <label className="text-md font-medium dark:text-gray-300">Full Name</label>
                         <input
                             type="text"
                             value={fullName}
@@ -235,7 +237,7 @@ function Page() {
 
                     {/* Email */}
                     <div className='flex flex-col gap-y-2'>
-                        <label className="text-sm font-medium text-gray-300">Email</label>
+                        <label className="text-md font-medium dark:text-gray-300">Email</label>
                         <input
                             type="email"
                             value={email}
@@ -247,7 +249,7 @@ function Page() {
 
                     {/* Birthday */}
                     <div className='flex flex-col gap-y-2'>
-                        <label className="text-sm font-medium text-gray-300">Birthday</label>
+                        <label className="text-md font-medium dark:text-gray-300">Birthday</label>
                         <input
                             type="date"
                             value={birthday}
@@ -258,7 +260,7 @@ function Page() {
 
                     {/* Password */}
                     <div className='flex flex-col gap-y-2'>
-                        <label className="text-sm font-medium text-gray-300">Password</label>
+                        <label className="text-md font-medium dark:text-gray-300">Password</label>
                         <input
                             type="password"
                             value={password}
@@ -294,7 +296,7 @@ function Page() {
 
                     {/* Confirm Password */}
                     <div className='flex flex-col gap-y-2'>
-                        <label className="text-sm font-medium text-gray-300">Confirm Password</label>
+                        <label className="text-md font-medium dark:text-gray-300">Confirm Password</label>
                         <input
                             type="password"
                             value={confirmPassword}
@@ -314,7 +316,7 @@ function Page() {
                     <div className="sm:col-span-2 space-y-4 pt-2">
                         <button
                             disabled={loading || usernameStatus === 'taken' || usernameStatus === 'checking' || passwordStrength.score < 2}
-                            className='bg-white w-full font-serif text-black py-2.5 rounded-full text-base font-medium hover:bg-gray-200 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed'
+                            className='bg-black/90 text-white hover:cursor-pointer dark:bg-white w-full font-serif dark:text-black py-2.5 rounded-full text-base font-medium dark:hover:bg-gray-200 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed'
                         >
                             {loading ? 'Creating account...' : 'Create Account'}
                         </button>

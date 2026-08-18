@@ -102,7 +102,7 @@ function CircleSideBar() {
                 key={c._id}
                 href={`/Circle/${c._id}`}
                 onClick={onNavigate}
-                className="flex items-center gap-3 p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-xl text-lg transition-colors dark:text-gray-200"
+                className="flex items-center gap-3 p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-xl text-lg transition-colors text-(--foreground)"
               >
                 <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-800 flex-shrink-0 flex items-center justify-center text-xl font-bold dark:text-white text-gray-600 shadow-sm">
                   {c.icon ? (
@@ -129,7 +129,7 @@ function CircleSideBar() {
   return (
     <>
       {/* Desktop sidebar */}
-      <nav className='hidden sticky lg:block w-72 border-r-2 border-(--border) top-10 h-screen pr-5 bg-(--color-background) dark:bg-[#06060B] flex-col items-center py-5 gap-y-5 z-20'>
+      <nav className='hidden sticky lg:block w-72 border-r-2 border-(--border) top-10 h-screen pr-5 bg-(--color-background) dark:bg-(--background) flex-col items-center py-5 gap-y-5 z-20'>
         <div className='sticky top-30 space-y-6 pr-4'>
           {renderContent()}
         </div>
@@ -139,7 +139,7 @@ function CircleSideBar() {
       <button
         onClick={() => setMobileOpen(true)}
         aria-label="Open circles"
-        className="lg:hidden fixed bottom-20 right-5 z-30 flex items-center justify-center w-14 h-14 rounded-full bg-(--color-background) dark:bg-[#06060B] border-2 border-(--border) shadow-lg text-blue-500 active:scale-95 transition-transform"
+        className="lg:hidden fixed bottom-20 right-5 z-30 flex items-center justify-center w-14 h-14 rounded-full bg-(--color-background) dark:bg-(--background) border-2 border-(--border) shadow-lg text-blue-500 active:scale-95 transition-transform"
       >
         <FaRegCircleDot className="size-6" />
       </button>
@@ -154,7 +154,7 @@ function CircleSideBar() {
           />
 
           {/* sheet */}
-          <div className="absolute bottom-0 left-0 right-0 max-h-[85vh] rounded-t-2xl bg-(--color-background) dark:bg-[#06060B] border-t-2 border-(--border) shadow-2xl flex flex-col animate-[slideUp_0.25s_ease-out]">
+          <div className="absolute bottom-0 left-0 right-0 max-h-[85vh] rounded-t-2xl bg-(--color-background) dark:bg-(--background) border-t-2 border-(--border) shadow-2xl flex flex-col animate-[slideUp_0.25s_ease-out]">
             {/* drag handle */}
             <div className="flex justify-center pt-2.5 pb-1 shrink-0">
               <div className="w-10 h-1.5 rounded-full bg-gray-300 dark:bg-white/20" />
@@ -162,13 +162,13 @@ function CircleSideBar() {
 
             {/* header */}
             <div className="flex items-center justify-between px-4 pb-3 border-b border-(--border) shrink-0">
-              <h2 className="text-lg font-semibold dark:text-white">Circles</h2>
+              <h2 className="text-lg font-semibold text-(--foreground)">Circles</h2>
               <button
                 onClick={() => setMobileOpen(false)}
                 aria-label="Close"
                 className="p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
               >
-                <IoClose className="size-6 dark:text-gray-200" />
+                <IoClose className="size-6 text-(--text-muted)" />
               </button>
             </div>
 
